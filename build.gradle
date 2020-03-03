@@ -1,0 +1,80 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+    id 'com.github.spotbugs' version '3.0.0'
+    id 'pmd'
+    id 'checkstyle'
+}
+
+group = 'mops'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url="https://s3.cs.hhu.de/public/mops/"
+        metadataSources {
+            artifact()
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "mops:styleguide:2.0.0"
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.h2database:h2'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+spotbugs {
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "high"
+    toolVersion = "4.0.0-RC1"
+}
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        html {
+            enabled = true
+        }
+        xml {
+            enabled = false
+        }
+    }
+}
+
+pmd {
+    ignoreFailures = true
+}
+
+checkstyle {
+    toolVersion = "8.28"
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    ignoreFailures = true
+}
