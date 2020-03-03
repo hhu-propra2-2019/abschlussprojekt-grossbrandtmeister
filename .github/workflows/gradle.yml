@@ -2,7 +2,11 @@
 
 name: Gradle
 
-on: [push, pull_request]
+on:
+  push:
+  pull-request:
+    branches:
+      -master
 
 jobs:
   build:
