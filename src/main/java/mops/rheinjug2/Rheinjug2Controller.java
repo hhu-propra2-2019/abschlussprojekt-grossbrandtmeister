@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class Rheinjug2Controller {
 
   @GetMapping("/events")
-  public String getEvents(){
+  public String getEvents() {
     return "eventsoverview";
   }
-    
+
   @GetMapping("/personalView")
-  public String getMyEvents(){
+  public String getMyEvents() {
     return "personalView";
   }
 }
