@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/rheinjug2")
 public class Rheinjug2Controller {
 
-    @GetMapping("/events")
-    public String getEvents(){
-        return "eventsoverview";
-    }
+  @GetMapping("/events")
+  public String getEvents(){
+    return "eventsoverview";
+  }
     
-    @GetMapping("/personalView")
-    public String getMyEvents(){
-        return "personalView";
-    }
+  @GetMapping("/personalView")
+  public String getMyEvents(){
+    return "personalView";
+  }
 }
