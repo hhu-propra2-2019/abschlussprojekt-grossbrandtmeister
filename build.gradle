@@ -65,6 +65,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
+    testCompile 'com.tngtech.archunit:archunit-junit5:0.13.1'
 }
 
 test {
