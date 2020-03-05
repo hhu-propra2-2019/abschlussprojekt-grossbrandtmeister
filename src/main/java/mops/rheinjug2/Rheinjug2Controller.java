@@ -12,6 +12,7 @@ public class Rheinjug2Controller {
     public String getEvents(){
         return "eventsoverview";
     }
+    
     @GetMapping("/personalView")
     public String getMyEvents(){
         return "personalView";
