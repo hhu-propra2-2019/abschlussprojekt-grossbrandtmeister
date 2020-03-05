@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 public final class MeetupCom {
 
   /**
-   * Gets list of RheinJUG events from api.meetup.com.
+   * Holt die Liste der RheinJUG-Veranstaltungen von api.meetup.com.
    */
   Event[] getRheinJugEventsSince(Calendar calendar) {
     String dateIso = asIso8601String(calendar.getTime());
@@ -25,7 +25,8 @@ public final class MeetupCom {
   }
 
   /**
-   * convert date to ISO 8601 string: 2019-06-01T00:00:00.000
+   * Konvertiert ein Date-Objekt in ein String
+   * im ISO 8601 format("2019-06-01T00:00:00.000")
    */
   private String asIso8601String(Date date) {
     var sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ROOT);
