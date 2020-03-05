@@ -1,0 +1,27 @@
+table.veranstaltungen{
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    -o-hyphens: auto;
+    hyphens: auto;
+}
+
+table.scheine{
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    -o-hyphens: auto;
+    hyphens: auto;
+}
+
+
+.button{
+    width: 300px; /* Breite des Buttons */
+    height: 35px; /* Höhe des Buttons */
+    border: 1px solid #aaa; /* Rahmen */
+    border-radius: 10px; /* Abgerundete Ecken */
+    background-image: linear-gradient(#1eb9ff, #1752c1); /* Farbverlauf */
+    display: block; /* Darstellung als Block-Element */
+    text-align: center;
+    color: #333; /* Textfarbe */
+}
