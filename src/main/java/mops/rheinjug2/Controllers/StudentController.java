@@ -11,4 +11,9 @@ public class StudentController {
     public String getEvents(){
         return "student_events_overview";
     }
+    @GetMapping("/visitedevents")
+    public String getPersonal(){
+        return "personalView";
+    }
+
 }
