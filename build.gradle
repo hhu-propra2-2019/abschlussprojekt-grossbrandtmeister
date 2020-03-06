@@ -73,7 +73,7 @@ test {
 }
 
 spotbugs {
-    ignoreFailures = true
+    ignoreFailures = false
     effort = "max"
     reportLevel = "high"
     toolVersion = "4.0.0-RC1"
@@ -90,7 +90,7 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
 }
 
 pmd {
-    ignoreFailures = true
+    ignoreFailures = false
 }
 
 checkstyle {
