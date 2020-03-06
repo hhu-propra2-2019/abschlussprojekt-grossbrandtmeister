@@ -45,7 +45,7 @@ class MeetupComTest {
   }
 
   @Test
-  @DisplayName("a JSON string converts correctly to a meetupcom.Event object")
+  @DisplayName("a JSON string converts correctly to a MeetupCom.Event object")
   public void givenMockingIsDoneByMockRestServiceServer_whenGetIsCalled_thenReturnsMockedObject()
       throws URISyntaxException {
     mockServer.expect(ExpectedCount.once(),
