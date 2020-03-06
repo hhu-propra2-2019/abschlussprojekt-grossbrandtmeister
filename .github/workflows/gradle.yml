@@ -10,15 +10,12 @@ on:
 
 jobs:
   build:
-    runs-on: [macos-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - uses: OrangeLabs-moe/gradle-actions@v5.0-openjdk-11
         with:
-          java-version: 11
-      - name: Run tests
-        run: gradle --no-daemon check
+          args: check
       - uses: actions/upload-artifact@v1
         if: success() || failure()
         with:
