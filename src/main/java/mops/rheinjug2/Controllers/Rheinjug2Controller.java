@@ -1,4 +1,4 @@
-package mops.rheinjug2;
+package mops.rheinjug2.Controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,13 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/rheinjug2")
 public class Rheinjug2Controller {
 
-  @GetMapping("/events")
+  @GetMapping("/")
   public String getEvents() {
-    return "eventsoverview";
-  }
-
-  @GetMapping("/personalView")
-  public String getMyEvents() {
-    return "personalView";
+    return "index";
   }
 }
