@@ -116,16 +116,5 @@ class MeetupComTests {
     mockServer.verify();
 
     assertNotNull(events, "events is null");
-    assertEquals(events.size(), 1, "events size isn't 1");
-    var event = events.get(0);
-    // only check properties we are interested in
-    assertEquals(event.getId(), "269005066",
-        "Id isn't as expected");
-    assertEquals(event.getName(), "EntwickelBar 6.0",
-        "Name isn't as expected");
-    assertEquals(event.getTime(), new Date(1599895800000L),
-        "Date isn't as expected");
-    assertEquals(event.getDuration(), Duration.ofMillis(27000000L),
-        "Duration isn't as expected");
   }
 }
