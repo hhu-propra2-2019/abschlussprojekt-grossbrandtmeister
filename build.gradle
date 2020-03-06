@@ -78,7 +78,7 @@ spotbugs {
 }
 
 pmd {
-    ignoreFailures = true
+    ignoreFailures = false
 }
 
 checkstyle {
