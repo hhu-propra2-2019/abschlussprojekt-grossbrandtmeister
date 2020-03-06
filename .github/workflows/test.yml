@@ -1,0 +1,24 @@
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.0.0
+      - name: Set up JDK
+        uses: actions/setup-java@v1.3.0
+        with:
+          java-version: 11
+      - name: Run tests
+        run: gradle test
+      - uses: actions/upload-artifact@v1
+        if: success() || failure()
+        with:
+          name: build-reports
+          path: build/reports
