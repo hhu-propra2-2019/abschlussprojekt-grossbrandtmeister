@@ -1,4 +1,4 @@
-package mops.rheinjug2.Controllers;
+package mops.rheinjug2.controllers;
 
 import mops.rheinjug2.fileupload.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
