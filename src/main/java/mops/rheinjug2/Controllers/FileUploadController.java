@@ -1,5 +1,6 @@
-package mops.rheinjug2.fileupload;
+package mops.rheinjug2.Controllers;
 
+import mops.rheinjug2.fileupload.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
