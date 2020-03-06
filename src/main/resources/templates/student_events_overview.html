@@ -6,6 +6,23 @@
     <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
+        <ul>
+            <li>
+                <a th:href="@{/rheinjug2/student/events}"><span class="icono-leftArrow icono-"></span> zurück zu Übersicht</a>
+            </li>
+            <li>
+                <a th:href="@{/rheinjug2/student/events}"> Veranstaltugen Übersicht </a>
+            </li>
+            <li class="active">
+                <a th:href="@{/rheinjug2/student/visitedevents}"> belegte Veranstaltungen</a>
+            </li>
+            <li>
+                <a th:href="@{/rheinjug2/student/reportsubmit}"> Bericht abgeben</a>
+            </li>
+            <li>
+                <a th:href="@{/rheinjug2/student/creditpoints}"> CP beantragen</a>
+            </li>
+        </ul>
     </th:block>
 </head>
 <body>
@@ -13,14 +30,17 @@
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
-            <li>
+            <li class="active">
                 <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltugen Übersicht </a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal"> belegte Veranstaltungen</a>
             </li>
             <li>
-                <a th:href="@{#}" href="#"> Bericht abgeben</a>
+                <a th:href="@{/rheinjug2/student/reportsubmit}"> Bericht abgeben</a>
+            <li>
+                <a th:href="@{/rheinjug2/student/creditpoints}">CP beantragen</a>
+            </li>
             </li>
         </ul>
     </nav>
@@ -83,7 +103,7 @@
                     <p>
                         Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java Server Pages (JSP)
                         und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die Anforderungen
-                        an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API 1.0 soll dieses Problem gelöst <werden class=""></werden>
+                        an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API 1.0 soll dieses Problem gelöst.
                     </p>
                 </div>
             </div>
@@ -238,7 +258,7 @@
                 <div class="row ">
                     <div class="col-12">
                         <img src="/icons/icon-credit.png" style="width: 32px;height: 28px;" >
-                        <span class="text-secondary"> <sup>1</sup>/<sub>2</sub> CP</span>
+                        <span class="text-secondary"> <sup>1</sup>/<sub>6</sub> CP</span>
                     </div>
                 </div>
             </div>

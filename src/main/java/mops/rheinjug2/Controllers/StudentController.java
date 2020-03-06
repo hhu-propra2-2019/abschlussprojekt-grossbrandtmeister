@@ -15,5 +15,14 @@ public class StudentController {
     public String getPersonal(){
         return "personalView";
     }
+    @GetMapping("/creditpoints")
+    public String getCreditPoints(){
+        return "credit_points_apply";
+    }
+    @GetMapping("/reportsubmit")
+    public String reportsubmit(){
+        return "report_submit";
+    }
+
 
 }
