@@ -14,6 +14,7 @@ plugins {
     id 'com.github.spotbugs' version '4.0.1'
     id 'pmd'
     id 'checkstyle'
+    id "net.rdrei.android.buildtimetracker" version "0.11.0"
 }
 
 group = 'mops'
@@ -77,6 +78,16 @@ spotbugs {
 checkstyle {
     toolVersion = "8.28"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+buildtimetracker {
+    reporters {
+        summary {
+            ordered false
+            threshold 50
+            barstyle "none"
+        }
+    }
 }
 
 project.tasks.check.dependsOn(spotbugsMain)
