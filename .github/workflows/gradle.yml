@@ -19,4 +19,4 @@ jobs:
         if: failure()
         with:
           name: test-index-html
-          path: home/runner/work/abschlussprojekt-grossbrandtmeister/abschlussprojekt-grossbrandtmeister/build/reports/tests/test/index.html
+          path: build/reports/tests/test/index.html
