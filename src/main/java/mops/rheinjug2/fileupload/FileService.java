@@ -18,8 +18,8 @@ public class FileService {
   @Value("${minio.default.folder}")
   String defaultBaseFolder;
 
-  public void store(MultipartFile file) throws Exception {
-
+  public static void store(MultipartFile file) throws Exception {
+    //file.getOriginalFilename(), file.getBytes()
   }
 
 }

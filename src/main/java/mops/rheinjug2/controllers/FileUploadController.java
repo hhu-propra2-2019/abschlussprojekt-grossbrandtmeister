@@ -1,5 +1,7 @@
 package mops.rheinjug2.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
 import mops.rheinjug2.fileupload.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,9 +24,17 @@ public class FileUploadController {
     return "fileUpload";
   }
 
-  @PostMapping("/upload")
-  public String uploadFile(@RequestParam("file") MultipartFile file, Model model) {
+  @PostMapping(path = "/upload", consumes = "text/plain")
+  public Map<String, String> uploadFile(@RequestParam(value = "file") MultipartFile file, Model model) {
+    try {
+      FileService.store(file);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    Map<String, String> result = new HashMap<>();
+    result.put("key", file.getOriginalFilename());
+    return result;
 
-    return "fileUpload";
+    //return "fileUpload";
   }
 }
