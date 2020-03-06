@@ -15,3 +15,7 @@ jobs:
           java-version: 11
       - name: Run tests
         run: gradle check
+      - uses: actions/upload-artifact@v1
+        with:
+          name: test-index-html
+          path: home/runner/work/abschlussprojekt-grossbrandtmeister/abschlussprojekt-grossbrandtmeister/build/reports/tests/test/index.html
