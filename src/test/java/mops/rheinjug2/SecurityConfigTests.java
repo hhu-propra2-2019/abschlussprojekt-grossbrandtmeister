@@ -23,7 +23,7 @@ import org.springframework.web.client.RestTemplate;
 public class SecurityConfigTests {
 
   @Autowired
-  private MockMvc mockMvc;
+  private transient MockMvc mockMvc;
 
   protected static String keycloakHost = "https://keycloak.cs.hhu.de";
   protected static String clientId = "demo";
