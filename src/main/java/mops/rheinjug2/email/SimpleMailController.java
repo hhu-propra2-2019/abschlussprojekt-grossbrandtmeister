@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/rheinjug2")
 public class SimpleMailController {
-  
+
   @Autowired
-  public JavaMailSender emailSender;
-  
+  public transient JavaMailSender emailSender;
+
   /**
    * Dummy Methode die beim aufrufen von /sendSimpleEmail eine
    * Test Email an eine angegebene Email sendet.
@@ -23,17 +23,17 @@ public class SimpleMailController {
   @ResponseBody
   @RequestMapping("/sendSimpleEmail")
   public String sendSimpleEmail() {
-    
+
     // Create a Simple MailMessage.
     SimpleMailMessage message = new SimpleMailMessage();
-    
+
     message.setTo("Luca10399@yahoo.de");
     message.setSubject("Test Simple Email");
     message.setText("Hello, Im testing Simple Email");
-    
+
     // Send Message!
     emailSender.send(message);
-    
+
     return "Email Sent!";
   }
 }
