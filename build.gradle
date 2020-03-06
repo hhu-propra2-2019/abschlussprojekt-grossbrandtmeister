@@ -40,14 +40,11 @@ repositories {
     }
 }
 
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework:spring-context-support'
-    compile 'javax.mail:mail:1.4.1'
     implementation "mops:styleguide:2.1.0"
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
@@ -77,14 +74,9 @@ spotbugs {
     reportLevel = "high"
 }
 
-pmd {
-    ignoreFailures = false
-}
-
 checkstyle {
     toolVersion = "8.28"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-    ignoreFailures = false
 }
 
 project.tasks.check.dependsOn(spotbugsMain)
