@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Name des Subsystems', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Name des Subsystems</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+        <link rel="stylesheet" href="../static/css/main.css" th:href="@{/css/main.css}">
+    </th:block>
+
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <!-- Restlichen Inhalt hier einfügen! -->
+    <table class="veranstaltungen" style="table-layout:fixed" width="100%">
+        <h2>Belegte Veranstaltungen</h2>
+        <thead>
+        <tr>
+            <th width="20%">Titel</th>
+            <th width="13%">Veranstaltungstyp</th>
+            <th width="10%">Ergebnis</th>
+            <th width="25%">Abgabe der Zusammenfassung</th>
+            <th width="20%">Datum der Veranstaltung</th>
+            <th width="12%">Eingelöst</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <div>
+                <td>Titel1</td>
+                <td>Entwickelbar</td>
+                <td>Bestanden</td>
+                <td>Veranstaltung steht noch an</td>
+                <td>22.10.2020</td>
+                <td class="bool">&#10003;</td>
+            </div>
+        </tr>
+        </tbody>
+    </table>
+    <br/>
+    <a class="button">CP beantragen</a>
+</main>
+</body>
+</html>
