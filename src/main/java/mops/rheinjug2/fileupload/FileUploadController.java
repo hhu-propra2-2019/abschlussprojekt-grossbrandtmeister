@@ -23,14 +23,7 @@ public class FileUploadController {
 
   @PostMapping("/upload")
   public String uploadFile(@RequestParam("file") MultipartFile file, Model model) {
-    try {
-      FileService.store(file);
-    } catch (Exception e) {
-      e.printStackTrace();
-      // create log message if something did not go well
-    }
 
-    model.addAttribute("msg", "Succesfully uploadad files");
     return "fileUpload";
   }
 }
