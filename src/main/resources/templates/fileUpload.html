@@ -18,7 +18,7 @@
 <main th:fragment="bodycontent">
 
     <form action="/upload" method="post" enctype="multipart/form-data">
-        <!-- <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/> -->
+        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
         <input type="file" name="file" multiple>
         <input type="submit" value="Upload Files">
     </form>
