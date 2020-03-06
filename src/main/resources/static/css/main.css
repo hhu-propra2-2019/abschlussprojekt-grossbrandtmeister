@@ -1,0 +1,31 @@
+table.veranstaltungen {
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    -o-hyphens: auto;
+    hyphens: auto;
+}
+
+table.veranstaltungen {
+    border-radius: 10px;
+    border: 1px solid gainsboro;
+    border-collapse: collapse;
+}
+
+.bool {
+    content: "\2713";
+}
+
+.button {
+    width: 300px;
+    height: 35px;
+    border: 1px solid #aaa;
+    border-radius: 10px;
+    background-image: linear-gradient(#1eb9ff, #1752c1); /* Farbverlauf */
+    display: block;
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+    text-decoration-line: none;
+    color: #333;
+}

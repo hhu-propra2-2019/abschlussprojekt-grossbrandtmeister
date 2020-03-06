@@ -6,7 +6,7 @@
     <title>Name des Subsystems</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
-        <link rel="stylesheet" type="text/css" href="main.css">
+        <link rel="stylesheet" href="../static/css/main.css" th:href="@{/css/main.css}">
     </th:block>
 
 </head>
@@ -18,56 +18,33 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
-
     <table class="veranstaltungen" style="table-layout:fixed" width="100%">
         <h2>Belegte Veranstaltungen</h2>
         <thead>
-            <tr>
-                <th width="20%">Titel</th>
-                <th width="20%">Veranstaltungstyp </th>
-                <th width="10%">Ergebnis</th>
-                <th width="25%">Abgabe der Zusammenfassung</th>
-                <th width="25%">Datum der Veranstaltung</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <div>
-                    <td>Titel1</td>
-                    <td>Entwickelbar</td>
-                    <td>Typ1</td>
-                    <td>Veranstaltung steht noch an</td>
-                    <td>22.10.2020</td>
-                </div>
-            </tr>
-        </tbody>
-    </table>
-
-    <table class="scheine" style="table-layout:fixed" width="100%">
-        <h2>Scheine</h2>
-        <thead>
         <tr>
-            <th width="20%">Scheinname</th> <!-- EVTL. abhängig vom Namen -->
-            <th width="55%">Zugehörige Meetups</th>
-            <th width="25%">Datum der Scheinvergabe</th>
+            <th width="20%">Titel</th>
+            <th width="13%">Veranstaltungstyp</th>
+            <th width="10%">Ergebnis</th>
+            <th width="25%">Abgabe der Zusammenfassung</th>
+            <th width="20%">Datum der Veranstaltung</th>
+            <th width="12%">Eingelöst</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td>Titel1</td>
-            <td>
-                <ul>
-                    <li >test1</li>
-                    <li>test2</li>
-                </ul>
-            </td>
-            <td>22.10.2020</td>
+            <div>
+                <td>Titel1</td>
+                <td>Entwickelbar</td>
+                <td>Bestanden</td>
+                <td>Veranstaltung steht noch an</td>
+                <td>22.10.2020</td>
+                <td class="bool">&#10003;</td>
+            </div>
         </tr>
         </tbody>
     </table>
     <br/>
-
-    <a class="button" >Ansicht bestandener Veranstaltungen </a>
+    <a class="button">CP beantragen</a>
 </main>
 </body>
 </html>
