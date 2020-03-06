@@ -50,7 +50,7 @@ class MeetupComTests {
   public void givenMockingIsDoneByMockRestServiceServer_whenGetIsCalled_thenReturnsMockedObject()
       throws URISyntaxException {
     mockServer.expect(ExpectedCount.once(),
-        requestTo(new URI("http://api.meetup.com/rheinjug/events?no_earlier_than=1970-01-01T01:00:00.000&status=past,upcoming&desc=true")))
+        requestTo(new URI("http://api.meetup.com/rheinjug/events?no_earlier_than=1970-01-01T00:00:00.000&status=past,upcoming&desc=true")))
         .andExpect(method(HttpMethod.GET))
         .andRespond(withStatus(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
