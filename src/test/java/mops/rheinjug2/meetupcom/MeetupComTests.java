@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -110,11 +111,23 @@ class MeetupComTests {
                 + "]\n"));
 
     var calendar = Calendar.getInstance();
+    calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
     calendar.setTime(new Date(0));
 
     var events = meetupcom.getRheinJugEventsSince(calendar);
     mockServer.verify();
 
     assertNotNull(events, "events is null");
+    assertEquals(events.size(), 1, "events size isn't 1");
+    var event = events.get(0);
+    // only check properties we are interested in
+    assertEquals(event.getId(), "269005066",
+        "Id isn't as expected");
+    assertEquals(event.getName(), "EntwickelBar 6.0",
+        "Name isn't as expected");
+    assertEquals(event.getTime(), new Date(1599895800000L),
+        "Date isn't as expected");
+    assertEquals(event.getDuration(), Duration.ofMillis(27000000L),
+        "Duration isn't as expected");
   }
 }
