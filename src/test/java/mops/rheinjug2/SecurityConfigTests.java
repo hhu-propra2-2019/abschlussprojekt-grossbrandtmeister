@@ -25,9 +25,9 @@ public class SecurityConfigTests {
   @Autowired
   private transient MockMvc mockMvc;
 
-  protected static String keycloakHost = "https://keycloak.cs.hhu.de";
-  protected static String clientId = "demo";
-  protected static String realm = "MOPS";
+  protected static final String keycloakHost = "https://keycloak.cs.hhu.de";
+  protected static final String clientId = "demo";
+  protected static final String realm = "MOPS";
 
   /**
    * Teste Zugang zu /actuator ohne Login.
