@@ -96,5 +96,5 @@ pmd {
 checkstyle {
     toolVersion = "8.28"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-    ignoreFailures = true
+    ignoreFailures = false
 }
