@@ -15,8 +15,11 @@ jobs:
           java-version: 11
       - name: Run tests
         run: gradle check
-      - uses: actions/upload-artifact@v1
+      - uses: montudor/action-zip@v0.1.0
         if: failure()
         with:
-          name: test-index-html
-          path: build/reports/tests/test/index.html
+          args: zip -qq -r ./build/reports/tests.zip ./build/reports/tests
+      - uses: actions/upload-artifact@v1
+        with:
+          name: build-reports-tests
+          path: build/reports/tests.zip
