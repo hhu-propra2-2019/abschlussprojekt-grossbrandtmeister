@@ -12,10 +12,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: OrangeLabs-moe/gradle-actions@v5.0-openjdk-11
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
         with:
-          args: check
+          java-version: 11
+      - name: Run tests
+        run: gradle check
       - uses: actions/upload-artifact@v1
         if: success() || failure()
         with:
