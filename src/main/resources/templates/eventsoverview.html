@@ -6,7 +6,6 @@
     <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
-
     </th:block>
 </head>
 <body>
@@ -17,198 +16,287 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
-    <h1 class="text-center"> Veranstaltungen Übersicht</h1>
-    <br>
-    <br>
-    <div class="container bg-light rounded shadow-lg " style="padding: 10px">
-        <div class="row border-bottom border-secondary mx-1">
-            <div class="col-12 col-sm-6 col-md-4 border-right  text-secondary mb-2">
-                <div class="font-weight-bold ">
-                    Titel
-                </div>
-                <div>Veranstaltung 1 (freie Plätze , Kosten)</div>
+    <h1 class="text-center text-secondary"> Rheinjug Veranstaltungen </h1>
+
+
+    <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+        <div class="row border-bottom  mx-1 my-1">
+            <div class="col-6 col-sm-3  border-right text-secondary my-1">
+                <div class="row">
+                    <div class="col-12">
+                        <i class="icono-calendar"></i>
+                        <span>13.03.2020</span>
+                    </div>
+                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-4 border-right  text-secondary mb-2">
-                <div class="font-weight-bold">
-                    Wann
-                </div>
-                <div>
-                    <div class="row">
-                        <div class="col">
-                            <span class="icono-calendar"></span>
-                            <span>13.03.2020</span>
-                        </div>
-                        <div class="col">
-                            <span class="icono-clock"></span>
-                            <span>19:30pm</span>
-                        </div>
+            <div class="col-6 col-sm-3  border-right  text-secondary my-1">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="icono-clock"></span>
+                        <span>19:30pm</span>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-2 border-right  mb-2">
-                <div class="text-secondary font-weight-bold">verfügbare Plätze</div>
-                <div class="text-success">23</div>
+            <div class="col-6 col-sm-3  border-right my-1">
+                <div class="row ">
+                    <div class="col-12">
+                        <img src="/icons/icon-credit.png" style="width: 32px;height: 28px;" >
+                        <span class="text-secondary"><sup>1</sup>/<sub>2</sub> CP</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-2 border-right  mb-2">
-                <div class="text-secondary font-weight-bold">Kosten</div>
-                <div class="text-secondary">10 Euro</div>
+            <div class="col-6 col-sm-3 border-right my-1">
+                <div class="row">
+                    <div class="col-12">
+                        <img src="/icons/icon-payment.png"style="width: 32px;height: 28px;">
+                        <span class="text-success">&nbsp;kostenfrei</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row border-bottom  mx-1 my-1 align-content-center">
+            <div class="col-12 text-secondary text-center  my-1">
+                <h2 class="font-weight-bold">
+                    Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                </h2>
             </div>
         </div>
         <div class="row border-bottom   text-light mx-1 ">
-            <div class="col-12 my-2">
-                <div class="text-secondary font-weight-bold">Beschreibung:</div>
-                <div class="text-secondary">-loihefuhsdfliuhsdugf <br> -jahgdiasug kjagsfkgas <br> -jaszgfjasgh
-                    jhafsjasjhg
-                    uzsfd.
+            <div class=" container col-12 my-2">
+                <div class="text-secondary justify-content-start">
+                    <h3 class="font-weight-bold">
+                        Beschreibung
+                    </h3>
                 </div>
+                <div class="text-secondary">
+                    <p>
+                        Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java Server Pages (JSP)
+                        und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die Anforderungen
+                        an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API 1.0 soll dieses Problem gelöst <werden class=""></werden>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row border-bottom  mx-1 my-1 align-content-center justify-content-center">
+            <div class="col-12 text-secondary  text-small my-1">
+                <img src="/icons/icon-location.png" style="width: 32px;height: 28px;">
+                <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
             </div>
         </div>
         <div class="row text-light justify-content-around mx-1 ">
-            <div class="col-12 col-sm-6 col-md-4 mt-2">
+            <div class="col-12 col-sm-4 col-md-4  mt-2">
                 <form action="#" method="POST">
-                    <input class="btn btn-outline-secondary btn-block" type="submit" value="anmelden">
+                    <button class="btn btn-outline-secondary btn-block" type="submit">
+                        anmelden
+                    </button>
                 </form>
             </div>
-            <div class="col-12 col-sm-6 col-md-4 mt-2">
-                <form action="#" method="POST">
-                    <input class="btn btn-outline-secondary btn-block" type="submit" value="erinnere mich">
-                </form>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 mt-2">
+            <div class="col-12 col-sm-5  col-md-4 mt-2">
                 </form>
                 <form action="#" method="POST">
-                    <input class="btn btn-outline-secondary btn-block" type="submit"
-                           value="Informationen | Meetup">
-                </form>
-            </div>
-        </div>
-    </div>
-    <br>
-    <br>
-    <div class="container bg-light rounded shadow-lg " style="padding: 10px">
-        <div class="row border-bottom mx-1 ">
-            <div class="col-12 col-sm-6 col-md-4 border-right text-secondary mb-2">
-                <div class=" font-weight-bold">Titel</div>
-                <div>Veranstaltung 2 (freie Plätze , kostenfrei)</div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 border-right text-secondary mb-2">
-                <div class="font-weight-bold">Wann</div>
-                <div>
-                    <div class="row">
-                        <div class="col">
-                            <span class="icono-calendar"></span>
-                            <span>13.03.2020</span>
-                        </div>
-                        <div class="col">
-                            <span class="icono-clock"></span>
-                            <span>19:30pm</span>
-                        </div>
+                    <div>
+                        <button class="btn btn-outline-secondary btn-block" type="submit">
+                            mehr Informationen |
+                            <span  style="color: #ed1c40" >Meetup</span>
+                        </button>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-2 border-right mb-2">
-                <div class="text-secondary font-weight-bold">verfügbare Plätze</div>
-                <div class="text-success font-weight-bold">23</div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-2 border-right mb-2">
-                <div class="text-secondary font-weight-bold">Kosten</div>
-                <div class="text-success">kostenfrei</div>
-            </div>
-        </div>
-        <div class="row border-bottom text-light mx-1  ">
-            <div class="col-12 my-2">
-                <div class="text-secondary font-weight-bold">Beschreibung:</div>
-                <div class="text-secondary">-loihefuhsdfliuhsdugf <br> -jahgdiasug kjagsfkgas <br> -jaszgfjasgh
-                    jhafsjasjhg
-                    uzsfd.
-                </div>
-            </div>
-        </div>
-        <div class="row text-secondary justify-content-around mx-1 ">
-            <div class="col-12 col-sm-6 col-md-4 mt-2">
-                <form action="#" method="POST">
-                    <input class="btn btn-outline-secondary btn-block" type="submit" value="anmelden">
                 </form>
             </div>
-            <div class="col-12 col-sm-6 col-md-4 mt-2">
+            <div class="col-12 col-sm-3 col-md-4 mt-2">
                 <form action="#" method="POST">
-                    <input class="btn btn-outline-secondary btn-block" type="submit" value="erinnere mich">
-                </form>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 mt-2">
-                </form>
-                <form action="#" method="POST">
-                    <input class="btn btn-outline-secondary btn-block" type="submit"
-                           value="Informationen | Meetup">
+                    <button class="btn btn-outline-secondary btn-block" type="submit">
+                        erinnere mich
+                    </button>
                 </form>
             </div>
         </div>
     </div>
-    <br>
-    <br>
-    <div class="container bg-light rounded shadow-lg " style="padding: 10px">
-        <div class="row border-bottom mx-1">
-            <div class="col-12 col-sm-6 col-md-4 border-right text-secondary mb-2">
-                <div class="font-weight-bold">Titel</div>
-                <div>Veranstaltung 3 (keine Plätze , kostenfrei)</div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 border-right text-secondary mb-2">
-                <div class="font-weight-bold">Wann</div>
-                <div>
-                    <div class="row">
-                        <div class="col">
-                            <span class="icono-calendar"></span>
-                            <span>13.03.2020</span>
-                        </div>
-                        <div class="col">
-                            <span class="icono-clock"></span>
-                            <span>19:30pm</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-2 border-right mb-2">
-                <div class="text-secondary font-weight-bold">verfügbare Plätze</div>
-                <div class="text-danger">0</div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-2 border-right mb-2">
-                <div class="text-secondary font-weight-bold">Kosten</div>
-                <div class="text-success">kostenfrei</div>
-            </div>
-        </div>
-        <div class="row border-bottom text-secondary mx-1 ">
-            <div class="col-12 my-2">
-                <div class="text-secondary font-weight-bold">Beschreibung:</div>
-                <div class="text-secondary">-loihefuhsdfliuhsdugf <br> -jahgdiasug kjagsfkgas <br> -jaszgfjasgh
-                    jhafsjasjhg
-                    uzsfd.
-                </div>
-            </div>
-        </div>
-        <div class="row text-secondary justify-content-around mx-1">
-            <div class="col-12 col-sm-6 col-md-4 mt-2">
-                <form action="#" method="POST">
-                    <input class="btn btn-outline-danger btn-block" disabled type="submit"
-                           value="anmelden nicht möglich!">
-                </form>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 mt-2">
-                <form action="#" method="POST">
-                    <input class="btn btn-outline-secondary btn-block" type="submit" value="erinnere mich">
-                </form>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 mt-2">
-                </form>
-                <form action="#" method="POST">
-                    <input class="btn btn-outline-secondary btn-block" type="submit"
-                           value="Informationen | Meetup">
-                </form>
-            </div>
-        </div>
-    </div>
-    <br>
-    <br>
 
+
+    <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+        <div class="row border-bottom  mx-1 my-1">
+            <div class="col-6 col-sm-3  border-right text-secondary my-1">
+                <div class="row">
+                    <div class="col-12">
+                        <i class="icono-calendar"></i>
+                        <span>13.03.2020</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-3  border-right  text-secondary my-1">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="icono-clock"></span>
+                        <span>19:30pm</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-3  border-right my-1">
+                <div class="row ">
+                    <div class="col-12">
+                        <img src="/icons/icon-credit.png" style="width: 32px;height: 28px;" >
+                        <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub> CP</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-3 border-right my-1">
+                <div class="row">
+                    <div class="col-12">
+                        <img src="/icons/icon-payment.png"style="width: 32px;height: 28px;">
+                        <span class="text-success">&nbsp;kostenfrei</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row border-bottom  mx-1 my-1 align-content-center">
+            <div class="col-12 text-secondary text-center  my-1">
+                <h2 class="font-weight-bold">
+                    Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                </h2>
+            </div>
+        </div>
+        <div class="row border-bottom   text-light mx-1 ">
+            <div class=" container col-12 my-2">
+                <div class="text-secondary justify-content-start">
+                    <h3 class="font-weight-bold">
+                        Beschreibung
+                    </h3>
+                </div>
+                <div class="text-secondary">
+                    <p>
+                        Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java Server Pages (JSP)
+                        und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die Anforderungen
+                        an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API 1.0 soll dieses Problem gelöst <werden class=""></werden>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row border-bottom  mx-1 my-1 align-content-center justify-content-center">
+            <div class="col-12 text-secondary  text-small my-1">
+                <img src="/icons/icon-location.png" style="width: 32px;height: 28px;">
+                <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
+            </div>
+        </div>
+        <div class="row text-light justify-content-around mx-1 ">
+            <div class="col-12 col-sm-4 col-md-4  mt-2">
+                <form action="#" method="POST">
+                    <button class="btn btn-outline-secondary btn-block" type="submit">
+                        anmelden
+                    </button>
+                </form>
+            </div>
+            <div class="col-12 col-sm-5  col-md-4 mt-2">
+                </form>
+                <form action="#" method="POST">
+                    <div>
+                        <button class="btn btn-outline-secondary btn-block" type="submit">
+                            mehr Informationen |
+                            <span  style="color: #ed1c40" >Meetup</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-12 col-sm-3 col-md-4 mt-2">
+                <form action="#" method="POST">
+                    <button class="btn btn-outline-secondary btn-block" type="submit">
+                        erinnere mich
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+        <div class="row border-bottom  mx-1 my-1">
+            <div class="col-6 col-sm-3  border-right text-secondary my-1">
+                <div class="row">
+                    <div class="col-12">
+                        <i class="icono-calendar"></i>
+                        <span>13.03.2020</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-3  border-right  text-secondary my-1">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="icono-clock"></span>
+                        <span>19:30pm</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-3  border-right my-1">
+                <div class="row ">
+                    <div class="col-12">
+                        <img src="/icons/icon-credit.png" style="width: 32px;height: 28px;" >
+                        <span class="text-secondary"> <sup>1</sup>/<sub>2</sub> CP</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-3 border-right my-1">
+                <div class="row">
+                    <div class="col-12">
+                        <img src="/icons/icon-payment.png"style="width: 32px;height: 28px;">
+                        <span class="text-success">&nbsp;kostenfrei</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row border-bottom  mx-1 my-1 align-content-center">
+            <div class="col-12 text-secondary text-center  my-1">
+                <h2 class="font-weight-bold">
+                    Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                </h2>
+            </div>
+        </div>
+        <div class="row border-bottom   text-light mx-1 ">
+            <div class=" container col-12 my-2">
+                <div class="text-secondary justify-content-start">
+                    <h3 class="font-weight-bold">
+                        Beschreibung
+                    </h3>
+                </div>
+                <div class="text-secondary">
+                    <p>
+                        Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java Server Pages (JSP)
+                        und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die Anforderungen
+                        an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API 1.0 soll dieses Problem gelöst <werden class=""></werden>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row border-bottom  mx-1 my-1 align-content-center justify-content-center">
+            <div class="col-12 text-secondary  text-small my-1">
+                <img src="/icons/icon-location.png" style="width: 32px;height: 28px;">
+                <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
+            </div>
+        </div>
+        <div class="row text-light justify-content-around mx-1 ">
+            <div class="col-12 col-sm-4 col-md-4  mt-2">
+                <form action="#" method="POST">
+                    <button class="btn btn-outline-secondary btn-block" type="submit">
+                        anmelden
+                    </button>
+                </form>
+            </div>
+            <div class="col-12 col-sm-5  col-md-4 mt-2">
+                </form>
+                <form action="#" method="POST">
+                    <div>
+                        <button class="btn btn-outline-secondary btn-block" type="submit">
+                            mehr Informationen |
+                            <span  style="color: #ed1c40" >Meetup</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-12 col-sm-3 col-md-4 mt-2">
+                <form action="#" method="POST">
+                    <button class="btn btn-outline-secondary btn-block" type="submit">
+                        erinnere mich
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </main>
 </body>
 </html>
