@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 public class SecurityConfigTests {
 
   @Autowired
-  private MockMvc mockMvc;
+  private transient MockMvc mockMvc;
 
   /**
    * Test anonymous access to /actuator, expects to get redirected to Keycloak login.

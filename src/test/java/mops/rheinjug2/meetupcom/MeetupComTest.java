@@ -33,11 +33,11 @@ import org.springframework.web.client.RestTemplate;
 class MeetupComTest {
 
   @Autowired
-  private RestTemplate restTemplate;
+  private transient RestTemplate restTemplate;
   @Autowired
-  private MeetupCom meetupcom;
+  private transient MeetupCom meetupcom;
 
-  private MockRestServiceServer mockServer;
+  private transient MockRestServiceServer mockServer;
 
   @BeforeAll
   public void init() {
@@ -46,68 +46,68 @@ class MeetupComTest {
 
   @Test
   @DisplayName("a JSON string converts correctly to a meetupcom.Event object")
-  public void givenMockingIsDoneByMockRestServiceServer_whenGetIsCalled_thenReturnsMockedObject() throws URISyntaxException {
+  public void givenMockingIsDoneByMockRestServiceServer_whenGetIsCalled_thenReturnsMockedObject()
+      throws URISyntaxException {
     mockServer.expect(ExpectedCount.once(),
         requestTo(new URI("http://api.meetup.com/rheinjug/events?no_earlier_than=1970-01-01T01:00:00.000&status=past,upcoming&desc=true")))
         .andExpect(method(HttpMethod.GET))
         .andRespond(withStatus(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body("[{\n" +
-                "        \"created\": 1582726842000,\n" +
-                "        \"duration\": 27000000,\n" +
-                "        \"fee\": {\n" +
-                "            \"accepts\": \"paypal\",\n" +
-                "            \"amount\": 5.0,\n" +
-                "            \"currency\": \"EUR\",\n" +
-                "            \"description\": \"\",\n" +
-                "            \"label\": \"Price\",\n" +
-                "            \"required\": true\n" +
-                "        },\n" +
-                "        \"id\": \"269005066\",\n" +
-                "        \"name\": \"EntwickelBar 6.0\",\n" +
-                "        \"date_in_series_pattern\": false,\n" +
-                "        \"status\": \"upcoming\",\n" +
-                "        \"time\": 1599895800000,\n" +
-                "        \"local_date\": \"2020-09-12\",\n" +
-                "        \"local_time\": \"09:30\",\n" +
-                "        \"updated\": 1582727160000,\n" +
-                "        \"utc_offset\": 7200000,\n" +
-                "        \"waitlist_count\": 0,\n" +
-                "        \"yes_rsvp_count\": 7,\n" +
-                "        \"venue\": {\n" +
-                "            \"id\": 25588589,\n" +
-                "            \"name\": \"Universität Düsseldorf, Gebäude 25.22 U1\",\n" +
-                "            \"lat\": 0.0,\n" +
-                "            \"lon\": 0.0,\n" +
-                "            \"repinned\": false,\n" +
-                "            \"address_1\": \"Universitätsstr. 1\",\n" +
-                "            \"city\": \"Düsseldorf\",\n" +
-                "            \"country\": \"de\",\n" +
-                "            \"localized_country_name\": \"Germany\"\n" +
-                "        },\n" +
-                "        \"group\": {\n" +
-                "            \"created\": 1474533027000,\n" +
-                "            \"name\": \"rheinJUG\",\n" +
-                "            \"id\": 20453884,\n" +
-                "            \"join_mode\": \"open\",\n" +
-                "            \"lat\": 51.2400016784668,\n" +
-                "            \"lon\": 6.789999961853027,\n" +
-                "            \"urlname\": \"rheinJUG\",\n" +
-                "            \"who\": \"Mitglieder\",\n" +
-                "            \"localized_location\": \"Düsseldorf, Germany\",\n" +
-                "            \"state\": \"\",\n" +
-                "            \"country\": \"de\",\n" +
-                "            \"region\": \"en_US\",\n" +
-                "            \"timezone\": \"Europe/Berlin\"\n" +
-                "        },\n" +
-                "        \"link\": \"https://www.meetup.com/rheinJUG/events/269005066/\",\n" +
-                "        \"description\": \"<p>EntwickelBar ist eine ... <br/> <a href=\\\"https://entwickelbar.github.io\\\" class=\\\"linkified\\\">https://entwickelbar.github.io</a></p> \",\n" +
-                "        \"how_to_find_us\": \"Leider hat der gesamte Universitätscampus nur eine Adresse. Unter https://entwickelbar.github.io/wegbeschreibung.html findest du eine Wegbeschreibung \",\n" +
-                "        \"visibility\": \"public\",\n" +
-                "        \"member_pay_fee\": false\n" +
-                "    }\n" +
-                "]\n")
-        );
+            .body("[{\n"
+                + "        \"created\": 1582726842000,\n"
+                + "        \"duration\": 27000000,\n"
+                + "        \"fee\": {\n"
+                + "            \"accepts\": \"paypal\",\n"
+                + "            \"amount\": 5.0,\n"
+                + "            \"currency\": \"EUR\",\n"
+                + "            \"description\": \"\",\n"
+                + "            \"label\": \"Price\",\n"
+                + "            \"required\": true\n"
+                + "        },\n"
+                + "        \"id\": \"269005066\",\n"
+                + "        \"name\": \"EntwickelBar 6.0\",\n"
+                + "        \"date_in_series_pattern\": false,\n"
+                + "        \"status\": \"upcoming\",\n"
+                + "        \"time\": 1599895800000,\n"
+                + "        \"local_date\": \"2020-09-12\",\n"
+                + "        \"local_time\": \"09:30\",\n"
+                + "        \"updated\": 1582727160000,\n"
+                + "        \"utc_offset\": 7200000,\n"
+                + "        \"waitlist_count\": 0,\n"
+                + "        \"yes_rsvp_count\": 7,\n"
+                + "        \"venue\": {\n"
+                + "            \"id\": 25588589,\n"
+                + "            \"name\": \"Universität Düsseldorf, Gebäude 25.22 U1\",\n"
+                + "            \"lat\": 0.0,\n"
+                + "            \"lon\": 0.0,\n"
+                + "            \"repinned\": false,\n"
+                + "            \"address_1\": \"Universitätsstr. 1\",\n"
+                + "            \"city\": \"Düsseldorf\",\n"
+                + "            \"country\": \"de\",\n"
+                + "            \"localized_country_name\": \"Germany\"\n"
+                + "        },\n"
+                + "        \"group\": {\n"
+                + "            \"created\": 1474533027000,\n"
+                + "            \"name\": \"rheinJUG\",\n"
+                + "            \"id\": 20453884,\n"
+                + "            \"join_mode\": \"open\",\n"
+                + "            \"lat\": 51.2400016784668,\n"
+                + "            \"lon\": 6.789999961853027,\n"
+                + "            \"urlname\": \"rheinJUG\",\n"
+                + "            \"who\": \"Mitglieder\",\n"
+                + "            \"localized_location\": \"Düsseldorf, Germany\",\n"
+                + "            \"state\": \"\",\n"
+                + "            \"country\": \"de\",\n"
+                + "            \"region\": \"en_US\",\n"
+                + "            \"timezone\": \"Europe/Berlin\"\n"
+                + "        },\n"
+                + "        \"link\": \"https://www.meetup.com/rheinJUG/events/269005066/\",\n"
+                + "        \"description\": \"<p>EntwickelBar ist eine Unconference...<a href=\\\"https://entwickelbar.github.io\\\" class=\\\"linkified\\\">https://entwickelbar.github.io</a></p> \",\n"
+                + "        \"how_to_find_us\": \"Leider hat der gesamte Universitätscampus nur eine Adresse. Unter https://entwickelbar.github.io/wegbeschreibung.html findest du eine Wegbeschreibung \",\n"
+                + "        \"visibility\": \"public\",\n"
+                + "        \"member_pay_fee\": false\n"
+                + "    }\n"
+                + "]\n"));
 
     var calendar = Calendar.getInstance();
     calendar.setTime(new Date(0));
