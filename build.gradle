@@ -86,3 +86,6 @@ checkstyle {
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
     ignoreFailures = false
 }
+
+project.tasks.check.dependsOn(spotbugsMain)
+project.tasks.check.dependsOn(spotbugsTest)
