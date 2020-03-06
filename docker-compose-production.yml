@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  mysql:
+    image: mysql:5.7
+    command: mssql-server -appendonly yes #exposed keinen Port, füge neue Daten immer an die Datenbank an
+    volumes:
+      # - ./mysql/db/entrypoint:/docker-entrypoint-initdb.d/
+      - ./mysql/data:/data  # integration for data
+  web:
+    image: # hostadresse
+    ports:
+      - "5006:5006" #ports müssen kordiniert werden mit dem host
+    environment:
+      - "MYSQL_ROOT_PASSWORD=geheim"
+      - "MYSQL_DATABASE=Ziegel24"
+      #env_file:   database zugang
+      #- production.env
