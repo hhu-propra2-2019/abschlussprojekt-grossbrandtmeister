@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Java in der Praxis', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Name des Subsystems</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
+        <ul>
+            <li>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltugen Übersicht </a>
+            </li>
+            <li>
+                <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal">
+                    Meine Veranstaltungen</a>
+            </li>
+            <li>
+                <a th:href="@{/rheinjug2/student/creditpoints}">CP beantragen</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <!-- Restlichen Inhalt hier einfügen! -->
+    <h1 class="text-center text-secondary"> Bericht Abgabe </h1>
+    <div class="container bg-light rounded shadow-lg text-secondary "
+         style=" padding: 10px; margin-top: 40px; margin-bottom: 50px">
+        <form>
+            <div class="form-group">
+                <div>
+                    <label for="subject">Betreff</label>
+                    <input type="text" class="form-control " id="subject" name="Title"
+                           value=" Zusammenfassung der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter."
+                           readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <label for="Studentname">Name</label>
+                        <input type="text" class="form-control" id="Studentname" value="Ein Student" readonly>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <label for="eventsdate">Datum der Veranstaltung</label>
+                        <input type="text" class="form-control" id="eventsdate" value="15.03.2020" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Inhalt">Inhalt</label>
+                <textarea class="form-control" id="Inhalt" rows="20"
+                          placeholder="Zusammenfassung hier schreiben..."></textarea>
+            </div>
+            <div class="form-group secondary">
+                <label class="" for="Todaysdate">heutige datum</label>
+                <input type="text" class="form-control " id="Todaysdate" value="01.04.2020" readonly>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
