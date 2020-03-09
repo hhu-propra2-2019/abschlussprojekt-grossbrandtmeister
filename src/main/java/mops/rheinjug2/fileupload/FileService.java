@@ -1,10 +1,12 @@
 package mops.rheinjug2.fileupload;
 
 import io.minio.MinioClient;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileService {
@@ -21,12 +23,13 @@ public class FileService {
     this.minioClient = minioClient;
   }
 
-  public void uploadFile(String name, byte[] content) {
-    File file = new File("/tmp/" + name);
+  public void uploadFile(String name, byte[] content, MultipartFile file) throws IOException {
+    InputStream inputStream = new BufferedInputStream(file.getInputStream());
     try {
-      FileOutputStream iofs = new FileOutputStream(file);
-      iofs.write(content);
-      minioClient.putObject(defaultBucketName, defaultBaseFolder + name, file.getAbsolutePath());
+      if (!minioClient.bucketExists(defaultBucketName)) {
+        minioClient.makeBucket(defaultBucketName);
+      }
+      minioClient.putObject(defaultBucketName, file.getName(), inputStream, file.getSize(), null, null);
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }

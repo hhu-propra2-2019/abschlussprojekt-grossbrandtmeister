@@ -30,7 +30,7 @@ public class FileUploadController {
   @PostMapping("/file")
   public String uploadFile(@RequestParam(value = "file") MultipartFile file, Model model) {
     try {
-      fileService.uploadFile(file.getOriginalFilename(), file.getBytes());
+      fileService.uploadFile(file.getOriginalFilename(), file.getBytes(), file);
     } catch (Exception e) {
       e.printStackTrace();
     }
