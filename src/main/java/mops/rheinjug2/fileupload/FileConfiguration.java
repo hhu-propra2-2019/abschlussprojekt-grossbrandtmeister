@@ -14,11 +14,6 @@ public class FileConfiguration {
   @Value("${minio.url}")
   String minioUrl;
 
-  /**
-   * genertaes MinIiOClient.
-   *
-   * @return
-   */
   @Bean
   public MinioClient generateMinioClient() {
     try {
@@ -27,8 +22,5 @@ public class FileConfiguration {
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }
-
   }
-
-
 }
