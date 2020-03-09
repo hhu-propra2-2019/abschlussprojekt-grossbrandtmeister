@@ -11,7 +11,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
-    id 'com.github.spotbugs' version '3.0.0'
+    id 'com.github.spotbugs' version '4.0.1'
     id 'pmd'
     id 'checkstyle'
 }
@@ -40,14 +40,11 @@ repositories {
     }
 }
 
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework:spring-context-support'
-    compile 'javax.mail:mail:1.4.1'
     implementation "mops:styleguide:2.1.0"
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
@@ -73,28 +70,14 @@ test {
 }
 
 spotbugs {
-    ignoreFailures = true
     effort = "max"
     reportLevel = "high"
-    toolVersion = "4.0.0-RC1"
-}
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-    reports {
-        html {
-            enabled = true
-        }
-        xml {
-            enabled = false
-        }
-    }
-}
-
-pmd {
-    ignoreFailures = true
 }
 
 checkstyle {
     toolVersion = "8.28"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-    ignoreFailures = false
 }
+
+project.tasks.check.dependsOn(spotbugsMain)
+project.tasks.check.dependsOn(spotbugsTest)

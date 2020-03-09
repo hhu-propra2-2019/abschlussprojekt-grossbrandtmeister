@@ -1,4 +1,4 @@
-package mops.rheinjug2.Controllers;
+package mops.rheinjug2.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +23,5 @@ public class StudentController {
     public String reportsubmit(){
         return "report_submit";
     }
-
 
 }
