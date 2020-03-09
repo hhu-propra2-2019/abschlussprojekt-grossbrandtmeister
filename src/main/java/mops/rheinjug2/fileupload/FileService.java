@@ -34,7 +34,7 @@ public class FileService {
       if (!minioClient.bucketExists(defaultBucketName)) {
         minioClient.makeBucket(defaultBucketName);
       }
-      minioClient.putObject(defaultBucketName, file.getName(), inputStream,
+      minioClient.putObject(defaultBucketName, file.getOriginalFilename(), inputStream,
           file.getSize(), null, null);
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
