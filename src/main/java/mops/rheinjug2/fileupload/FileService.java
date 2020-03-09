@@ -19,7 +19,7 @@ public class FileService {
   @Value("${minio.default.folder}")
   String defaultBaseFolder;
 
-  public FileService(MinioClient minioClient) {
+  public FileService(final MinioClient minioClient) {
     this.minioClient = minioClient;
   }
 
@@ -28,15 +28,15 @@ public class FileService {
    *
    * @param file - File aus dem Controller.
    */
-  public void uploadFile(MultipartFile file) throws IOException {
-    InputStream inputStream = new BufferedInputStream(file.getInputStream());
+  public void uploadFile(final MultipartFile file) throws IOException {
+    final InputStream inputStream = new BufferedInputStream(file.getInputStream());
     try {
       if (!minioClient.bucketExists(defaultBucketName)) {
         minioClient.makeBucket(defaultBucketName);
       }
-      minioClient.putObject(defaultBucketName, "Veranstaltung", inputStream,
+      minioClient.putObject(defaultBucketName, "Veranstaltung + Student", inputStream,
           file.getSize(), null, null, file.getContentType());
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new RuntimeException(e.getMessage());
     }
     inputStream.close();
