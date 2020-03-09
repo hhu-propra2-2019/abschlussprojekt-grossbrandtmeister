@@ -2,16 +2,25 @@
 
 name: Gradle
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: 11
       - name: Run tests
         run: gradle check
+      - uses: actions/upload-artifact@v1
+        if: success() || failure()
+        with:
+          name: build-reports
+          path: build/reports
