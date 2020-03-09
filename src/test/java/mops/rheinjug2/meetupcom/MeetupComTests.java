@@ -9,9 +9,9 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -110,11 +110,8 @@ class MeetupComTests {
                 + "    }\n"
                 + "]\n"));
 
-    var calendar = Calendar.getInstance();
-    calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-    calendar.setTime(new Date(0));
-
-    var events = meetupcom.getRheinJugEventsSince(calendar);
+    var time0 = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+    var events = meetupcom.getRheinJugEventsSince(time0);
     mockServer.verify();
 
     assertNotNull(events, "events is null");
@@ -125,8 +122,8 @@ class MeetupComTests {
         "Id isn't as expected");
     assertEquals(event.getName(), "EntwickelBar 6.0",
         "Name isn't as expected");
-    assertEquals(event.getTime(), new Date(1599895800000L),
-        "Date isn't as expected");
+    assertEquals(event.getTime(), Instant.ofEpochMilli(1599895800000L),
+        "Time isn't as expected");
     assertEquals(event.getDuration(), Duration.ofMillis(27000000L),
         "Duration isn't as expected");
   }

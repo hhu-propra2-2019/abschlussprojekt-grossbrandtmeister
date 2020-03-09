@@ -1,9 +1,9 @@
 package mops.rheinjug2.meetupcom;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -22,8 +22,8 @@ public final class MeetupCom {
   /**
    * Holt die Liste der RheinJUG-Veranstaltungen von api.meetup.com.
    */
-  List<Event> getRheinJugEventsSince(Calendar calendar) {
-    String dateIso = asIso8601String(calendar.getTime());
+  List<Event> getRheinJugEventsSince(LocalDateTime localDateTime) {
+    String dateIso = asIso8601String(localDateTime);
 
     var url = String.format("http://api.meetup.com/rheinjug/events?no_earlier_than=%s&status=past,upcoming&desc=true", dateIso);
 
@@ -35,9 +35,13 @@ public final class MeetupCom {
    * Konvertiert ein Date-Objekt in ein String
    * im ISO 8601 format("2019-06-01T00:00:00.000")
    */
-  private static String asIso8601String(Date date) {
-    var sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ROOT);
-    return sdf.format(date);
+  private static String asIso8601String(LocalDateTime localDateTime) {
+    var dtf = DateTimeFormatter
+        .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+        .withLocale(Locale.ROOT)
+        .withZone(ZoneId.of("UTC"));
+
+    return dtf.format(localDateTime);
   }
 
 }
