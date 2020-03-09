@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Date;
+import java.time.Instant;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -87,20 +87,20 @@ public class Event {
   @JsonProperty("member_pay_fee")
   private Boolean memberPayFee;
 
-  public Date getCreated() {
-    return new Date(created);
+  public Instant getCreated() {
+    return Instant.ofEpochMilli(created);
   }
 
   public Duration getDuration() {
     return Duration.ofMillis(duration);
   }
 
-  public Date getTime() {
-    return new Date(time);
+  public Instant getTime() {
+    return Instant.ofEpochMilli(time);
   }
 
-  public Date getUpdated() {
-    return new Date(updated);
+  public Instant getUpdated() {
+    return Instant.ofEpochMilli(updated);
   }
 
   public Duration getUtcOffset() {
