@@ -25,12 +25,12 @@ CREATE TABLE student
 
 CREATE TABLE student_event
 (
-    student          integer,
-    submittedSummary varchar(100) DEFAULT '',
-    event            integer,
-/*    submissionTime     time,
-    submissionDate     date,
-    acceptedSummary    varchar(100),
-    usedForCertificate varchar(100),*/
+    student              integer,
+    event                integer,
+    submitted_summary    boolean,
+    time_submission      time,
+    date_submission      date,
+    accepted             boolean,
+    used_for_certificate boolean,
     primary key (student, event)
 );
