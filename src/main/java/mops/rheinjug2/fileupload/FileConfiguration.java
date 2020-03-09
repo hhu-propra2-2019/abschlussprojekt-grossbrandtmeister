@@ -14,6 +14,9 @@ public class FileConfiguration {
   @Value("${minio.url}")
   String minioUrl;
 
+  /**
+   * Erstellen des MinioClients.
+   */
   @Bean
   public MinioClient generateMinioClient() {
     try {

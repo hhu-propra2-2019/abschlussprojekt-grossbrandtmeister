@@ -27,10 +27,14 @@ public class FileUploadController {
     return "fileUpload";
   }
 
+
+  /**
+   * Gibt das File an den FileService weiter um das File zu speichern.
+   */
   @PostMapping("/file")
   public String uploadFile(@RequestParam(value = "file") MultipartFile file, Model model) {
     try {
-      fileService.uploadFile(file.getOriginalFilename(), file.getBytes(), file);
+      fileService.uploadFile(file);
     } catch (Exception e) {
       e.printStackTrace();
     }

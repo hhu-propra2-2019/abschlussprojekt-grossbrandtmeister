@@ -23,13 +23,19 @@ public class FileService {
     this.minioClient = minioClient;
   }
 
-  public void uploadFile(String name, byte[] content, MultipartFile file) throws IOException {
+  /**
+   * Nimmt ein File entgegen und speichert dieses auf dem Minio-Server.
+   *
+   * @param file - File aus dem Controller.
+   */
+  public void uploadFile(MultipartFile file) throws IOException {
     InputStream inputStream = new BufferedInputStream(file.getInputStream());
     try {
       if (!minioClient.bucketExists(defaultBucketName)) {
         minioClient.makeBucket(defaultBucketName);
       }
-      minioClient.putObject(defaultBucketName, file.getName(), inputStream, file.getSize(), null, null);
+      minioClient.putObject(defaultBucketName, file.getName(), inputStream,
+          file.getSize(), null, null);
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }
