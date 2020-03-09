@@ -18,6 +18,18 @@
             <li>
                 <a th:href="@{/rheinjug2/student/events}"><span class="icono-leftArrow icono-"></span> zurück zu Übersicht</a>
             </li>
+            <li>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltugen Übersicht </a>
+            </li>
+            <li class="active">
+                <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal"> belegte Veranstaltungen</a>
+            </li>
+            <li>
+                <a th:href="@{/rheinjug2/student/reportsubmit}"> Bericht abgeben</a>
+            </li>
+            <li>
+            <a th:href="@{/rheinjug2/student/creditpoints}">CP beantragen</a>
+            </li>
         </ul>
     </nav>
 </header>
@@ -49,7 +61,6 @@
         </tbody>
     </table>
     <br/>
-    <a class="button">CP beantragen</a>
 </main>
 </body>
 </html>
