@@ -1,4 +1,4 @@
-package mops.rheinjug2.email;
+package mops.rheinjug2.controllers;
 
 import com.sun.istack.ByteArrayDataSource;
 import java.io.ByteArrayOutputStream;
