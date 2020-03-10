@@ -33,7 +33,7 @@ public class EventAndStudentTests {
     Student student = createAndSaveStudent("Sarah K", "sk@hhu.de");
     student.setLogin("kk100");
     addStudentToEvent(event, student);
-    Student savedStudent = studentRepository.findByLogin(student.getLogin());
+    Student savedStudent = studentRepository.findByLogin("kk100");
     var events = eventRepository.findAllById(savedStudent.getEventsIds());
 
     assertThat(events).containsExactly(event);
