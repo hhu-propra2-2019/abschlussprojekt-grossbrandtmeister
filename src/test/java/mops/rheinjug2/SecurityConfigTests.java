@@ -41,7 +41,7 @@ public class SecurityConfigTests {
    * Erwarte Status 302 Found (Redirection zur Login Seite).
    */
   @Test
-  public void anonymousClientGetsRedirected() throws Exception {
+  public void anonymousClientGetsRedirectedFromActuator() throws Exception {
     mockMvc.perform(get("/actuator"))
         .andExpect(status().isFound());
   }
@@ -67,6 +67,70 @@ public class SecurityConfigTests {
     mockMvc.perform(get("/actuator")
         .header("Authorization",
             "Bearer " + getAccessTokenWithRole("studentin")))
+        .andExpect(status().isForbidden());
+  }
+
+  /**
+   * Teste Zugang zu /student ohne Login.
+   * Erwarte Status 302 Found (Redirection zur Login Seite).
+   */
+  @Test
+  public void anonymousClientGetsRedirectedFromStudentPages() throws Exception {
+    mockMvc.perform(get("/rheinjug2/student/events"))
+        .andExpect(status().isFound());
+    mockMvc.perform(get("/rheinjug2/student/visitedevents"))
+        .andExpect(status().isFound());
+    mockMvc.perform(get("/rheinjug2/student/creditpoints"))
+        .andExpect(status().isFound());
+    mockMvc.perform(get("/rheinjug2/student/reportsubmit"))
+        .andExpect(status().isFound());
+  }
+
+  /**
+   * Teste Zugang zu /student mit Login und korrekter Rolle.
+   * Erwarte Status 200 OK.
+   */
+  @Test
+  public void clientWithStudentinRoleCanAccessStudentPages() throws Exception {
+    mockMvc.perform(get("/rheinjug2/student/events")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("studentin")))
+        .andExpect(status().isOk());
+    mockMvc.perform(get("/rheinjug2/student/visitedevents")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("studentin")))
+        .andExpect(status().isOk());
+    mockMvc.perform(get("/rheinjug2/student/creditpoints")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("studentin")))
+        .andExpect(status().isOk());
+    mockMvc.perform(get("/rheinjug2/student/reportsubmit")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("studentin")))
+        .andExpect(status().isOk());
+  }
+
+  /**
+   * Teste Zugang zu /student mit Login und inkorrekter Rolle.
+   * Erwarte Status 403 Forbidden.
+   */
+  @Test
+  public void clientWithoutStudentinRoleCanNotAccessStudentPages() throws Exception {
+    mockMvc.perform(get("/rheinjug2/student/events")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("monitoring")))
+        .andExpect(status().isForbidden());
+    mockMvc.perform(get("/rheinjug2/student/visitedevents")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("monitoring")))
+        .andExpect(status().isForbidden());
+    mockMvc.perform(get("/rheinjug2/student/creditpoints")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("monitoring")))
+        .andExpect(status().isForbidden());
+    mockMvc.perform(get("/rheinjug2/student/reportsubmit")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("monitoring")))
         .andExpect(status().isForbidden());
   }
 
