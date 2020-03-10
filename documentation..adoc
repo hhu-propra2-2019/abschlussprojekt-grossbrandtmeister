@@ -3,21 +3,21 @@
 === Luca + Hannah
 
 To do: +
-- Bestätigung der Speicherung des Dokumentes +
-- Fehlerbehandlung +
-- Teste +
-- in personalView: Abgabe der Zusammenfassungen mit upload logisch verbinden +
-  über eigenes Template +
-- getMapping-Methode entfernen nach Entwickeln +
-- sinnvolle Speicherung der Abgaben in einem Bucket überlegen +
-- putObject-Methode überarbeiten: Hashmap +
-- Ansicht für Jens +
-- download Methode schreiben (für alle) +
-- Refactoring +
-- Dateieinschränkung nur für adoc
+
+- [*] Bestätigung der Speicherung des Dokumentes +
+- [ ] Fehlerbehandlung
+- [ ] Teste
+- [ ] in personalView: Abgabe der Zusammenfassungen mit upload logisch verbinden über eigenes Template
+- [ ] getMapping-Methode entfernen nach Entwickeln
+- [ ] sinnvolle Speicherung der Abgaben in einem Bucket überlegen
+- [x] putObject-Methode überarbeiten: Hashmap - Edit: doch keine Hashmap
+- [ ] Ansicht für Jens
+- [ ] download Methode schreiben (für alle)
+- [ ] Refactoring
+- [x] Dateieinschränkung nur für adoc
 
 Erweiterungen:
-- Vorlage herunterladen
+- [ ] Vorlage herunterladen
 
 
 
