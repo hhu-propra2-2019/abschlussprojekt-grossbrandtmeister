@@ -31,9 +31,9 @@ public class EventAndStudentTests {
   public void testOneEventOneStudent() {
     Event event = createAndSaveEvent("Veranstaltung");
     Student student = createAndSaveStudent("Sarah K", "sk@hhu.de");
-
+    student.setLogin("kk100");
     addStudentToEvent(event, student);
-    Student savedStudent = studentRepository.findByEmail("sk@hhu.de");
+    Student savedStudent = studentRepository.findByLogin(student.getLogin());
     var events = eventRepository.findAllById(savedStudent.getEventsIds());
 
     assertThat(events).containsExactly(event);
@@ -142,7 +142,6 @@ public class EventAndStudentTests {
     List<Event> events = (List<Event>) eventRepository.findAll();
 
     assertFalse(events.stream().anyMatch(item -> event2.getId().equals(item.getId())));
-
   }
 
   @AfterEach
