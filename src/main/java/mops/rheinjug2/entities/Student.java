@@ -44,9 +44,12 @@ public class Student {
     events.remove(ref);
   }
 
-  // Frist prüfen zuerst
+  /**
+   * Eine Zusammenfassung hinzufügen.
+   */
   public void addSummary(Event event) {
     EventRef ref = findEventRef(event);
+    // Frist prüfen zuerst
     if (!ref.isSubmittedSummary()) {
       ref.setSubmittedSummary(true);
       ref.setTimeSubmission(LocalTime.now());
@@ -54,8 +57,20 @@ public class Student {
     }
   }
 
+  /**
+   * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen, die akzeptiert, aber
+   * nicht für einen Scchein verwendet wurden.
+   */
   public Set<Long> getEventsIdsWithSummaryAcceptedNotUsed() {
     return events.stream().filter(EventRef::isSubmittedAndAcceptedButNotUsed)
+        .map(EventRef::getEvent).collect(Collectors.toSet());
+  }
+
+  /**
+   * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen
+   */
+  public Set<Long> getEventsIdsWithSummary() {
+    return events.stream().filter(EventRef::isSubmittedSummary)
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
 

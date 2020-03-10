@@ -96,6 +96,33 @@ public class EventAndStudentTests {
     assertThat(studentRepository.countEventsPerStudentById(student.getId())).isEqualTo(0);
   }
 
+  @Test
+  public void testOneStudentAddsSummaryToEvent() {
+    Event event = createAndSaveEvent("Event");
+    Student student = createAndSaveStudent("Alex X", "aa@hhu.de");
+    student.addEvent(event);
+    student.addSummary(event);
+    studentRepository.save(student);
+
+    assertThat(studentRepository.getSubmittedValue(student.getId(), event.getId())).isEqualTo(true);
+  }
+
+  @Test
+  public void testOneStudentAddsSummaryToTwoEvents() {
+    Event event = createAndSaveEvent("Event");
+    Event event2 = createAndSaveEvent("Event2");
+    Student student = createAndSaveStudent("Alexx X", "ala@hhu.de");
+    student.addEvent(event);
+    student.addEvent(event2);
+
+    student.addSummary(event);
+    student.addSummary(event2);
+    studentRepository.save(student);
+
+    assertThat(studentRepository.getSubmittedValue(student.getId(), event.getId())).isEqualTo(true);
+    assertThat(studentRepository.getSubmittedValue(student.getId(), event2.getId())).isEqualTo(true);
+  }
+
   @AfterEach
   public void cleanUpEach() {
     eventRepository.deleteAll();
