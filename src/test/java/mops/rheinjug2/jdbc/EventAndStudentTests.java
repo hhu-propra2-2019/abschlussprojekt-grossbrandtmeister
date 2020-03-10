@@ -4,7 +4,6 @@ package mops.rheinjug2.jdbc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-
 import java.util.List;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
@@ -26,31 +25,6 @@ public class EventAndStudentTests {
 
   @Autowired
   private transient StudentRepository studentRepository;
-
-  @Test
-  public void deleteStudent() {
-    Student student = createAndSaveStudent("Sarah K", "sk@hhu.de");
-    studentRepository.delete(student);
-
-    List<Student> students = (List<Student>) studentRepository.findAll();
-
-    assertFalse(students.stream().anyMatch(item -> student.getId().equals(item.getId())));
-  }
-
-  @Test
-  public void deleteEvent() {
-    Event event1 = createAndSaveEvent("Event 1");
-    Event event2 = createAndSaveEvent("Event 2");
-    Event event3 = createAndSaveEvent("Event 3");
-
-    eventRepository.delete(event2);
-
-    List<Event> events = (List<Event>) eventRepository.findAll();
-
-    assertFalse(events.stream().anyMatch(item -> event2.getId().equals(item.getId())));
-
-  }
-
 
   @Test
   public void testOneEventOneStudent() {
@@ -145,8 +119,29 @@ public class EventAndStudentTests {
     student.addSummary(event2);
     studentRepository.save(student);
 
-    assertThat(studentRepository.getSubmittedValue(student.getId(), event.getId())).isEqualTo(true);
-    assertThat(studentRepository.getSubmittedValue(student.getId(), event2.getId())).isEqualTo(true);
+    assertThat(studentRepository.getSubmittedValue(student.getId(), event.getId())).isTrue();
+    assertThat(studentRepository.getSubmittedValue(student.getId(), event2.getId())).isTrue();
+  }
+
+  @Test
+  public void testDeleteOneStudent() {
+    Student student = createAndSaveStudent("Sarah K", "sk@hhu.de");
+    studentRepository.delete(student);
+
+    List<Student> students = (List<Student>) studentRepository.findAll();
+
+    assertFalse(students.stream().anyMatch(item -> student.getId().equals(item.getId())));
+  }
+
+  @Test
+  public void testDeleteOneEvent() {
+    Event event2 = createAndSaveEvent("Event 2");
+
+    eventRepository.delete(event2);
+    List<Event> events = (List<Event>) eventRepository.findAll();
+
+    assertFalse(events.stream().anyMatch(item -> event2.getId().equals(item.getId())));
+
   }
 
   @AfterEach

@@ -60,13 +60,10 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
     http.authorizeRequests()
-        .antMatchers("/h2-console/**").permitAll()
         .antMatchers("/actuator/**")
         .hasRole("monitoring")
         .anyRequest()
         .permitAll();
-    http.csrf().disable();
-    http.headers().frameOptions().disable();
   }
 
   /**
