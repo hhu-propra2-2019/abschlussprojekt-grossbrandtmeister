@@ -1,21 +1,19 @@
 package mops.rheinjug2;
 
+import static com.tngtech.keycloakmock.api.TokenConfig.aTokenConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tngtech.keycloakmock.junit5.KeycloakMock;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration
@@ -25,18 +23,27 @@ public class SecurityConfigTests {
   @Autowired
   private transient MockMvc mockMvc;
 
-  protected static final String keycloakHost = "https://keycloak.cs.hhu.de";
-  protected static final String clientId = "demo";
-  protected static final String realm = "MOPS";
+  private static final int keycloakMockPort = 8000;
+  private static final String keycloakMockUrl = "http://localhost:" + keycloakMockPort + "/auth";
+  @RegisterExtension
+  static KeycloakMock keycloakMock = new KeycloakMock(keycloakMockPort, "MOPS");
+  @Autowired
+  private transient KeycloakSpringBootProperties keycloakSpringBootProperties;
+
+  @BeforeEach
+  protected void setKeycloakConfig() {
+    keycloakSpringBootProperties
+        .setAuthServerUrl(keycloakMockUrl);
+  }
 
   /**
    * Teste Zugang zu /actuator ohne Login.
-   * Erwarte Status 302 Redirect zur Login Seite.
+   * Erwarte Status 302 Found (Redirection zur Login Seite).
    */
   @Test
   public void anonymousClientGetsRedirected() throws Exception {
     mockMvc.perform(get("/actuator"))
-        .andExpect(status().is(302));
+        .andExpect(status().isFound());
   }
 
   /**
@@ -46,7 +53,8 @@ public class SecurityConfigTests {
   @Test
   public void clientWithMonitoringRoleCanAccessActuator() throws Exception {
     mockMvc.perform(get("/actuator")
-        .header("Authorization", "Bearer " + getAccessToken("actuator", "actuator")))
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("monitoring")))
         .andExpect(status().isOk());
   }
 
@@ -57,49 +65,22 @@ public class SecurityConfigTests {
   @Test
   public void clientWithoutMonitoringRoleCanNotAccessActuator() throws Exception {
     mockMvc.perform(get("/actuator")
-        .header("Authorization", "Bearer " + getAccessToken("studentin1", "studentin1")))
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("studentin")))
         .andExpect(status().isForbidden());
   }
 
   /**
-   * Ruft einen Access Token von Keycloak für den angegeben Nutzer ab.
+   * Erzeugt einen Keycloak Access Token mit vorgegebener Rolle.
    *
-   * @param username Nutzername für Keycloak
-   * @param password Passwort für Keycloak
-   * @return Gibt den Access Token zurück
+   * @param role Rollenname ohne Prefix (i.e. "orga", nicht "ROLE_orga").
+   * @return Gibt den Access Token zurück.
    */
-  protected static String getAccessToken(String username, String password) {
-
-    var headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-    var map = new LinkedMultiValueMap<>();
-    map.add("grant_type", "password");
-    map.add("client_id", clientId);
-    map.add("username", username);
-    map.add("password", password);
-
-    var restTemplate = new RestTemplate();
-    var token = restTemplate.postForObject(
-        keycloakHost + "/auth/realms/" + realm + "/protocol/openid-connect/token",
-        new HttpEntity<>(map, headers), KeyCloakToken.class);
-
-    assert token != null;
-    return token.getAccessToken();
-  }
-
-  private static class KeyCloakToken {
-
-    private final String accessToken;
-
-    @JsonCreator
-    KeyCloakToken(@JsonProperty("access_token") String accessToken) {
-      this.accessToken = accessToken;
-    }
-
-    public String getAccessToken() {
-      return accessToken;
-    }
+  protected static String getAccessTokenWithRole(String role) {
+    return keycloakMock
+        .getAccessToken(aTokenConfig()
+            .withRealmRole("ROLE_" + role)
+            .build());
   }
 
 }
