@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Java in der Praxis', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Name des Subsystems</title>
+    <th:block th:fragment="headcontent">
+        <!-- Links, Skripts, Styles hier einfügen! -->
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
+        <ul>
+            <li>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltugen Übersicht </a>
+            </li>
+            <li>
+                <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal">
+                    Meine Veranstaltungen</a>
+            </li>
+            <li class="active">
+                <a th:href="@{/rheinjug2/student/creditpoints}">CP beantragen</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main th:fragment="bodycontent">
+    <!-- Restlichen Inhalt hier einfügen! -->
+    <h1 class="text-center text-secondary"> CP beantragen</h1>
+    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+        <table class="table table-borderless">
+            <thead>
+            <tr>
+                <th>Besuchte Veranstaltungen</th>
+                <th>Erworbene CP</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
+                <td><span>&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span></td>
+            </tr>
+            <tr>
+                <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter (2)</td>
+                <td><span>&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span></td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="btn col-12 btn-outline-success"> 1 CP Bentagen</button>
+    </div>
+    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Besuchte Veranstaltungen</th>
+                <th>Erworbene CP</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
+                <td><span>&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span></td>
+            </tr>
+            <tr>
+                <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter (2)</td>
+                <td><span>&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="alert alert-danger text-center">
+            CP Beantragung ist noch nicht möglich. sie brauchen mindestens <sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+        </div>
+    </div>
+</main>
+</body>
+</html>
