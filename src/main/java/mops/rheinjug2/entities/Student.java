@@ -67,7 +67,7 @@ public class Student {
   }
 
   /**
-   * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen
+   * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen.
    */
   public Set<Long> getEventsIdsWithSummary() {
     return events.stream().filter(EventRef::isSubmittedSummary)
