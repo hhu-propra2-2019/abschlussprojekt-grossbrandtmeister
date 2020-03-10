@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Secured({"ROLE_studentin"})
 @RequestMapping("/rheinjug2/student")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class StudentController {
 
-  private final Counter authenticatedAccess;
+  private final transient Counter authenticatedAccess;
 
   public StudentController(MeterRegistry registry) {
     authenticatedAccess = registry.counter("access.authenticated");
