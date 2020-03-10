@@ -1,8 +1,7 @@
 package mops.rheinjug2.entities;
 
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
@@ -16,8 +15,7 @@ public class Event {
   private String title;
   private String description;
   private double price;
-  private LocalTime time;
-  private LocalDate date;
+  private LocalDateTime date;
   private String address;
   private String url;
 

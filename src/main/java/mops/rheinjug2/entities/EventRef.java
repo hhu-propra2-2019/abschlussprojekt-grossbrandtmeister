@@ -1,7 +1,6 @@
 package mops.rheinjug2.entities;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import lombok.Data;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -13,8 +12,7 @@ class EventRef {
 
   private boolean submittedSummary;
   private String url;
-  private LocalTime timeSubmission;
-  private LocalDate dateSubmission;
+  private LocalDateTime timeOfSubmission;
   private boolean accepted;
   private boolean usedForCertificate;
 

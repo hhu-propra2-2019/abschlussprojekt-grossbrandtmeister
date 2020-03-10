@@ -1,8 +1,7 @@
 package mops.rheinjug2.entities;
 
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,8 +51,7 @@ public class Student {
     // Frist prüfen zuerst
     if (!ref.isSubmittedSummary()) {
       ref.setSubmittedSummary(true);
-      ref.setTimeSubmission(LocalTime.now());
-      ref.setDateSubmission(LocalDate.now());
+      ref.setTimeOfSubmission(LocalDateTime.now());
     }
   }
 
