@@ -22,7 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/rheinjug2")
 public class SimpleMailController {
   
-  public final JavaMailSender emailSender;
+  transient PDDocument pdfForm;
+  public final transient JavaMailSender emailSender;
   
   public SimpleMailController(JavaMailSender emailSender) {
     this.emailSender = emailSender;
@@ -79,22 +80,32 @@ public class SimpleMailController {
    * @param email        des Studenten/der Studentin
    */
   public void createCertificatePdf(ByteArrayOutputStream outputStream,
-                                   String forename, String surname, String email) throws Exception {
+                                   String forename, String surname, String email) {
+    
     File pdf = new File("./DummyCertificate.pdf");
-    PDDocument pdfForm = PDDocument.load(pdf);
-    PDDocumentCatalog docCatalog = pdfForm.getDocumentCatalog();
-    PDAcroForm acroForm = docCatalog.getAcroForm();
-    
-    setCertificateDate(acroForm);
-    acroForm.getField("name2[first]").setValue(forename);
-    acroForm.getField("name2[last]").setValue(surname);
-    acroForm.getField("email3").setValue(email);
-    acroForm.getField("scheinart6").setValue("EntwickelBar");
-    
-    // pdfForm.save("DummyCertificate" + forename + ".pdf");
-    pdfForm.save(outputStream);
-    
-    pdfForm.close();
+    try {
+      pdfForm = PDDocument.load(pdf);
+      
+      PDDocumentCatalog docCatalog = pdfForm.getDocumentCatalog();
+      PDAcroForm acroForm = docCatalog.getAcroForm();
+      
+      setCertificateDate(acroForm);
+      acroForm.getField("name2[first]").setValue(forename);
+      acroForm.getField("name2[last]").setValue(surname);
+      acroForm.getField("email3").setValue(email);
+      acroForm.getField("scheinart6").setValue("EntwickelBar");
+      
+      // pdfForm.save("DummyCertificate" + forename + ".pdf");
+      pdfForm.save(outputStream);
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        pdfForm.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
   
   /**
