@@ -15,5 +15,5 @@ public interface StudentRepository extends CrudRepository<Student, Long> {
   Student findByEmail(@Param("email") String email);
 
   @Query(value = "SELECT COUNT(*) FROM student_event WHERE student_event.student = :id")
-  int countEventsPerStudentById(@Param("id") Long id);
+  int countEventsPerStudentById(@Param("id") Long studentId);
 }

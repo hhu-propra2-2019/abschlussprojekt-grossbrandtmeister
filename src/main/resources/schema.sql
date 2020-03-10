@@ -10,8 +10,8 @@ CREATE TABLE event
     price       double,
     time        time,
     date        date,
-    address     varchar(100),
-    url         varchar(100),
+    address     varchar(200),
+    url         text,
     status      varchar(30),
     type        varchar(30)
 );
@@ -19,6 +19,7 @@ CREATE TABLE event
 CREATE TABLE student
 (
     id    integer primary key auto_increment,
+    login varchar(200) unique,
     name  varchar(200),
     email varchar(100)
 );
@@ -28,6 +29,7 @@ CREATE TABLE student_event
     student              integer,
     event                integer,
     submitted_summary    boolean,
+    url                  text,
     time_submission      time,
     date_submission      date,
     accepted             boolean,

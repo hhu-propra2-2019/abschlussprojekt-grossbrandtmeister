@@ -12,6 +12,7 @@ class EventRef {
   private Long event;
 
   private boolean submittedSummary;
+  private String url;
   private LocalTime timeSubmission;
   private LocalDate dateSubmission;
   private boolean accepted;
@@ -19,5 +20,9 @@ class EventRef {
 
   EventRef(Long event) {
     this.event = event;
+  }
+
+  boolean isSubmittedAndAcceptedButNotUsed() {
+    return submittedSummary && accepted && (!usedForCertificate);
   }
 }

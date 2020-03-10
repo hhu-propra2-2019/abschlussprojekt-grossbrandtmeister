@@ -1,6 +1,8 @@
 package mops.rheinjug2.entities;
 
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ public class Student {
   @Id
   private Long id;
 
+  private String login;
   private String name;
   private String email;
 
@@ -34,19 +37,31 @@ public class Student {
   }
 
   /**
-   * Gibt an, ob ein Student an ein irgendeiner Veranstaltung teilnimmt.
-   */
-  public boolean takesPartInEvents() {
-    return !events.isEmpty();
-  }
-
-  /**
    * Entfernt eine Veranstaltung.
    */
   public void deleteEvent(Event event) {
-    events.stream()
-        .filter(x -> x.getEvent()
-            .equals(event.getId())).findAny().ifPresent(eventRef -> events.remove(eventRef));
+    EventRef ref = findEventRef(event);
+    events.remove(ref);
+  }
+
+  // Frist prüfen zuerst
+  public void addSummary(Event event) {
+    EventRef ref = findEventRef(event);
+    if (!ref.isSubmittedSummary()) {
+      ref.setSubmittedSummary(true);
+      ref.setTimeSubmission(LocalTime.now());
+      ref.setDateSubmission(LocalDate.now());
+    }
+  }
+
+  public Set<Long> getEventsIdsWithSummaryAcceptedNotUsed() {
+    return events.stream().filter(EventRef::isSubmittedAndAcceptedButNotUsed)
+        .map(EventRef::getEvent).collect(Collectors.toSet());
+  }
+
+  private EventRef findEventRef(Event event) {
+    return events.stream().filter(x -> x.getEvent()
+        .equals(event.getId())).findAny().get();
   }
 
 }
