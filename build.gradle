@@ -81,5 +81,9 @@ checkstyle {
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
+pmd {
+    toolVersion = "6.21.0"
+}
+
 project.tasks.check.dependsOn(spotbugsMain)
 project.tasks.check.dependsOn(spotbugsTest)
