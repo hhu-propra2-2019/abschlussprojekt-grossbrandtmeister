@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @DataJdbcTest
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class EventAndStudentTests {
 
   @Autowired
@@ -40,8 +41,8 @@ public class EventAndStudentTests {
 
   @Test
   public void testOneEventTwoStudents() {
-    Event event = createAndSaveEvent("Veranstaltung2");
-    Student student1 = createAndSaveStudent("Sarh K", "skp@hhu.de");
+    Event event = createAndSaveEvent("Veranstaltung");
+    Student student1 = createAndSaveStudent("Sarah K", "sk@hhu.de");
     Student student2 = createAndSaveStudent("Peter K", "pk@hhu.de");
 
     addStudentsToEvent(event, List.of(student1, student2));
@@ -52,10 +53,10 @@ public class EventAndStudentTests {
 
   @Test
   public void testTwoEventsWithTwoStudentsEach() {
-    Event event1 = createAndSaveEvent("Veranstaltung2");
-    Event event2 = createAndSaveEvent("Veranstaltung3");
-    Student student1 = createAndSaveStudent("Saarah K", "slk@hhu.de");
-    Student student2 = createAndSaveStudent("Peteer K", "pkp@hhu.de");
+    Event event1 = createAndSaveEvent("Veranstaltung A");
+    Event event2 = createAndSaveEvent("Veranstaltung B");
+    Student student1 = createAndSaveStudent("Sarah K", "sk@hhu.de");
+    Student student2 = createAndSaveStudent("Peter K", "pk@hhu.de");
     Student student3 = createAndSaveStudent("Alex K", "ak@hhu.de");
     Student student4 = createAndSaveStudent("Laura K", "lk@hhu.de");
 
@@ -69,8 +70,8 @@ public class EventAndStudentTests {
   @Test
   public void testDeleteOneEventWithTwoStudents() {
     Event event = createAndSaveEvent("Veranstaltung Java");
-    Student student1 = createAndSaveStudent("Sarrah K", "sok@hhu.de");
-    Student student2 = createAndSaveStudent("Petter K", "pok@hhu.de");
+    Student student1 = createAndSaveStudent("Sarah K", "sk@hhu.de");
+    Student student2 = createAndSaveStudent("Peter K", "pk@hhu.de");
 
     addStudentsToEvent(event, List.of(student1, student2));
     List<Long> studentIds = eventRepository.findAllStudentsIdsPerEventById(event.getId());
@@ -83,9 +84,9 @@ public class EventAndStudentTests {
 
   @Test
   public void testTwoEventsWithTheSameStudentDeleted() {
-    Event event1 = createAndSaveEvent("VeranstaltungA");
-    Event event2 = createAndSaveEvent("VeranstaltungB");
-    Student student = createAndSaveStudent("Saraph K", "skj@hhu.de");
+    Event event1 = createAndSaveEvent("Veranstaltung A");
+    Event event2 = createAndSaveEvent("Veranstaltung B");
+    Student student = createAndSaveStudent("Sarah K", "sk@hhu.de");
 
     addStudentToEvent(event1, student);
     addStudentToEvent(event2, student);
@@ -98,8 +99,8 @@ public class EventAndStudentTests {
 
   @Test
   public void testOneStudentAddsSummaryToEvent() {
-    Event event = createAndSaveEvent("Event");
-    Student student = createAndSaveStudent("Alex X", "aa@hhu.de");
+    Event event = createAndSaveEvent("Veranstaltung");
+    Student student = createAndSaveStudent("Alex X", "ax@hhu.de");
     student.addEvent(event);
     student.addSummary(event);
     studentRepository.save(student);
@@ -109,9 +110,9 @@ public class EventAndStudentTests {
 
   @Test
   public void testOneStudentAddsSummaryToTwoEvents() {
-    Event event = createAndSaveEvent("Event");
-    Event event2 = createAndSaveEvent("Event2");
-    Student student = createAndSaveStudent("Alexx X", "ala@hhu.de");
+    Event event = createAndSaveEvent("Veranstaltung A");
+    Event event2 = createAndSaveEvent("Veranstaltung B");
+    Student student = createAndSaveStudent("Alex X", "ax@hhu.de");
     student.addEvent(event);
     student.addEvent(event2);
 
@@ -135,7 +136,7 @@ public class EventAndStudentTests {
 
   @Test
   public void testDeleteOneEvent() {
-    Event event2 = createAndSaveEvent("Event 2");
+    Event event2 = createAndSaveEvent("Veranstaltung");
 
     eventRepository.delete(event2);
     List<Event> events = (List<Event>) eventRepository.findAll();
