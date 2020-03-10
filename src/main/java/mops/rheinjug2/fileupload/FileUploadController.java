@@ -31,7 +31,8 @@ public class FileUploadController {
    * Gibt das File an den FileService weiter um das File zu speichern.
    */
   @PostMapping(path = "/file")
-  public String uploadFile(@RequestParam(value = "file") final MultipartFile file, final Model model) {
+  public String uploadFile(@RequestParam(value = "file") final MultipartFile file,
+                           final Model model) {
     if (fileCheckService.checkIfIsAdoc(file)) {
       try {
         fileService.uploadFile(file);
