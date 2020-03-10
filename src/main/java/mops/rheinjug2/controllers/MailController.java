@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/rheinjug2")
-public class SimpleMailController {
+public class MailController {
   
   public final transient CertificateService certificateService;
   public final transient JavaMailSender emailSender;
   
-  public SimpleMailController(CertificateService certificateService, JavaMailSender emailSender) {
+  public MailController(CertificateService certificateService, JavaMailSender emailSender) {
     this.certificateService = certificateService;
     this.emailSender = emailSender;
   }
