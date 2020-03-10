@@ -30,6 +30,9 @@ public class SecurityConfigTests {
   @Autowired
   private transient KeycloakSpringBootProperties keycloakSpringBootProperties;
 
+  private static final String[] studentPages =
+      {"events", "visitedevents", "creditpoints", "reportsubmit"};
+
   @BeforeEach
   protected void setKeycloakConfig() {
     keycloakSpringBootProperties
@@ -76,14 +79,10 @@ public class SecurityConfigTests {
    */
   @Test
   public void anonymousClientGetsRedirectedFromStudentPages() throws Exception {
-    mockMvc.perform(get("/rheinjug2/student/events"))
-        .andExpect(status().isFound());
-    mockMvc.perform(get("/rheinjug2/student/visitedevents"))
-        .andExpect(status().isFound());
-    mockMvc.perform(get("/rheinjug2/student/creditpoints"))
-        .andExpect(status().isFound());
-    mockMvc.perform(get("/rheinjug2/student/reportsubmit"))
-        .andExpect(status().isFound());
+    for (String s : studentPages) {
+      mockMvc.perform(get("/rheinjug2/student/" + s))
+          .andExpect(status().isFound());
+    }
   }
 
   /**
@@ -92,22 +91,12 @@ public class SecurityConfigTests {
    */
   @Test
   public void clientWithStudentinRoleCanAccessStudentPages() throws Exception {
-    mockMvc.perform(get("/rheinjug2/student/events")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("studentin")))
-        .andExpect(status().isOk());
-    mockMvc.perform(get("/rheinjug2/student/visitedevents")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("studentin")))
-        .andExpect(status().isOk());
-    mockMvc.perform(get("/rheinjug2/student/creditpoints")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("studentin")))
-        .andExpect(status().isOk());
-    mockMvc.perform(get("/rheinjug2/student/reportsubmit")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("studentin")))
-        .andExpect(status().isOk());
+    for (String s : studentPages) {
+      mockMvc.perform(get("/rheinjug2/student/" + s)
+          .header("Authorization",
+              "Bearer " + getAccessTokenWithRole("studentin")))
+          .andExpect(status().isOk());
+    }
   }
 
   /**
@@ -116,22 +105,12 @@ public class SecurityConfigTests {
    */
   @Test
   public void clientWithoutStudentinRoleCanNotAccessStudentPages() throws Exception {
-    mockMvc.perform(get("/rheinjug2/student/events")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("monitoring")))
-        .andExpect(status().isForbidden());
-    mockMvc.perform(get("/rheinjug2/student/visitedevents")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("monitoring")))
-        .andExpect(status().isForbidden());
-    mockMvc.perform(get("/rheinjug2/student/creditpoints")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("monitoring")))
-        .andExpect(status().isForbidden());
-    mockMvc.perform(get("/rheinjug2/student/reportsubmit")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("monitoring")))
-        .andExpect(status().isForbidden());
+    for (String s : studentPages) {
+      mockMvc.perform(get("/rheinjug2/student/" + s)
+          .header("Authorization",
+              "Bearer " + getAccessTokenWithRole("monitoring")))
+          .andExpect(status().isForbidden());
+    }
   }
 
   /**
