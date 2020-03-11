@@ -35,7 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
 
 @Controller
-@Secured( {"ROLE_studentin"})
+@Secured("ROLE_studentin")
 @RequestMapping("/rheinjug2")
 public class FileUploadController {
 
@@ -61,7 +61,8 @@ public class FileUploadController {
    * Gibt das File an den FileService weiter um das File zu speichern.
    */
   @PostMapping(path = "/file")
-  public String uploadFile(final KeycloakAuthenticationToken token, @RequestParam(value = "file") final MultipartFile file,
+  public String uploadFile(final KeycloakAuthenticationToken token,
+                           @RequestParam(value = "file") final MultipartFile file,
                            final Model model) {
     if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
@@ -83,7 +84,7 @@ public class FileUploadController {
   /**
    * füge das File auf einer eigenen Website hinzu. Evtl in späteren versionen zu ändern.
    *
-   * @param model
+   * @param model thymleaf model
    * @return String
    */
   @RequestMapping("/download")
