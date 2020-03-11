@@ -66,14 +66,12 @@ public class FileUploadController {
     if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
         final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-        final String filename;
-        if (!principal.getName().isEmpty()) {
-          filename = principal.getName() + "_" + "Veranstaltung";
-        } else {
-          filename = "NameNotFound_Veranstaltung";
+        final String username = principal.getName();
+        if (!username.isEmpty()) {
+          final String filename = username + "_" + "Veranstaltung";
+          fileService.uploadFile(file, filename);
         }
 
-        fileService.uploadFile(file, filename);
       } catch (final Exception e) {
         e.printStackTrace();
       }
