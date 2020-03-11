@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.tngtech.keycloakmock.junit5.KeycloakMock;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -90,6 +91,20 @@ public class SecurityConfigTests {
               "Bearer " + getAccessTokenWithRole(role)))
           .andExpect(status().is(status));
     }
+  }
+
+  @Test
+  public void differentUsersHaveIndependentAccessRights() throws Exception {
+    mockMvc.perform(get("/actuator")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("monitoring")))
+        .andExpect(status().isOk());
+    mockMvc.perform(get("/actuator"))
+        .andExpect(status().isFound());
+    mockMvc.perform(get("/actuator")
+        .header("Authorization",
+            "Bearer " + getAccessTokenWithRole("invalid")))
+        .andExpect(status().isForbidden());
   }
 
   /**
