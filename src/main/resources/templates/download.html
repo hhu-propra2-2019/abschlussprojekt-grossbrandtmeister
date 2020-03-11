@@ -19,6 +19,7 @@
 
     <p>leere Seite</p>
     <a th:href="@{'/rheinjug2/download/file/'+${file.getName()}}"> <span th:text="${file.getName()}"></span></a>
+    <span th:if="${file == null}"> File not found in driectory</span>
 
 </main>
 </body>
