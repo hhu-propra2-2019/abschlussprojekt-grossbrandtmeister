@@ -63,17 +63,37 @@ public class FileUploadController {
     return "fileUpload";
   }
 
+  /**
+   * füge das File auf einer eigenen Website hinzu. Evtl in späteren versionen zu ändern.
+   *
+   * @param model
+   * @return String
+   */
   @RequestMapping("/download")
-  public String downloadFile(Model model) throws IOException, XmlPullParserException, NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException, InvalidResponseException, ErrorResponseException, NoResponseException, InvalidBucketNameException, InsufficientDataException, InternalException, RegionConflictException {
+  public String downloadFile(Model model) throws IOException, XmlPullParserException,
+      NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException,
+      InvalidResponseException, ErrorResponseException, NoResponseException,
+      InvalidBucketNameException, InsufficientDataException, InternalException {
     final String filename = "documentation";
     File file = fileService.getFile(filename);
     model.addAttribute("file", file);
     return "download";
   }
 
+  /**
+   * Nimmt Inpustream mit Inhalt des zusuchenden adocs und gibt es als Response an einen
+   * eigenen Download-Link zurück.
+   *
+   * @param object
+   * @param response
+   */
   @RequestMapping("/download/file/{filename}")
   @ResponseBody
-  public void downloadFile(@PathVariable("filename") String object, HttpServletResponse response) throws IOException, XmlPullParserException, NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException, InvalidResponseException, ErrorResponseException, NoResponseException, InvalidBucketNameException, InsufficientDataException, InternalException, RegionConflictException {
+  public void downloadFile(@PathVariable("filename") String object, HttpServletResponse response)
+      throws IOException, XmlPullParserException, NoSuchAlgorithmException,
+      InvalidKeyException, InvalidArgumentException, InvalidResponseException,
+      ErrorResponseException, NoResponseException, InvalidBucketNameException,
+      InsufficientDataException, InternalException, RegionConflictException {
     InputStream inputStream = fileService.getFileInputStream(object);
 
     response.addHeader("Content-disposition", "attachment;filename=" + object + ".adoc");

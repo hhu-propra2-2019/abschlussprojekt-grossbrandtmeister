@@ -8,7 +8,6 @@ import io.minio.errors.InvalidArgumentException;
 import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
-import io.minio.errors.RegionConflictException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -57,24 +55,41 @@ public class FileService {
     }
   }
 
-  public File getFile(String filename) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InvalidResponseException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, RegionConflictException {
+  /**
+   * Sucht über den Filenamen das Objekt vom MinIO-Server und gibt es als File-Objekt zurück.
+   *
+   * @param filename
+   * @return File
+   */
+  public File getFile(String filename) throws IOException, InvalidKeyException,
+      NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException,
+      InvalidResponseException, InternalException, NoResponseException,
+      InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
     minioClient.statObject(defaultBucketName, filename);
     InputStream inputStream = minioClient.getObject(defaultBucketName, filename);
-    byte[] content = StreamUtils.copyToByteArray(inputStream);
     try {
       File file = new File(filename);
       FileUtils.copyInputStreamToFile(inputStream, file);
       System.out.println(file);
       return file;
     } catch (Exception e) {
-      //--
+      throw new RuntimeException(e.getMessage());
     } finally {
       inputStream.close();
     }
-    return null;
   }
 
-  public InputStream getFileInputStream(String filename) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InvalidResponseException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
+  /**
+   * Sucht über den Filenamen das Objekt vom MinIO-Server und gibt es als Inputstream zurück.
+   *
+   * @param filename
+   * @return Inputstream
+   */
+  public InputStream getFileInputStream(String filename)
+      throws IOException, InvalidKeyException, NoSuchAlgorithmException,
+      InsufficientDataException, InvalidArgumentException, InvalidResponseException,
+      InternalException, NoResponseException, InvalidBucketNameException,
+      XmlPullParserException, ErrorResponseException {
     InputStream inputStream = minioClient.getObject(defaultBucketName, filename);
     return inputStream;
   }
