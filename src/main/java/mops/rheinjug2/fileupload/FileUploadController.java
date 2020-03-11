@@ -96,7 +96,7 @@ public class FileUploadController {
       InsufficientDataException, InternalException, RegionConflictException {
     final InputStream inputStream = fileService.getFileInputStream(object);
 
-    response.addHeader("Content-disposition", "attachment;filename=" + object + ".adoc");
+    response.addHeader("Content-disposition", "attachment;filename=" + object + ".md");
     response.setContentType(URLConnection.guessContentTypeFromName(object));
 
     IOUtils.copy(inputStream, response.getOutputStream());

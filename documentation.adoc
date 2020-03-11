@@ -18,6 +18,7 @@ To do: +
 - [ ] beim Hochladen der Datei: zeige an, wenn das Format falsch ist
 
 Erweiterungen:
+- [ ] Inlineediting
 - [ ] Vorlage herunterladen
 
 
