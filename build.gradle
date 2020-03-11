@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -67,6 +67,8 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.tngtech.keycloakmock:mock-junit5:0.2.0'
     testCompile 'com.tngtech.archunit:archunit-junit5:0.13.1'
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.1'
+    compile group: 'com.sun.istack', name: 'istack-commons-runtime', version: '3.0.10'
 }
 
 test {
@@ -81,6 +83,10 @@ spotbugs {
 checkstyle {
     toolVersion = "8.28"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+pmd {
+    toolVersion = "6.21.0"
 }
 
 project.tasks.check.dependsOn(spotbugsMain)
