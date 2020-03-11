@@ -52,8 +52,9 @@ public class FileService {
           file.getSize(), null, null, file.getContentType());
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
+    } finally {
+      inputStream.close();
     }
-    inputStream.close();
   }
 
   public File getFile(String filename) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InvalidResponseException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, RegionConflictException {
@@ -61,14 +62,20 @@ public class FileService {
     InputStream inputStream = minioClient.getObject(defaultBucketName, filename);
     byte[] content = StreamUtils.copyToByteArray(inputStream);
     try {
-      File file = new File(filename + ".adoc");
+      File file = new File(filename);
       FileUtils.copyInputStreamToFile(inputStream, file);
       System.out.println(file);
       return file;
     } catch (Exception e) {
       //--
+    } finally {
+      inputStream.close();
     }
-    inputStream.close();
     return null;
+  }
+
+  public InputStream getFileInputStream(String filename) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InvalidResponseException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
+    InputStream inputStream = minioClient.getObject(defaultBucketName, filename);
+    return inputStream;
   }
 }

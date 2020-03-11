@@ -18,6 +18,7 @@
 <main th:fragment="bodycontent">
 
     <p>leere Seite</p>
+    <a th:href="@{'/rheinjug2/download/file/'+${file.getName()}}"> <span th:text="${file.getName()}"></span></a>
 
 </main>
 </body>
