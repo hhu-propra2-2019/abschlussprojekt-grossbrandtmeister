@@ -1,4 +1,4 @@
-package mops.rheinjug2.fileupload;
+package mops.rheinjug2.controllers;
 
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -15,6 +15,8 @@ import java.net.URLConnection;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletResponse;
+import mops.rheinjug2.fileupload.FileCheckService;
+import mops.rheinjug2.fileupload.FileService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -89,7 +91,8 @@ public class FileUploadController {
    */
   @RequestMapping("/download/file/{filename}")
   @ResponseBody
-  public void downloadFile(@PathVariable("filename") final String object, final HttpServletResponse response)
+  public void downloadFile(@PathVariable("filename") final String object,
+                           final HttpServletResponse response)
       throws IOException, XmlPullParserException, NoSuchAlgorithmException,
       InvalidKeyException, InvalidArgumentException, InvalidResponseException,
       ErrorResponseException, NoResponseException, InvalidBucketNameException,
