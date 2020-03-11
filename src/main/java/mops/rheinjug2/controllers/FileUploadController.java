@@ -78,7 +78,7 @@ public class FileUploadController {
       }
     }
     authenticatedAccess.increment();
-    return "fileUpload";
+    return "report_submit";
   }
 
   /**
@@ -129,6 +129,30 @@ public class FileUploadController {
       InputStream inputStream = fileService.getFileInputStream(filename);
       response.addHeader("Content-disposition", "attachment;filename=" + object + ".md");
       response.setContentType(URLConnection.guessContentTypeFromName(object));
+      IOUtils.copy(inputStream, response.getOutputStream());
+      response.flushBuffer();
+      inputStream.close();
+    } else {
+      response.sendError(404, "File not found");
+    }
+    authenticatedAccess.increment();
+  }
+
+  @RequestMapping("/download/file")
+  @ResponseBody
+  public void downloadFilebyToken(KeycloakAuthenticationToken token, HttpServletResponse response)
+      throws IOException, XmlPullParserException, NoSuchAlgorithmException,
+      InvalidKeyException, InvalidArgumentException, InvalidResponseException,
+      ErrorResponseException, NoResponseException, InvalidBucketNameException,
+      InsufficientDataException, InternalException {
+
+    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    String username = principal.getName();
+    if (!username.isEmpty()) {
+      String filename = username + "_" + "Veranstaltung";
+      InputStream inputStream = fileService.getFileInputStream(filename);
+      response.addHeader("Content-disposition", "attachment;filename=" + filename + ".md");
+      response.setContentType(URLConnection.guessContentTypeFromName(filename));
       IOUtils.copy(inputStream, response.getOutputStream());
       response.flushBuffer();
       inputStream.close();
