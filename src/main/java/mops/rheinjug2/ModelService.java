@@ -24,8 +24,8 @@ public class ModelService {
         .collect(Collectors.toList());
   }
 
-  private boolean studentIsPersisted() {
-
+  private boolean studentIsPersisted(String login) {
+    return studentRepository.existsByLogin(login);
   }
 
 }
