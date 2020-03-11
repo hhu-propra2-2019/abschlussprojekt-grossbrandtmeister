@@ -54,7 +54,7 @@ public class FileUploadController {
                            Model model) {
     if (fileCheckService.checkIfIsAdoc(file)) {
       try {
-        final String filename = "documentation";
+        final String filename = "test";
         fileService.uploadFile(file, filename);
       } catch (Exception e) {
         e.printStackTrace();
@@ -74,7 +74,7 @@ public class FileUploadController {
       NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException,
       InvalidResponseException, ErrorResponseException, NoResponseException,
       InvalidBucketNameException, InsufficientDataException, InternalException {
-    final String filename = "documentation";
+    final String filename = "test";
     File file = fileService.getFile(filename);
     model.addAttribute("file", file);
     return "download";
@@ -96,7 +96,7 @@ public class FileUploadController {
       InsufficientDataException, InternalException, RegionConflictException {
     InputStream inputStream = fileService.getFileInputStream(object);
 
-    response.addHeader("Content-disposition", "attachment;filename=" + object + ".adoc");
+    response.addHeader("Content-disposition", "attachment;filename=" + object + ".md");
     response.setContentType(URLConnection.guessContentTypeFromName(object));
 
     IOUtils.copy(inputStream, response.getOutputStream());
