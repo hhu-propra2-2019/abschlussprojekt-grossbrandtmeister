@@ -1,5 +1,7 @@
 package mops.rheinjug2.controllers;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -18,7 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import mops.rheinjug2.fileupload.FileCheckService;
 import mops.rheinjug2.fileupload.FileService;
 import org.apache.commons.io.IOUtils;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
 
 @Controller
+@Secured( {"ROLE_studentin"})
 @RequestMapping("/rheinjug2")
 public class FileUploadController {
 
@@ -37,8 +43,11 @@ public class FileUploadController {
 
   FileCheckService fileCheckService;
 
+  private final transient Counter authenticatedAccess;
+
   @Autowired
-  public FileUploadController(final FileService fileService) {
+  public FileUploadController(final FileService fileService, final MeterRegistry registry) {
+    authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
   }
 
@@ -52,16 +61,24 @@ public class FileUploadController {
    * Gibt das File an den FileService weiter um das File zu speichern.
    */
   @PostMapping(path = "/file")
-  public String uploadFile(@RequestParam(value = "file") final MultipartFile file,
+  public String uploadFile(final KeycloakAuthenticationToken token, @RequestParam(value = "file") final MultipartFile file,
                            final Model model) {
-    if (fileCheckService.checkIfIsAdoc(file)) {
+    if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
-        final String filename = "Student_Veranstaltung_Version.adoc";
+        final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        final String filename;
+        if (!principal.getName().isEmpty()) {
+          filename = principal.getName() + "_" + "Veranstaltung";
+        } else {
+          filename = "NameNotFound_Veranstaltung";
+        }
+
         fileService.uploadFile(file, filename);
       } catch (final Exception e) {
         e.printStackTrace();
       }
     }
+    authenticatedAccess.increment();
     return "fileUpload";
   }
 
@@ -97,6 +114,7 @@ public class FileUploadController {
       InvalidKeyException, InvalidArgumentException, InvalidResponseException,
       ErrorResponseException, NoResponseException, InvalidBucketNameException,
       InsufficientDataException, InternalException, RegionConflictException {
+
     final InputStream inputStream = fileService.getFileInputStream(object);
 
     response.addHeader("Content-disposition", "attachment;filename=" + object + ".md");
