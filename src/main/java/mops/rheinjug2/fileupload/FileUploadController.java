@@ -36,12 +36,12 @@ public class FileUploadController {
   FileCheckService fileCheckService;
 
   @Autowired
-  public FileUploadController(FileService fileService) {
+  public FileUploadController(final FileService fileService) {
     this.fileService = fileService;
   }
 
   @RequestMapping("/file")
-  public String showPage(Model model) {
+  public String showPage(final Model model) {
     return "fileUpload";
   }
 
@@ -50,13 +50,13 @@ public class FileUploadController {
    * Gibt das File an den FileService weiter um das File zu speichern.
    */
   @PostMapping(path = "/file")
-  public String uploadFile(@RequestParam(value = "file") MultipartFile file,
-                           Model model) {
+  public String uploadFile(@RequestParam(value = "file") final MultipartFile file,
+                           final Model model) {
     if (fileCheckService.checkIfIsAdoc(file)) {
       try {
-        final String filename = "documentation";
+        final String filename = "Student_Veranstaltung_Version.adoc";
         fileService.uploadFile(file, filename);
-      } catch (Exception e) {
+      } catch (final Exception e) {
         e.printStackTrace();
       }
     }
@@ -70,12 +70,12 @@ public class FileUploadController {
    * @return String
    */
   @RequestMapping("/download")
-  public String downloadFile(Model model) throws IOException, XmlPullParserException,
+  public String downloadFile(final Model model) throws IOException, XmlPullParserException,
       NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException,
       InvalidResponseException, ErrorResponseException, NoResponseException,
       InvalidBucketNameException, InsufficientDataException, InternalException {
     final String filename = "documentation";
-    File file = fileService.getFile(filename);
+    final File file = fileService.getFile(filename);
     model.addAttribute("file", file);
     return "download";
   }
@@ -89,12 +89,12 @@ public class FileUploadController {
    */
   @RequestMapping("/download/file/{filename}")
   @ResponseBody
-  public void downloadFile(@PathVariable("filename") String object, HttpServletResponse response)
+  public void downloadFile(@PathVariable("filename") final String object, final HttpServletResponse response)
       throws IOException, XmlPullParserException, NoSuchAlgorithmException,
       InvalidKeyException, InvalidArgumentException, InvalidResponseException,
       ErrorResponseException, NoResponseException, InvalidBucketNameException,
       InsufficientDataException, InternalException, RegionConflictException {
-    InputStream inputStream = fileService.getFileInputStream(object);
+    final InputStream inputStream = fileService.getFileInputStream(object);
 
     response.addHeader("Content-disposition", "attachment;filename=" + object + ".adoc");
     response.setContentType(URLConnection.guessContentTypeFromName(object));
