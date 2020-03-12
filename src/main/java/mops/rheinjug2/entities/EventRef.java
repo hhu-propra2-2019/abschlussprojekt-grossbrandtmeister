@@ -6,6 +6,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table("student_event")
 @Data
+public
 class EventRef {
 
   private Long event;
@@ -23,4 +24,5 @@ class EventRef {
   boolean isSubmittedAndAcceptedButNotUsed() {
     return submittedSummary && accepted && (!usedForCertificate);
   }
+
 }

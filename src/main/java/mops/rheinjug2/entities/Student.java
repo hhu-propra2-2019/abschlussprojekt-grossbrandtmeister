@@ -6,11 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
 @Table("student")
+@NoArgsConstructor
 public class Student {
   @Id
   private Long id;
@@ -38,6 +40,10 @@ public class Student {
    */
   public Set<Long> getEventsIds() {
     return events.stream().map(EventRef::getEvent).collect(Collectors.toSet());
+  }
+
+  public Event findEventByEventRef(Long id) {
+    return null;
   }
 
   /**
@@ -81,5 +87,6 @@ public class Student {
     return events.stream().filter(x -> x.getEvent()
         .equals(event.getId())).findAny().get();
   }
+
 
 }

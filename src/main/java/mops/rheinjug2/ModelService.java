@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ModelService {
-  private final StudentRepository studentRepository;
-  private final EventRepository eventRepository;
+  private final transient StudentRepository studentRepository;
+  private final transient EventRepository eventRepository;
 
   public ModelService(StudentRepository studentRepository, EventRepository eventRepository) {
     this.studentRepository = studentRepository;
@@ -43,12 +43,12 @@ public class ModelService {
     return (List<Event>) eventRepository.findAllById(eventsIds);
   }
 
-  private Event loadEventById(Long eventId) {
+  public Event loadEventById(Long eventId) {
     Optional<Event> event = eventRepository.findById(eventId);
     return event.get();
   }
 
-  private Student loadStudentByLogin(String login) {
+  public Student loadStudentByLogin(String login) {
     return studentRepository.findByLogin(login);
   }
 
