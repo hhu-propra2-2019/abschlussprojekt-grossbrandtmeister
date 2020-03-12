@@ -66,6 +66,31 @@ public class ModelService {
     return (List<Event>) eventRepository.findAllById(eventsIds);
   }
 
+  public boolean useEventsForCertificate(String login) {
+    Student student = loadStudentByLogin(login);
+    List<Event> events = getAllEventsForCP(login);
+    if (useForEntwickelbar(student, events)) {
+      return true;
+    } else if (events.size() < 3) {
+      return false;
+    } else {
+      student.useEventsForCP(events.subList(0, 3));
+      studentRepository.save(student);
+      return true;
+    }
+  }
+
+  private boolean useForEntwickelbar(Student student, List<Event> events) {
+    for (Event e : events) {
+      if (e.getType().equals("Entwickelbar")) {
+        student.useEventsForCP(List.of(e));
+        studentRepository.save(student);
+        return true;
+      }
+    }
+    return false;
+  }
+
   private Event loadEventById(Long eventId) {
     Optional<Event> event = eventRepository.findById(eventId);
     return event.get();

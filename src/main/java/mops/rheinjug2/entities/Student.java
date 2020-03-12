@@ -3,6 +3,7 @@ package mops.rheinjug2.entities;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Data;
@@ -60,14 +61,14 @@ public class Student {
     }
   }
 
-  public void useEventForCP(Event event) {
-    EventRef eventRef = findEventRef(event);
-    eventRef.setUsedForCertificate(true);
+  public void useEventsForCP(List<Event> events) {
+    events.stream().map(this::findEventRef)
+        .forEach(eventRef -> eventRef.setUsedForCertificate(true));
   }
 
   /**
    * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen, die akzeptiert, aber
-   * nicht für einen Scchein verwendet wurden.
+   * nicht für einen Schein verwendet wurden.
    */
   public Set<Long> getEventsIdsWithSummaryAcceptedNotUsed() {
     return events.stream().filter(EventRef::isSubmittedAndAcceptedButNotUsed)
