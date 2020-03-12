@@ -60,6 +60,11 @@ public class Student {
     }
   }
 
+  public void useEventForCP(Event event) {
+    EventRef eventRef = findEventRef(event);
+    eventRef.setUsedForCertificate(true);
+  }
+
   /**
    * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen, die akzeptiert, aber
    * nicht für einen Scchein verwendet wurden.
