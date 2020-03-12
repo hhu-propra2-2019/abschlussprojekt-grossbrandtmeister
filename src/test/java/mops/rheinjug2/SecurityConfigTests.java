@@ -8,6 +8,8 @@ import com.tngtech.keycloakmock.junit5.KeycloakMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,11 +33,6 @@ public class SecurityConfigTests {
   @Autowired
   private transient KeycloakSpringBootProperties keycloakSpringBootProperties;
 
-  private static final String[] studentPages =
-      {"events", "visitedevents", "creditpoints", "reportsubmit"};
-  private static final String[] orgaPages =
-      {"events", "creditpoints", "reports"};
-
   @BeforeEach
   protected void setKeycloakConfig() {
     keycloakSpringBootProperties
@@ -43,117 +40,72 @@ public class SecurityConfigTests {
   }
 
   /**
-   * Teste Zugang zu /actuator ohne Login.
-   * Erwarte Status 302 Found (Redirection zur Login Seite).
+   * Testet den Zugriff auf die verschiedenen Mappings unseres Programms mit verschiedenen Rollen.
+   * Prüft jedes Mapping mit korrekter und falscher Rolle, sowie ohne Login.
+   * CsvSource Format: "role, mapping, status"
+   *
+   * @param role    Zu prüfende Rolle
+   * @param mapping Zu prüfende Seite
+   * @param status  Erwarteter Status Code
    */
-  @Test
-  public void anonymousClientGetsRedirectedFromActuator() throws Exception {
-    mockMvc.perform(get("/actuator"))
-        .andExpect(status().isFound());
+  @ParameterizedTest
+  @CsvSource({
+      ", /rheinjug2, 200",
+      ", /rheinjug2/, 200",
+
+      "monitoring, /actuator, 200",
+      "studentin, /rheinjug2/student/events, 200",
+      "studentin, /rheinjug2/student/visitedevents, 200",
+      "studentin, /rheinjug2/student/creditpoints, 200",
+      "studentin, /rheinjug2/student/reportsubmit, 200",
+      "orga, /rheinjug2/orga/events, 200",
+      "orga, /rheinjug2/orga/creditpoints, 200",
+      "orga, /rheinjug2/orga/reports, 200",
+
+      ", /actuator, 302",
+      ", /rheinjug2/student/events, 302",
+      ", /rheinjug2/student/visitedevents, 302",
+      ", /rheinjug2/student/creditpoints, 302",
+      ", /rheinjug2/student/reportsubmit, 302",
+      ", /rheinjug2/orga/events, 302",
+      ", /rheinjug2/orga/creditpoints, 302",
+      ", /rheinjug2/orga/reports, 302",
+
+      "invalid, /actuator, 403",
+      "invalid, /rheinjug2/student/events, 403",
+      "invalid, /rheinjug2/student/visitedevents, 403",
+      "invalid, /rheinjug2/student/creditpoints, 403",
+      "invalid, /rheinjug2/student/reportsubmit, 403",
+      "invalid, /rheinjug2/orga/events, 403",
+      "invalid, /rheinjug2/orga/creditpoints, 403",
+      "invalid, /rheinjug2/orga/reports, 403"
+  })
+  public void userRolesProvideCorrectAccess(
+      String role, String mapping, int status) throws Exception {
+
+    if (role == null) {
+      mockMvc.perform(get(mapping))
+          .andExpect(status().is(status));
+    } else {
+      mockMvc.perform(get(mapping)
+          .header("Authorization",
+              "Bearer " + getAccessTokenWithRole(role)))
+          .andExpect(status().is(status));
+    }
   }
 
-  /**
-   * Teste Zugang zu /actuator mit Login und korrekter Rolle.
-   * Erwarte Status 200 OK.
-   */
   @Test
-  public void clientWithMonitoringRoleCanAccessActuator() throws Exception {
+  public void differentUsersHaveIndependentAccessRights() throws Exception {
     mockMvc.perform(get("/actuator")
         .header("Authorization",
             "Bearer " + getAccessTokenWithRole("monitoring")))
         .andExpect(status().isOk());
-  }
-
-  /**
-   * Teste Zugang zu /actuator mit Login und inkorrekter Rolle.
-   * Erwarte Status 403 Forbidden.
-   */
-  @Test
-  public void clientWithoutMonitoringRoleCanNotAccessActuator() throws Exception {
+    mockMvc.perform(get("/actuator"))
+        .andExpect(status().isFound());
     mockMvc.perform(get("/actuator")
         .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("studentin")))
+            "Bearer " + getAccessTokenWithRole("invalid")))
         .andExpect(status().isForbidden());
-  }
-
-  /**
-   * Teste Zugang zu /student ohne Login.
-   * Erwarte Status 302 Found (Redirection zur Login Seite).
-   */
-  @Test
-  public void anonymousClientGetsRedirectedFromStudentPages() throws Exception {
-    for (String page : studentPages) {
-      mockMvc.perform(get("/rheinjug2/student/" + page))
-          .andExpect(status().isFound());
-    }
-  }
-
-  /**
-   * Teste Zugang zu /student mit Login und korrekter Rolle.
-   * Erwarte Status 200 OK.
-   */
-  @Test
-  public void clientWithStudentinRoleCanAccessStudentPages() throws Exception {
-    for (String page : studentPages) {
-      mockMvc.perform(get("/rheinjug2/student/" + page)
-          .header("Authorization",
-              "Bearer " + getAccessTokenWithRole("studentin")))
-          .andExpect(status().isOk());
-    }
-  }
-
-  /**
-   * Teste Zugang zu /student mit Login und inkorrekter Rolle.
-   * Erwarte Status 403 Forbidden.
-   */
-  @Test
-  public void clientWithoutStudentinRoleCanNotAccessStudentPages() throws Exception {
-    for (String page : studentPages) {
-      mockMvc.perform(get("/rheinjug2/student/" + page)
-          .header("Authorization",
-              "Bearer " + getAccessTokenWithRole("monitoring")))
-          .andExpect(status().isForbidden());
-    }
-  }
-
-  /**
-   * Teste Zugang zu /orga ohne Login.
-   * Erwarte Status 302 Found (Redirection zur Login Seite).
-   */
-  @Test
-  public void anonymousClientGetsRedirectedFromOrgaPages() throws Exception {
-    for (String page : orgaPages) {
-      mockMvc.perform(get("/rheinjug2/orga/" + page))
-          .andExpect(status().isFound());
-    }
-  }
-
-  /**
-   * Teste Zugang zu /orga mit Login und korrekter Rolle.
-   * Erwarte Status 200 OK.
-   */
-  @Test
-  public void clientWithOrgaRoleCanAccessOrgaPages() throws Exception {
-    for (String page : orgaPages) {
-      mockMvc.perform(get("/rheinjug2/orga/" + page)
-          .header("Authorization",
-              "Bearer " + getAccessTokenWithRole("orga")))
-          .andExpect(status().isOk());
-    }
-  }
-
-  /**
-   * Teste Zugang zu /orga mit Login und inkorrekter Rolle.
-   * Erwarte Status 403 Forbidden.
-   */
-  @Test
-  public void clientWithoutOrgaRoleCanNotAccessOrgaPages() throws Exception {
-    for (String page : orgaPages) {
-      mockMvc.perform(get("/rheinjug2/orga/" + page)
-          .header("Authorization",
-              "Bearer " + getAccessTokenWithRole("monitoring")))
-          .andExpect(status().isForbidden());
-    }
   }
 
   /**

@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/rheinjug2")
 public class Rheinjug2Controller {
 
+  @GetMapping("")
+  public String getEventsNoMapping() {
+    return "index";
+  }
+
   @GetMapping("/")
   public String getEvents() {
     return "index";
