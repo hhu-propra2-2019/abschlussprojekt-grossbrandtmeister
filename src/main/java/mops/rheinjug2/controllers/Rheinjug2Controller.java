@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/rheinjug2")
 public class Rheinjug2Controller {
 
-  private final Counter publicAccess;
+  private final transient Counter publicAccess;
 
   public Rheinjug2Controller(MeterRegistry registry) {
     publicAccess = registry.counter("access.public");
