@@ -20,6 +20,11 @@ public class Rheinjug2Controller {
     publicAccess = registry.counter("access.public");
   }
 
+  @GetMapping("")
+  public String getEventsNoMapping() {
+    return "index";
+  }
+
   /**
    * Startseite, übergibt den Account falls jemand eingelogt ist.
    */

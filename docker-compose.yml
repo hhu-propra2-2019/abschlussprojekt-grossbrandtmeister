@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  database:
+    image: mysql
+    volumes:
+      - my-db:/var/lib/mysql
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: geheim
+      MYSQL_DATABASE: rheinjug2
+volumes:
+  my-db:
