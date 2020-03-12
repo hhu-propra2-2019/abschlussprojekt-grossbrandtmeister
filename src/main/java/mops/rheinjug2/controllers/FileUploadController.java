@@ -9,7 +9,6 @@ import io.minio.errors.InvalidArgumentException;
 import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
-import io.minio.errors.RegionConflictException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,11 +38,14 @@ import org.xmlpull.v1.XmlPullParserException;
 @RequestMapping("/rheinjug2")
 public class FileUploadController {
 
-  FileService fileService;
+  transient FileService fileService;
 
-  FileCheckService fileCheckService;
+  transient FileCheckService fileCheckService;
 
   private final transient Counter authenticatedAccess;
+
+  static final String Veranstaltung = "Veranstaltung";
+
 
   @Autowired
   public FileUploadController(final FileService fileService, final MeterRegistry registry) {
@@ -70,7 +71,7 @@ public class FileUploadController {
         final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
         final String username = principal.getName();
         if (!username.isEmpty()) {
-          final String filename = username + "_" + "Veranstaltung";
+          final String filename = username + "_" + Veranstaltung;
           fileService.uploadFile(file, filename);
         }
 
@@ -97,7 +98,7 @@ public class FileUploadController {
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     final String username = principal.getName();
     if (!username.isEmpty()) {
-      final String filename = username + "_" + "Veranstaltung";
+      final String filename = username + "_" + Veranstaltung;
       final File file = fileService.getFile(filename);
       model.addAttribute("file", file);
     } else {
@@ -107,40 +108,6 @@ public class FileUploadController {
     authenticatedAccess.increment();
     return "download";
   }
-
-  /**
-   * Nimmt Inpustream mit Inhalt des zusuchenden adocs und gibt es als Response an einen
-   * eigenen Download-Link zurück.*
-   *
-   * @param object   objectname
-   * @param response response
-   */
-  @RequestMapping("/download/file/{filename}")
-  @ResponseBody
-  public void downloadFile(@PathVariable("filename") final String object,
-                           final KeycloakAuthenticationToken token,
-                           final HttpServletResponse response)
-      throws IOException, XmlPullParserException, NoSuchAlgorithmException,
-      InvalidKeyException, InvalidArgumentException, InvalidResponseException,
-      ErrorResponseException, NoResponseException, InvalidBucketNameException,
-      InsufficientDataException, InternalException, RegionConflictException {
-
-    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    final String username = principal.getName();
-    if (!username.isEmpty()) {
-      final String filename = username + "_" + "Veranstaltung";
-      final InputStream inputStream = fileService.getFileInputStream(filename);
-      response.addHeader("Content-disposition", "attachment;filename=" + object + ".md");
-      response.setContentType(URLConnection.guessContentTypeFromName(object));
-      IOUtils.copy(inputStream, response.getOutputStream());
-      response.flushBuffer();
-      inputStream.close();
-    } else {
-      response.sendError(404, "File not found");
-    }
-    authenticatedAccess.increment();
-  }
-
 
   /**
    * Die methode lädt die passende datei aus dem Fileserver herunter.
@@ -157,16 +124,18 @@ public class FileUploadController {
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     final String username = principal.getName();
     if (!username.isEmpty()) {
-      final String filename = username + "_" + "Veranstaltung";
-      final InputStream inputStream = fileService.getFileInputStream(filename);
-      response.addHeader("Content-disposition", "attachment;filename=" + filename + ".md");
-      response.setContentType(URLConnection.guessContentTypeFromName(filename));
-      IOUtils.copy(inputStream, response.getOutputStream());
-      response.flushBuffer();
-      inputStream.close();
+      final String filename = username + "_" + Veranstaltung;
+      try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
+        response.addHeader("Content-disposition", "attachment;filename=" + filename + ".md");
+        response.setContentType(URLConnection.guessContentTypeFromName(filename));
+        IOUtils.copy(inputStream, response.getOutputStream());
+        response.flushBuffer();
+      }
+
     } else {
       response.sendError(404, "File not found");
     }
+
     authenticatedAccess.increment();
   }
 

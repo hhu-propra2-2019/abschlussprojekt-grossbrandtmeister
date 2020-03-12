@@ -23,10 +23,10 @@ import org.xmlpull.v1.XmlPullParserException;
 @Service
 public class FileService {
 
-  MinioClient minioClient;
+  transient MinioClient minioClient;
 
   @Value("${minio.bucket.name}")
-  String defaultBucketName;
+  transient String defaultBucketName;
 
   @Value("${minio.default.folder}")
   String defaultBaseFolder;

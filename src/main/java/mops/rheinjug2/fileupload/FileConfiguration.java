@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FileConfiguration {
   @Value("${minio.access.name}")
-  String accessKey;
+  transient String accessKey;
   @Value("${minio.access.secret}")
-  String accessSecret;
+  transient String accessSecret;
   @Value("${minio.url}")
-  String minioUrl;
+  transient String minioUrl;
 
   /**
    * Erstellen des MinioClients.
@@ -20,9 +20,9 @@ public class FileConfiguration {
   @Bean
   public MinioClient generateMinioClient() {
     try {
-      MinioClient client = new MinioClient(minioUrl, accessKey, accessSecret);
+      final MinioClient client = new MinioClient(minioUrl, accessKey, accessSecret);
       return client;
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new RuntimeException(e.getMessage());
     }
   }
