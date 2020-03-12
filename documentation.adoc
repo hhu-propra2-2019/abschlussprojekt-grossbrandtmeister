@@ -17,11 +17,10 @@ To do: +
 - [x] Dateieinschränkung nur für adoc
 - [x] beim Hochladen der Datei: zeige an, wenn das Format falsch ist
 
-Erweiterungen:
-- [ ] Inlineediting
+Erweiterungen: +
+
+- [ ] Inlineediting +
 - [ ] Vorlage herunterladen
-
-
 
 
 
