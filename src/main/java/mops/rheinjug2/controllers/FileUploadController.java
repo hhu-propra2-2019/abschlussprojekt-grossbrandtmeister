@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xmlpull.v1.XmlPullParserException;
 
 @Controller
@@ -48,13 +49,13 @@ public class FileUploadController {
 
 
   @Autowired
-  public FileUploadController(final FileService fileService, final MeterRegistry registry) {
+  public FileUploadController(FileService fileService, MeterRegistry registry) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
   }
 
-  @RequestMapping("/file")
-  public String showPage(final Model model) {
+  @RequestMapping("/uploadfile")
+  public String showPage(Model model) {
     return "fileUpload";
   }
 
@@ -62,25 +63,27 @@ public class FileUploadController {
   /**
    * Gibt das File an den FileService weiter um das File zu speichern.
    */
-  @PostMapping(path = "/file")
-  public String uploadFile(final KeycloakAuthenticationToken token,
-                           @RequestParam(value = "file") final MultipartFile file,
-                           final Model model) {
+  @PostMapping(path = "/student/reportsubmit")
+  public String uploadFile(KeycloakAuthenticationToken token, RedirectAttributes attributes,
+                           @RequestParam(value = "file") MultipartFile file) {
     if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
-        final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-        final String username = principal.getName();
+        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        String username = principal.getName();
         if (!username.isEmpty()) {
-          final String filename = username + "_" + Veranstaltung;
+          String filename = username + "_" + Veranstaltung;
           fileService.uploadFile(file, filename);
+          attributes.addFlashAttribute("message", "You successfully uploaded " + filename + '!');
         }
 
-      } catch (final Exception e) {
+      } catch (Exception e) {
         e.printStackTrace();
+        attributes.addFlashAttribute("message", "Your file was not able to be uploaded ");
       }
     }
     authenticatedAccess.increment();
-    return "report_submit";
+    return "redirect:/rheinjug2/student/reportsubmit";
+    //return "report_submit";
   }
 
   /**
@@ -90,16 +93,16 @@ public class FileUploadController {
    * @return String
    */
   @RequestMapping("/download")
-  public String downloadFile(final KeycloakAuthenticationToken token, final Model model)
+  public String downloadFile(KeycloakAuthenticationToken token, Model model)
       throws IOException, XmlPullParserException,
       NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException,
       InvalidResponseException, ErrorResponseException, NoResponseException,
       InvalidBucketNameException, InsufficientDataException, InternalException {
-    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    final String username = principal.getName();
+    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    String username = principal.getName();
     if (!username.isEmpty()) {
-      final String filename = username + "_" + Veranstaltung;
-      final File file = fileService.getFile(filename);
+      String filename = username + "_" + Veranstaltung;
+      File file = fileService.getFile(filename);
       model.addAttribute("file", file);
     } else {
       model.addAttribute("file", null);
@@ -114,18 +117,18 @@ public class FileUploadController {
    */
   @RequestMapping("/download/file")
   @ResponseBody
-  public void downloadFilebyToken(final KeycloakAuthenticationToken token,
-                                  final HttpServletResponse response)
+  public void downloadFilebyToken(KeycloakAuthenticationToken token,
+                                  HttpServletResponse response)
       throws IOException, XmlPullParserException, NoSuchAlgorithmException,
       InvalidKeyException, InvalidArgumentException, InvalidResponseException,
       ErrorResponseException, NoResponseException, InvalidBucketNameException,
       InsufficientDataException, InternalException {
 
-    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    final String username = principal.getName();
+    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    String username = principal.getName();
     if (!username.isEmpty()) {
-      final String filename = username + "_" + Veranstaltung;
-      try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
+      String filename = username + "_" + Veranstaltung;
+      try (InputStream inputStream = fileService.getFileInputStream(filename)) {
         response.addHeader("Content-disposition", "attachment;filename=" + filename + ".md");
         response.setContentType(URLConnection.guessContentTypeFromName(filename));
         IOUtils.copy(inputStream, response.getOutputStream());

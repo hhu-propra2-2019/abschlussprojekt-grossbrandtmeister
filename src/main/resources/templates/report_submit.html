@@ -32,6 +32,7 @@
     <h1 class="text-center text-secondary"> Bericht Abgabe </h1>
     <div class="container bg-light rounded shadow-lg text-secondary "
          style=" padding: 10px; margin-top: 40px; margin-bottom: 50px">
+        <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
         <form>
             <div class="form-group">
                 <div>
@@ -67,10 +68,10 @@
             </div>
         </form>
         <div class="form-group">
+            <h3>Upload File Example</h3>
             <div class="row">
                 <div class="col-12 col-sm-6">
-
-                    <form action="/rheinjug2/file" method="post" enctype="multipart/form-data">
+                    <form action="reportsubmit" method="post" enctype="multipart/form-data">
                         <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
                         <input type="file" name="file" multiple>
                         <input type="submit" value="Upload Files">
