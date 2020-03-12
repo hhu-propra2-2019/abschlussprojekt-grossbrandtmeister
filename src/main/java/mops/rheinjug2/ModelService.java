@@ -2,9 +2,10 @@ package mops.rheinjug2;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Optional;
+import java.util.Set;
 import mops.rheinjug2.entities.Event;
+import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,35 @@ public class ModelService {
   }
 
   public List<Event> getAllEvents() {
-    return StreamSupport.stream(eventRepository.findAll().spliterator(), false)
-        .collect(Collectors.toList());
+    return (List<Event>) eventRepository.findAll();
   }
 
-  private boolean studentIsPersisted(String login) {
-    return studentRepository.existsByLogin(login);
+  public void addStudentToEvent(String login, String email, Long eventId) {
+    Event event = loadEventById(eventId);
+    Student student = loadStudentByLogin(login);
+    if (student == null) {
+      Student newStudent = new Student(login, email);
+      newStudent.addEvent(event);
+      studentRepository.save(newStudent);
+    } else {
+      student.addEvent(event);
+      studentRepository.save(student);
+    }
+  }
+
+  public List<Event> getAllEventsPerStudent(String login) {
+    Student student = loadStudentByLogin(login);
+    Set<Long> eventsIds = student.getEventsIds();
+    return (List<Event>) eventRepository.findAllById(eventsIds);
+  }
+
+  private Event loadEventById(Long eventId) {
+    Optional<Event> event = eventRepository.findById(eventId);
+    return event.get();
+  }
+
+  private Student loadStudentByLogin(String login) {
+    return studentRepository.findByLogin(login);
   }
 
 }

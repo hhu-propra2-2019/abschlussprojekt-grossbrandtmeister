@@ -21,6 +21,11 @@ public class Student {
 
   private Set<EventRef> events = new HashSet<>();
 
+  public Student(String login, String email) {
+    this.login = login;
+    this.email = email;
+  }
+
   /**
    * Event hinzufügen.
    */

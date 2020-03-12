@@ -16,7 +16,4 @@ public interface StudentRepository extends CrudRepository<Student, Long> {
   @Query(value = "SELECT submitted_summary FROM student_event WHERE "
       + "student_event.student = :s_id AND student_event.event= :e_id")
   boolean getSubmittedValue(@Param("s_id") Long studentId, @Param("e_id") Long eventId);
-
-  @Query(value = "SELECT COUNT(*)>0 FROM STUDENT s WHERE s.login = :login")
-  boolean existsByLogin(@Param("login") String login);
 }
