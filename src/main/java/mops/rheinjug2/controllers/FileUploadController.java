@@ -47,13 +47,13 @@ public class FileUploadController {
   private final transient Counter authenticatedAccess;
 
   @Autowired
-  public FileUploadController(FileService fileService, MeterRegistry registry) {
+  public FileUploadController(final FileService fileService, final MeterRegistry registry) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
   }
 
   @RequestMapping("/file")
-  public String showPage(Model model) {
+  public String showPage(final Model model) {
     return "fileUpload";
   }
 
@@ -62,18 +62,19 @@ public class FileUploadController {
    * Gibt das File an den FileService weiter um das File zu speichern.
    */
   @PostMapping(path = "/file")
-  public String uploadFile(KeycloakAuthenticationToken token, @RequestParam(value = "file") MultipartFile file,
-                           Model model) {
+  public String uploadFile(final KeycloakAuthenticationToken token,
+                           @RequestParam(value = "file") final MultipartFile file,
+                           final Model model) {
     if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
-        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-        String username = principal.getName();
+        final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        final String username = principal.getName();
         if (!username.isEmpty()) {
-          String filename = username + "_" + "Veranstaltung";
+          final String filename = username + "_" + "Veranstaltung";
           fileService.uploadFile(file, filename);
         }
 
-      } catch (Exception e) {
+      } catch (final Exception e) {
         e.printStackTrace();
       }
     }
@@ -84,19 +85,20 @@ public class FileUploadController {
   /**
    * füge das File auf einer eigenen Website hinzu. Evtl in späteren versionen zu ändern.
    *
-   * @param model
+   * @param model thymeleaf.
    * @return String
    */
   @RequestMapping("/download")
-  public String downloadFile(KeycloakAuthenticationToken token, Model model) throws IOException, XmlPullParserException,
+  public String downloadFile(final KeycloakAuthenticationToken token, final Model model)
+      throws IOException, XmlPullParserException,
       NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException,
       InvalidResponseException, ErrorResponseException, NoResponseException,
       InvalidBucketNameException, InsufficientDataException, InternalException {
-    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    String username = principal.getName();
+    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    final String username = principal.getName();
     if (!username.isEmpty()) {
-      String filename = username + "_" + "Veranstaltung";
-      File file = fileService.getFile(filename);
+      final String filename = username + "_" + "Veranstaltung";
+      final File file = fileService.getFile(filename);
       model.addAttribute("file", file);
     } else {
       model.addAttribute("file", null);
@@ -108,25 +110,26 @@ public class FileUploadController {
 
   /**
    * Nimmt Inpustream mit Inhalt des zusuchenden adocs und gibt es als Response an einen
-   * eigenen Download-Link zurück.
+   * eigenen Download-Link zurück.*
    *
-   * @param object
-   * @param response
+   * @param object   objectname
+   * @param response response
    */
   @RequestMapping("/download/file/{filename}")
   @ResponseBody
-  public void downloadFile(@PathVariable("filename") String object, KeycloakAuthenticationToken token,
-                           HttpServletResponse response)
+  public void downloadFile(@PathVariable("filename") final String object,
+                           final KeycloakAuthenticationToken token,
+                           final HttpServletResponse response)
       throws IOException, XmlPullParserException, NoSuchAlgorithmException,
       InvalidKeyException, InvalidArgumentException, InvalidResponseException,
       ErrorResponseException, NoResponseException, InvalidBucketNameException,
       InsufficientDataException, InternalException, RegionConflictException {
 
-    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    String username = principal.getName();
+    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    final String username = principal.getName();
     if (!username.isEmpty()) {
-      String filename = username + "_" + "Veranstaltung";
-      InputStream inputStream = fileService.getFileInputStream(filename);
+      final String filename = username + "_" + "Veranstaltung";
+      final InputStream inputStream = fileService.getFileInputStream(filename);
       response.addHeader("Content-disposition", "attachment;filename=" + object + ".md");
       response.setContentType(URLConnection.guessContentTypeFromName(object));
       IOUtils.copy(inputStream, response.getOutputStream());
@@ -138,19 +141,24 @@ public class FileUploadController {
     authenticatedAccess.increment();
   }
 
+
+  /**
+   * Die methode lädt die passende datei aus dem Fileserver herunter.
+   */
   @RequestMapping("/download/file")
   @ResponseBody
-  public void downloadFilebyToken(KeycloakAuthenticationToken token, HttpServletResponse response)
+  public void downloadFilebyToken(final KeycloakAuthenticationToken token,
+                                  final HttpServletResponse response)
       throws IOException, XmlPullParserException, NoSuchAlgorithmException,
       InvalidKeyException, InvalidArgumentException, InvalidResponseException,
       ErrorResponseException, NoResponseException, InvalidBucketNameException,
       InsufficientDataException, InternalException {
 
-    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    String username = principal.getName();
+    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    final String username = principal.getName();
     if (!username.isEmpty()) {
-      String filename = username + "_" + "Veranstaltung";
-      InputStream inputStream = fileService.getFileInputStream(filename);
+      final String filename = username + "_" + "Veranstaltung";
+      final InputStream inputStream = fileService.getFileInputStream(filename);
       response.addHeader("Content-disposition", "attachment;filename=" + filename + ".md");
       response.setContentType(URLConnection.guessContentTypeFromName(filename));
       IOUtils.copy(inputStream, response.getOutputStream());
