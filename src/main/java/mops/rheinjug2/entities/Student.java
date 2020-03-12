@@ -69,11 +69,18 @@ public class Student {
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
 
-  /**
-   * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen.
-   */
-  public Set<Long> getEventsIdsWithSummary() {
-    return events.stream().filter(EventRef::isSubmittedSummary)
+  public Set<Long> getEventsIdsWithSummaryNotAccepted() {
+    return events.stream().filter(EventRef::isSubmittedNotAccepted)
+        .map(EventRef::getEvent).collect(Collectors.toSet());
+  }
+
+  public Set<Long> getEventsIdsWithSummaryAccepted() {
+    return events.stream().filter(EventRef::isSubmittedAndAccepted)
+        .map(EventRef::getEvent).collect(Collectors.toSet());
+  }
+
+  public Set<Long> getEventsIdsWithNoSummary() {
+    return events.stream().filter(x -> !x.isSubmittedSummary())
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
 

@@ -23,4 +23,12 @@ class EventRef {
   boolean isSubmittedAndAcceptedButNotUsed() {
     return submittedSummary && accepted && (!usedForCertificate);
   }
+
+  boolean isSubmittedNotAccepted() {
+    return submittedSummary && !accepted;
+  }
+
+  boolean isSubmittedAndAccepted() {
+    return submittedSummary && accepted;
+  }
 }
