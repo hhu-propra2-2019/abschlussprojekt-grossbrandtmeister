@@ -4,7 +4,9 @@ import mops.rheinjug2.entities.Student;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface StudentRepository extends CrudRepository<Student, Long> {
 
   @Query(value = "SELECT * FROM student s WHERE s.login = :login")
@@ -17,6 +19,4 @@ public interface StudentRepository extends CrudRepository<Student, Long> {
       + "student_event.student = :s_id AND student_event.event= :e_id")
   boolean getSubmittedValue(@Param("s_id") Long studentId, @Param("e_id") Long eventId);
 
-  @Query(value = "SELECT COUNT(*)>0 FROM STUDENT s WHERE s.login = :login")
-  boolean existsByLogin(@Param("login") String login);
 }

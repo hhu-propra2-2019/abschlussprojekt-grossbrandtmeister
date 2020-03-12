@@ -5,8 +5,9 @@ import mops.rheinjug2.entities.Event;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-
+@Repository
 public interface EventRepository extends CrudRepository<Event, Long> {
 
   @Query(value = "SELECT COUNT(*) FROM student_event WHERE student_event.event = :id")
