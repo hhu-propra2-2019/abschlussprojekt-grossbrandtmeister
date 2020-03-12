@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DatabaseInitializer implements ServletContextInitializer {
-  Random random = new Random();
-  Date date1 = new Date(120, 02, 12);
-  Date date2 = new Date(120, 04, 12);
-  LocalDateTime dateNow = LocalDateTime.now();
+  transient Random random = new Random();
+  transient Date date1 = new Date(120, 02, 12);
+  transient Date date2 = new Date(120, 04, 12);
+  transient LocalDateTime dateNow = LocalDateTime.now();
 
   @Autowired
-  EventRepository eventRepository;
+  transient EventRepository eventRepository;
 
   @Override
   public void onStartup(ServletContext servletContext) throws ServletException {
