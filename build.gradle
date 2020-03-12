@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -56,6 +56,7 @@ dependencies {
     testCompile group: 'org.jvnet.mock-javamail', name: 'mock-javamail', version: '1.1'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -65,6 +66,7 @@ dependencies {
     testImplementation 'com.tngtech.keycloakmock:mock-junit5:0.2.0'
     testCompile 'com.tngtech.archunit:archunit-junit5:0.13.1'
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.19'
+    compile group: 'com.sun.istack', name: 'istack-commons-runtime', version: '3.0.10'
 }
 
 test {
