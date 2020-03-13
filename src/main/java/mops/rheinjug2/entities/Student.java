@@ -3,16 +3,15 @@ package mops.rheinjug2.entities;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
 @Table("student")
-@NoArgsConstructor
 public class Student {
   @Id
   private Long id;
@@ -66,20 +65,32 @@ public class Student {
     }
   }
 
+  public void useEventsForCP(List<Event> events) {
+    events.stream().map(this::findEventRef)
+        .forEach(eventRef -> eventRef.setUsedForCertificate(true));
+  }
+
   /**
    * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen, die akzeptiert, aber
-   * nicht für einen Scchein verwendet wurden.
+   * nicht für einen Schein verwendet wurden.
    */
   public Set<Long> getEventsIdsWithSummaryAcceptedNotUsed() {
     return events.stream().filter(EventRef::isSubmittedAndAcceptedButNotUsed)
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
 
-  /**
-   * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen.
-   */
-  public Set<Long> getEventsIdsWithSummary() {
-    return events.stream().filter(EventRef::isSubmittedSummary)
+  public Set<Long> getEventsIdsWithSummaryNotAccepted() {
+    return events.stream().filter(EventRef::isSubmittedNotAccepted)
+        .map(EventRef::getEvent).collect(Collectors.toSet());
+  }
+
+  public Set<Long> getEventsIdsWithSummaryAccepted() {
+    return events.stream().filter(EventRef::isSubmittedAndAccepted)
+        .map(EventRef::getEvent).collect(Collectors.toSet());
+  }
+
+  public Set<Long> getEventsIdsWithNoSummary() {
+    return events.stream().filter(x -> !x.isSubmittedSummary())
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
 

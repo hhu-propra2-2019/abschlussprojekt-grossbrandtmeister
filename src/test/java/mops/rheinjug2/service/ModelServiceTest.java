@@ -64,6 +64,21 @@ public class ModelServiceTest {
 
   }
 
+  @Test
+  public void testGetAllEventsForCP() {
+    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
+    Event event = createAndSaveEvent("Event 5");
+    student.addEvent(event);
+    studentRepository.save(student);
+    student.addSummary(event);
+    studentRepository.save(student);
+  }
+
+  @Test
+  public void testUseEventsForCertificate() {
+
+  }
+
   public boolean compareTwoLists(List<Event> list1, List<Event> list2) {
     for (Event event : list1) {
       if (!list2.contains(event)) {

@@ -3,13 +3,11 @@ package mops.rheinjug2.entities;
 
 import java.time.LocalDateTime;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
 @Table("event")
-@NoArgsConstructor
 public class Event {
   @Id
   private Long id;
@@ -23,11 +21,6 @@ public class Event {
 
   private String status;
   private String type;
-
-  public Event(Long id, String title) {
-    this.id = id;
-    this.title = title;
-  }
 
   @Override
   public String toString() {
