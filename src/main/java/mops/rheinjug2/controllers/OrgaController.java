@@ -64,8 +64,8 @@ public class OrgaController {
   @PostMapping("/events")
   public String getEventsFromApi(KeycloakAuthenticationToken token) {
     Account user = AccountCreator.createAccountFromPrincipal(token);
-    eventService.refreshRheinjugEvents();
     log.info("User '" + user.getName() + "' requested event refresh");
+    eventService.refreshRheinjugEvents();
     return "redirect:/rheinjug2/orga/events";
   }
 }
