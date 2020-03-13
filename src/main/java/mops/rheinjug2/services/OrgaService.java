@@ -14,6 +14,8 @@ public class OrgaService {
   StudentRepository studentRepository;
 
   /**
+   * Gibt alle events zurück.
+   *
    * @return : Liste alle events
    */
   public List<Event> getEvents() {
