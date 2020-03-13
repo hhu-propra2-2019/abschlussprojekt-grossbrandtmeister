@@ -23,7 +23,7 @@ public class ModelService {
   }
 
   public enum SubmissionStatus {
-    NO_SUBMISSION, SUBMITTED_NOT_ACCEPTED, SUBMITTED_ACCEPTED
+    UPCOMING, OPEN_FOR_SUBMISSION, NO_SUBMISSION, SUBMITTED_NOT_ACCEPTED, SUBMITTED_ACCEPTED
   }
 
   public List<Event> getAllEvents() {
@@ -82,7 +82,7 @@ public class ModelService {
 
   private boolean useForEntwickelbar(Student student, List<Event> events) {
     for (Event e : events) {
-      if (e.getType().equals("Entwickelbar")) {
+      if (e.getType().equalsIgnoreCase("Entwickelbar")) {
         student.useEventsForCP(List.of(e));
         studentRepository.save(student);
         return true;
@@ -110,12 +110,20 @@ public class ModelService {
   }
 
   private void addAcceptedEvents(Map<Event, SubmissionStatus> events, Set<Long> eventsIds) {
-    List<Event> eventsWithNotAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
-    addToMap(events, eventsWithNotAcceptedSummary, SubmissionStatus.SUBMITTED_ACCEPTED);
+    List<Event> eventsWithAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
+    addToMap(events, eventsWithAcceptedSummary, SubmissionStatus.SUBMITTED_ACCEPTED);
   }
 
   private void addEventsWithNoSubmission(Map<Event, SubmissionStatus> events, Set<Long> eventsIds) {
-    List<Event> eventsWithNotAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
-    addToMap(events, eventsWithNotAcceptedSummary, SubmissionStatus.NO_SUBMISSION);
+    List<Event> eventsWithNoSummary = (List<Event>) eventRepository.findAllById(eventsIds);
+    for (Event e : eventsWithNoSummary) {
+      if (e.getStatus().equalsIgnoreCase("Upcoming")) {
+        addToMap(events, eventsWithNoSummary, SubmissionStatus.UPCOMING);
+      } else if (e.isOpenForSubmission()) {
+        addToMap(events, eventsWithNoSummary, SubmissionStatus.OPEN_FOR_SUBMISSION);
+      } else {
+        addToMap(events, eventsWithNoSummary, SubmissionStatus.NO_SUBMISSION);
+      }
+    }
   }
 }

@@ -26,4 +26,9 @@ public class Event {
   public String toString() {
     return "Event{" + "id=" + id + ", title='" + title + '\'' + '}';
   }
+
+  public boolean isOpenForSubmission() {
+    LocalDateTime afterOneWeek = date.plusDays(7);
+    return date.isBefore(afterOneWeek);
+  }
 }
