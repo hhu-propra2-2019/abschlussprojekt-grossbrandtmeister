@@ -1,5 +1,8 @@
 package mops.rheinjug2.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 import java.util.Arrays;
 import java.util.List;
 import mops.rheinjug2.ModelService;
@@ -32,9 +35,8 @@ public class ModelServiceTest {
 
     List<Event> events = Arrays.asList(event1, event2);
 
-    Assert.assertEquals(events, modelService.getAllEvents());
+    assertThat(modelService.getAllEvents()).containsExactlyInAnyOrder(event2, event1);
   }
-
 
   @Test
   public void testAddStudentToEventIfStudentNotExistsInDatabase() {
@@ -66,28 +68,29 @@ public class ModelServiceTest {
 
   @Test
   public void testGetAllEventsForCP() {
+    ModelService modelService = new ModelService(studentRepository, eventRepository);
+
     Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
-    Event event = createAndSaveEvent("Event 5");
-    student.addEvent(event);
+    Event event1 = createAndSaveEvent("Event 5");
+    Event event2 = createAndSaveEvent("Event 6");
+    student.addEvent(event1);
     studentRepository.save(student);
-    student.addSummary(event);
+    student.addEvent(event2);
     studentRepository.save(student);
+    student.addSummary(event1);
+    studentRepository.save(student);
+    student.addSummary(event2);
+    studentRepository.save(student);
+    eventRepository.setUsedForCertificate(true, event1.getId(), student.getId());
+    eventRepository.setUsedForCertificate(false, event2.getId(), student.getId());
+
+    List<Event> events = Arrays.asList(event2);
+    System.out.println(events);
+    System.out.println(modelService.getAllEventsForCP("testLogin5"));
+    //Assert.assertTrue(compareTwoLists(events, modelService.getAllEventsForCP("testLogin5")));
+    assertThat(modelService.getAllEventsForCP("testLogin5")).containsExactly(event2);
+
   }
-
-  @Test
-  public void testUseEventsForCertificate() {
-
-  }
-
-  public boolean compareTwoLists(List<Event> list1, List<Event> list2) {
-    for (Event event : list1) {
-      if (!list2.contains(event)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
 
   private List<Event> getEventsFromEventRef(Student student) {
     return (List<Event>) eventRepository.findAllById(student.getEventsIds());
