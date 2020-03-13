@@ -41,10 +41,6 @@ public class Student {
     return events.stream().map(EventRef::getEvent).collect(Collectors.toSet());
   }
 
-  public Event findEventByEventRef(Long id) {
-    return null;
-  }
-
   /**
    * Entfernt eine Veranstaltung.
    */
@@ -58,8 +54,7 @@ public class Student {
    */
   public void addSummary(Event event) {
     EventRef ref = findEventRef(event);
-    // Frist prüfen zuerst
-    if (!ref.isSubmittedSummary()) {
+    if (event.isOpenForSubmission()) {
       ref.setSubmittedSummary(true);
       ref.setTimeOfSubmission(LocalDateTime.now());
     }
