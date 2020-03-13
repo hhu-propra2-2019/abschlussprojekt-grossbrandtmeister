@@ -16,6 +16,7 @@ import java.net.URLConnection;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileCheckService;
 import mops.rheinjug2.fileupload.FileService;
@@ -36,6 +37,7 @@ import org.xmlpull.v1.XmlPullParserException;
 @Controller
 @Secured({"ROLE_studentin"})
 @RequestMapping("/rheinjug2")
+@Log4j2
 public class FileUploadController {
 
   transient FileService fileService;
@@ -45,7 +47,6 @@ public class FileUploadController {
   private final transient Counter authenticatedAccess;
 
   static final String Veranstaltung = "Veranstaltung";
-
 
   @Autowired
   public FileUploadController(final FileService fileService, final MeterRegistry registry) {
@@ -76,7 +77,7 @@ public class FileUploadController {
         }
 
       } catch (final Exception e) {
-        e.printStackTrace();
+        log.catching(e);
       }
     }
     authenticatedAccess.increment();

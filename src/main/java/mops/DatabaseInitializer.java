@@ -35,7 +35,8 @@ public class DatabaseInitializer implements ServletContextInitializer {
       event.setDescription(faker.yoda().quote());
       event.setPrice(faker.number().randomDigit());
       event.setDate(new java.sql.Timestamp(
-          faker.date().between(java.sql.Date.valueOf(date1), java.sql.Date.valueOf(date2)).getTime()).toLocalDateTime());
+          faker.date().between(java.sql.Date.valueOf(date1), java.sql.Date.valueOf(date2))
+              .getTime()).toLocalDateTime());
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
       if (event.getDate().isBefore(dateNow)) {

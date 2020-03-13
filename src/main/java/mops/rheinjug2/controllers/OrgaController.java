@@ -2,7 +2,9 @@ package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import java.time.LocalDateTime;
 import mops.rheinjug2.AccountCreator;
+import mops.rheinjug2.services.OrgaService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class OrgaController {
 
   private final transient Counter authenticatedAccess;
+  transient OrgaService service;
 
-  public OrgaController(MeterRegistry registry) {
+  public OrgaController(MeterRegistry registry, OrgaService service) {
     authenticatedAccess = registry.counter("access.authenticated");
+    this.service = service;
   }
 
   /**
@@ -27,7 +31,8 @@ public class OrgaController {
   @GetMapping("/events")
   public String getEvents(KeycloakAuthenticationToken token, Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
-    authenticatedAccess.increment();
+    model.addAttribute("events", service.getEvents());
+    model.addAttribute("datenow", LocalDateTime.now());
     return "orga_events_overview";
   }
 

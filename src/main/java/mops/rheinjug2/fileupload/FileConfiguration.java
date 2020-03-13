@@ -7,22 +7,17 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FileConfiguration {
-  @Value("${minio.access.name}")
-  transient String accessKey;
-  @Value("${minio.access.secret}")
-  transient String accessSecret;
-  @Value("${minio.url}")
-  transient String minioUrl;
-
   /**
    * Erstellen des MinioClients.
    */
   @Bean
-  public MinioClient generateMinioClient() {
+  public MinioClient generateMinioClient(
+      @Value("${minio.access.name}") String accessKey,
+      @Value("${minio.access.secret}") String accessSecret,
+      @Value("${minio.url}") String minioUrl) {
     try {
-      final MinioClient client = new MinioClient(minioUrl, accessKey, accessSecret);
-      return client;
-    } catch (final Exception e) {
+      return new MinioClient(minioUrl, accessKey, accessSecret);
+    } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }
   }
