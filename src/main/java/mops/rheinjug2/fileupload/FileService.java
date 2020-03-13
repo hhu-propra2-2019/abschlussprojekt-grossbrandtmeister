@@ -9,6 +9,7 @@ import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +32,7 @@ public class FileService {
   @Value("${minio.default.folder}")
   String defaultBaseFolder;
 
-  public FileService(final MinioClient minioClient) {
+  public FileService(MinioClient minioClient) {
     this.minioClient = minioClient;
   }
 
@@ -40,15 +41,15 @@ public class FileService {
    *
    * @param file - File aus dem Controller.
    */
-  public void uploadFile(final MultipartFile file, final String objektname) throws IOException {
-    final InputStream inputStream = new BufferedInputStream(file.getInputStream());
+  public void uploadFile(MultipartFile file, String objektname) throws IOException {
+    InputStream inputStream = new BufferedInputStream(file.getInputStream());
     try {
       if (!minioClient.bucketExists(defaultBucketName)) {
         minioClient.makeBucket(defaultBucketName);
       }
       minioClient.putObject(defaultBucketName, objektname, inputStream,
           file.getSize(), null, null, file.getContentType());
-    } catch (final Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     } finally {
       inputStream.close();
@@ -61,18 +62,18 @@ public class FileService {
    * @param filename Name der Datei
    * @return File
    */
-  public File getFile(final String filename) throws IOException, InvalidKeyException,
+  public File getFile(String filename) throws IOException, InvalidKeyException,
       NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException,
       InvalidResponseException, InternalException, NoResponseException,
       InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
     minioClient.statObject(defaultBucketName, filename);
-    final InputStream inputStream = minioClient.getObject(defaultBucketName, filename);
+    InputStream inputStream = minioClient.getObject(defaultBucketName, filename);
     try {
-      final File file = new File(filename);
+      File file = new File(filename);
       FileUtils.copyInputStreamToFile(inputStream, file);
       System.out.println(file);
       return file;
-    } catch (final Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     } finally {
       inputStream.close();
@@ -85,12 +86,34 @@ public class FileService {
    * @param filename Name der Datei
    * @return Inputstream
    */
-  public InputStream getFileInputStream(final String filename)
+  public InputStream getFileInputStream(String filename)
       throws IOException, InvalidKeyException, NoSuchAlgorithmException,
       InsufficientDataException, InvalidArgumentException, InvalidResponseException,
       InternalException, NoResponseException, InvalidBucketNameException,
       XmlPullParserException, ErrorResponseException {
-    final InputStream inputStream = minioClient.getObject(defaultBucketName, filename);
+    InputStream inputStream = minioClient.getObject(defaultBucketName, filename);
     return inputStream;
+  }
+
+  /**
+   * Speichert String in MinIO Server.
+   *
+   * @param content
+   * @param objektname
+   * @throws IOException
+   */
+  public void uploadeContentConvertToMd(String content, String objektname) throws IOException {
+    InputStream inputStream = new ByteArrayInputStream(content.getBytes());
+    try {
+      if (!minioClient.bucketExists(defaultBucketName)) {
+        minioClient.makeBucket(defaultBucketName);
+      }
+      minioClient.putObject(defaultBucketName, objektname, inputStream,
+          (long) content.length(), null, null, "text/markdown");
+    } catch (Exception e) {
+      throw new RuntimeException(e.getMessage());
+    } finally {
+      inputStream.close();
+    }
   }
 }

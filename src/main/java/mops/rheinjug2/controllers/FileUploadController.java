@@ -75,7 +75,6 @@ public class FileUploadController {
           fileService.uploadFile(file, filename);
           attributes.addFlashAttribute("message", "You successfully uploaded " + filename + '!');
         }
-
       } catch (Exception e) {
         e.printStackTrace();
         attributes.addFlashAttribute("message", "Your file was not able to be uploaded ");
@@ -84,6 +83,32 @@ public class FileUploadController {
     authenticatedAccess.increment();
     return "redirect:/rheinjug2/student/reportsubmit";
     //return "report_submit";
+  }
+
+  /**
+   * Nimmt den Inhalt aus der Textarea-Box und gibt ihn an den FileService weiter
+   * um das File zu speichern.
+   */
+  @PostMapping(path = "/student/summarysubmit")
+  public String useForm(KeycloakAuthenticationToken token, RedirectAttributes attributes,
+                        @RequestParam("Inhalt") String content) {
+    try {
+      KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+      String username = principal.getName();
+      if (!username.isEmpty()) {
+        String filename = username + "_" + Veranstaltung;
+        fileService.uploadeContentConvertToMd(content, filename);
+        attributes.addFlashAttribute("message", "You successfully uploaded the form !");
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      attributes.addFlashAttribute("message", "Your file was not able to be uploaded ");
+    }
+    authenticatedAccess.increment();
+    System.out.println(content);
+    return "redirect:/rheinjug2/student/reportsubmit";
+
   }
 
   /**
@@ -119,10 +144,7 @@ public class FileUploadController {
   @ResponseBody
   public void downloadFilebyToken(KeycloakAuthenticationToken token,
                                   HttpServletResponse response)
-      throws IOException, XmlPullParserException, NoSuchAlgorithmException,
-      InvalidKeyException, InvalidArgumentException, InvalidResponseException,
-      ErrorResponseException, NoResponseException, InvalidBucketNameException,
-      InsufficientDataException, InternalException {
+      throws IOException {
 
     KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     String username = principal.getName();
@@ -133,12 +155,33 @@ public class FileUploadController {
         response.setContentType(URLConnection.guessContentTypeFromName(filename));
         IOUtils.copy(inputStream, response.getOutputStream());
         response.flushBuffer();
+      } catch (Exception e) {
+        //--
       }
-
     } else {
-      response.sendError(404, "File not found");
+      response.sendError(403);
     }
 
+    authenticatedAccess.increment();
+  }
+
+  /**
+   * Die methode lädt die Maarkdown-Vorlage aus dem Fileserver herunter.
+   */
+  @RequestMapping("/download/presentation")
+  @ResponseBody
+  public void downloadPResentationforSummary(KeycloakAuthenticationToken token,
+                                             HttpServletResponse response) throws IOException {
+
+    final String filename = "Vorlage.md";
+    try (InputStream inputStream = fileService.getFileInputStream(filename)) {
+      response.addHeader("Content-disposition", "attachment;filename=" + filename);
+      response.setContentType(URLConnection.guessContentTypeFromName(filename));
+      IOUtils.copy(inputStream, response.getOutputStream());
+      response.flushBuffer();
+    } catch (Exception e) {
+      response.sendError(404, "File not found");
+    }
     authenticatedAccess.increment();
   }
 
