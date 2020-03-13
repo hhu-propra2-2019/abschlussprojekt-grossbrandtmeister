@@ -3,11 +3,13 @@ package mops.rheinjug2.controllers;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import mops.rheinjug2.AccountCreator;
+import mops.rheinjug2.services.EventService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class OrgaController {
 
   private final transient Counter authenticatedAccess;
+  private final transient EventService eventService;
 
-  public OrgaController(MeterRegistry registry) {
+  public OrgaController(MeterRegistry registry, EventService eventService) {
     authenticatedAccess = registry.counter("access.authenticated");
+    this.eventService = eventService;
   }
 
   /**
@@ -49,5 +53,14 @@ public class OrgaController {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     return "orga_reports_overview";
+  }
+
+  /**
+   * Ruft die rheinjug Events manuell ab und speichert diese in die Datenbank.
+   */
+  @PostMapping("/events")
+  public String getEvents() {
+    eventService.refreshRheinjugEvents();
+    return "redirect:/rheinjug2/orga/events";
   }
 }

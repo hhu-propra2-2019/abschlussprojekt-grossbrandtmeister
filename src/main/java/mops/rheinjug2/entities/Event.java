@@ -11,6 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Event {
   @Id
   private Long id;
+  private String meetupId;
 
   private String title;
   private String description;

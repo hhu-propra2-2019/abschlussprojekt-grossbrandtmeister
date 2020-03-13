@@ -27,6 +27,12 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
+    <form method="post" th:action="@{/rheinjug2/orga/events}" class="form-inline">
+        <input type="hidden" name="meetup_events" value="">
+        <button type="submit" name="submit" value="submit_value" class="button">
+            Veranstaltungen aktualisieren
+        </button>
+    </form>
     <h1 class="text-center text-secondary"> Rheinjug Veranstaltungen </h1>
     <div>
         <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
