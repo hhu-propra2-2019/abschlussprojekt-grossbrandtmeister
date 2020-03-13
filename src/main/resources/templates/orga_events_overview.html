@@ -42,7 +42,8 @@
                     <div class="row">
                         <div class="col-12">
                             <i class="icono-calendar"></i>
-                            <span>&nbsp;13.03.2020</span>
+                            <span th:text="${#temporals.format(event.getDate(), 'yyyy.MM.dd')}"
+                            >&nbsp;13.03.2020</span>
                         </div>
                     </div>
                 </div>
@@ -51,7 +52,8 @@
                         <div class="col-12">
                             <img src="/icons/icon-time-clock.png" style="width: 32px;height: 28px;">
                             <span>&nbsp;Abgabefrist</span>
-                            <span>&nbsp;05.03.2020</span>
+                            <span th:text="${#temporals.format(event.getSubmissionDeadline(), 'yyyy.MM.dd hh:mm')}"
+                                  th:classappend="${event.getSubmissionDeadline().isBefore(datenow) and event.getSubmissionDeadline().isAfter(event.date)} ? text-success : text-danger">&nbsp;05.03.2020</span>
                         </div>
                     </div>
                 </div>
