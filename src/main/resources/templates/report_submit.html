@@ -33,12 +33,12 @@
     <div class="container bg-light rounded shadow-lg text-secondary "
          style=" padding: 10px; margin-top: 40px; margin-bottom: 50px">
         <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
-        <form action="summarysubmit" method="post">
+        <form action="summarysubmit" th:object="${summary}" method="post">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <div class="form-group">
                 <div>
                     <label for="subject">Betreff</label>
-                    <input type="text" class="form-control " id="subject" name="Title"
+                    <input type="text" class="form-control " id="subject" th:field="*{eventname}" name="Title"
                            value=" Zusammenfassung der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter."
                            readonly>
                 </div>
@@ -47,18 +47,20 @@
                 <div class="row">
                     <div class="col-12 col-sm-6">
                         <label for="Studentname">Name</label>
-                        <input type="text" class="form-control" id="Studentname" value="Ein Student" readonly>
+                        <input type="text" class="form-control" id="Studentname" th:field="*{studentname}"
+                               value="Ein Student" readonly>
                     </div>
                     <div class="col-12 col-sm-6">
                         <label for="eventsdate">Datum der Veranstaltung</label>
-                        <input type="text" class="form-control" id="eventsdate" value="15.03.2020" readonly>
+                        <input type="text" class="form-control" id="eventsdate" th:field="*{date}" value="15.03.2020"
+                               readonly>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label for="Inhalt">Inhalt</label>
                 <textarea class="form-control" id="Inhalt" name="Inhalt" rows="20"
-                          placeholder="Zusammenfassung hier schreiben..."> hier muss die Vorlage eingebunden werden</textarea>
+                          placeholder="Zusammenfassung hier schreiben..." th:text="*{content}"></textarea>
             </div>
             <div class="form-group secondary">
                 <label class="" for="Todaysdate">heutige datum</label>
