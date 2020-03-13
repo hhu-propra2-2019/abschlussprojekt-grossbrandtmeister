@@ -2,6 +2,8 @@ package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import lombok.extern.log4j.Log4j2;
+import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.services.EventService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@Log4j2
 @Controller
 @Secured({"ROLE_orga"})
 @RequestMapping("/rheinjug2/orga")
@@ -59,8 +62,10 @@ public class OrgaController {
    * Ruft die rheinjug Events manuell ab und speichert diese in die Datenbank.
    */
   @PostMapping("/events")
-  public String getEventsFromApi() {
+  public String getEventsFromApi(KeycloakAuthenticationToken token) {
+    Account user = AccountCreator.createAccountFromPrincipal(token);
     eventService.refreshRheinjugEvents();
+    log.info("User '" + user.getName() + "' requested event refresh");
     return "redirect:/rheinjug2/orga/events";
   }
 }
