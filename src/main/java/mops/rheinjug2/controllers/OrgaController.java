@@ -59,7 +59,7 @@ public class OrgaController {
    * Ruft die rheinjug Events manuell ab und speichert diese in die Datenbank.
    */
   @PostMapping("/events")
-  public String getEvents() {
+  public String getEventsFromApi() {
     eventService.refreshRheinjugEvents();
     return "redirect:/rheinjug2/orga/events";
   }

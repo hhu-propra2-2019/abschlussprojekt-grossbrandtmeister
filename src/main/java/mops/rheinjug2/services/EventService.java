@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class EventService {
 
-  private final MeetupCom meetupComService;
-  private final EventRepository eventRepository;
+  private final transient MeetupCom meetupComService;
+  private final transient EventRepository eventRepository;
 
   public EventService(MeetupCom meetupComService, EventRepository eventRepository) {
     this.meetupComService = meetupComService;

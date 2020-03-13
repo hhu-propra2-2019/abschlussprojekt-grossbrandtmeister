@@ -3,6 +3,7 @@ package mops.rheinjug2.services;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.Locale;
 import mops.rheinjug2.meetupcom.Event;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,8 @@ public class ModelConverter {
     event.setAddress(meetupEvent.getVenue().getAddress1());
     event.setUrl(meetupEvent.getLink().toString());
     event.setStatus(meetupEvent.getStatus().name());
-    event.setType(meetupEvent.getName().toLowerCase().contains("entwickelbar") ? "EntwickelBar" : "Normal");
+    event.setType(meetupEvent.getName().toLowerCase(Locale.GERMAN).contains("entwickelbar")
+        ? "EntwickelBar" : "Normal");
 
     return event;
   }
