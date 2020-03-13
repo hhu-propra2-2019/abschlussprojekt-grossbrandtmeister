@@ -118,6 +118,7 @@ public class SecurityConfigTests {
     return keycloakMock
         .getAccessToken(aTokenConfig()
             .withRealmRole("ROLE_" + role)
+            .withEmail(role + "@non.existent")
             .build());
   }
 
