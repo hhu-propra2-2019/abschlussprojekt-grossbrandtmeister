@@ -32,7 +32,7 @@ public class CodingRulesTests {
     private final ArchRule noJavaUtilLogging = NO_CLASSES_SHOULD_USE_JAVA_UTIL_LOGGING;
 
     @SuppressWarnings({"checkstyle:abbreviationaswordinname", "checkstyle:membername"})
-    private final ArchCondition<JavaClass> USE_UTILTIME =
+    private final transient ArchCondition<JavaClass> USE_UTILTIME =
         dependOnClassesThat(
             resideInAPackage("java.util")
                 .and(simpleName("Date")
@@ -47,7 +47,8 @@ public class CodingRulesTests {
         .because("modern Java projects use the [java.time] API instead");
   }
 
-  @AnalyzeClasses(packages = "mops.rheinjug2", importOptions = {ImportOption.DoNotIncludeTests.class})
+  @AnalyzeClasses(packages = "mops.rheinjug2",
+      importOptions = {ImportOption.DoNotIncludeTests.class})
   public static class NotTestClassesRulesTests {
     //see https://github.com/rweisleder/ArchUnit/commit/8bfe5a85e32afc4aafd0f59c0823b99c81fc5ce1
     private static final ArchCondition<JavaField> USE_FIELD_INJECTION
