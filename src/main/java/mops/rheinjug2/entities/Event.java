@@ -19,12 +19,15 @@ public class Event {
   private LocalDateTime date;
   private String address;
   private String url;
-
   private String status;
   private String type;
 
   @Override
   public String toString() {
     return "Event{" + "id=" + id + ", title='" + title + '\'' + '}';
+  }
+
+  public LocalDateTime getSubmissionDeadline() {
+    return date.plusDays(7);
   }
 }
