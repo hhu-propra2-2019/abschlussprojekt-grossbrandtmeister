@@ -14,4 +14,7 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 
   @Query(value = "SELECT student FROM student_event WHERE student_event.event = :id")
   List<Long> findAllStudentsIdsPerEventById(@Param("id") Long id);
+
+  @Query(value = "SELECT * FROM event WHERE meetup_id = :id")
+  Event findEventByMeetupId(@Param("id") Long id);
 }
