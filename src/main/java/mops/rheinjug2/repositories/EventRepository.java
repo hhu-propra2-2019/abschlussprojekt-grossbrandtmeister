@@ -18,7 +18,6 @@ public interface EventRepository extends CrudRepository<Event, Long> {
   List<Long> findAllStudentsIdsPerEventById(@Param("id") Long id);
 
   @Modifying
-  @Query(value = "UPDATE student_event SET used_for_certificate = :used_f_c, submitted_summary = true, accepted = true WHERE"
-      + ":e_id = student_event.event AND student_event.student = :s_id")
-  int setUsedForCertificate(@Param("used_f_c") boolean usedForCertificate, @Param("e_id") Long e_id, @Param("s_id") Long s_id);
+  @Query(value = "UPDATE student_event SET accepted = :accepted WHERE :e_id = student_event.event AND student_event.student = :s_id")
+  int setAccepted(@Param("") boolean accepted, @Param("e_id") Long e_id, @Param("s_id") Long s_id);
 }
