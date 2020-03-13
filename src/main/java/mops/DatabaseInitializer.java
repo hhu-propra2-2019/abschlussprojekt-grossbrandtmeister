@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabaseInitializer implements ServletContextInitializer {
   transient Random random = new Random();
-  transient Date date1 = new Date(120, 02, 12);
-  transient Date date2 = new Date(120, 04, 12);
+  transient Date date1 = new Date(120, 01, 01);
+  transient Date date2 = new Date(120, 05, 01);
   transient LocalDateTime dateNow = LocalDateTime.now();
 
   @Autowired
