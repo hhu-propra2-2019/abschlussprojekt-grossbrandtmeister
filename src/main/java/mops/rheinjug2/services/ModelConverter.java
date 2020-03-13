@@ -10,14 +10,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class ModelConverter {
 
-  static mops.rheinjug2.entities.Event parseMeetupEvent(Event meetupEvent) {
+  static mops.rheinjug2.entities.Event parseMeetupEvent(
+      Event meetupEvent, mops.rheinjug2.entities.Event eventEntity) {
 
     LocalDateTime eventTime = LocalDateTime.ofInstant(meetupEvent.getTime(), ZoneId.ofOffset(
         "UTC", ZoneOffset.ofHoursMinutes(
             meetupEvent.getUtcOffset().toHoursPart(), meetupEvent.getUtcOffset().toMinutesPart())));
 
-    mops.rheinjug2.entities.Event event = new mops.rheinjug2.entities.Event();
+    // Falls die eventEntity bereits vorhanden ist nutzen wir sie, sonst erzeugen wir eine neue
+    mops.rheinjug2.entities.Event event = eventEntity != null
+        ? eventEntity : new mops.rheinjug2.entities.Event();
 
+    // Setze Felder unserer Entity auf die Werte aus der API
     event.setMeetupId(meetupEvent.getId());
     event.setTitle(meetupEvent.getName());
     event.setDescription(meetupEvent.getDescription());

@@ -23,10 +23,12 @@ public class EventService {
    * Ruft Events von meetup.com ab und speichert diese in der Datenbank
    */
   public void refreshRheinjugEvents() {
+    mops.rheinjug2.entities.Event eventEntity;
     LocalDateTime time = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     List<Event> meetupEvents = meetupComService.getRheinJugEventsSince(time);
-    for (Event e : meetupEvents) {
-      eventRepository.save(ModelConverter.parseMeetupEvent(e));
+    for (Event event : meetupEvents) {
+      eventEntity = eventRepository.findEventByMeetupId(Long.parseLong(event.getId()));
+      eventRepository.save(ModelConverter.parseMeetupEvent(event, eventEntity));
     }
   }
 
