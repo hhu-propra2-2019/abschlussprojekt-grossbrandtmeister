@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@Secured( {"ROLE_orga"})
+@Secured({"ROLE_orga"})
 @RequestMapping("/rheinjug2/orga")
 public class OrgaController {
 
