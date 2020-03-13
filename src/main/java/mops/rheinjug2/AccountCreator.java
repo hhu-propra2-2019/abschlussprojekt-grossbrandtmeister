@@ -14,18 +14,14 @@ public class AccountCreator {
    */
   public static Account createAccountFromPrincipal(KeycloakAuthenticationToken token) {
     KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-
-    String email;
-    if (principal.getKeycloakSecurityContext().getIdToken() != null) {
-      email = principal.getKeycloakSecurityContext().getIdToken().getEmail();
-    } else {
-      email = "";
-    }
+    var accessToken = principal.getKeycloakSecurityContext().getToken();
 
     return new Account(
         principal.getName(),
-        email,
-        null,
-        token.getAccount().getRoles());
+        accessToken.getEmail(),
+        accessToken.getPicture(),
+        token.getAccount().getRoles(),
+        accessToken.getGivenName(),
+        accessToken.getFamilyName());
   }
 }
