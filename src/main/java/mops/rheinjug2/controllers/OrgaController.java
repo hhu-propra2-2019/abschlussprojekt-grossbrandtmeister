@@ -26,7 +26,11 @@ public class OrgaController {
   private final transient EventService eventService;
   private final transient OrgaService orgaService;
 
-  public OrgaController(final MeterRegistry registry, final EventService eventService, final OrgaService orgaService) {
+  /**
+   * Injected unsere Services und den Counter.
+   */
+  public OrgaController(final MeterRegistry registry,
+                        final EventService eventService, final OrgaService orgaService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.eventService = eventService;
     this.orgaService = orgaService;
