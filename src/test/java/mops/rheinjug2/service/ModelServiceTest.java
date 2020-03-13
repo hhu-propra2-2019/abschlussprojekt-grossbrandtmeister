@@ -1,12 +1,9 @@
 package mops.rheinjug2.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import mops.rheinjug2.ModelService;
 import mops.rheinjug2.entities.Event;
-import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
@@ -28,17 +25,6 @@ public class ModelServiceTest {
   private transient StudentRepository studentRepository;
 
   @Test
-  public void testLoadStudentByLogin() {
-    ModelService modelService = new ModelService(studentRepository, eventRepository);
-
-    Student student = new Student();
-    student.setLogin("testLogin1");
-    studentRepository.save(student);
-
-    Assert.assertEquals(student, modelService.loadStudentByLogin("testLogin1"));
-  }
-
-  @Test
   public void testGetAllEvents() {
     ModelService modelService = new ModelService(studentRepository, eventRepository);
     Event event1 = createAndSaveEvent("Event 1.0");
@@ -49,14 +35,6 @@ public class ModelServiceTest {
     Assert.assertEquals(events, modelService.getAllEvents());
   }
 
-  @Test
-  public void testLoadEventById() {
-    ModelService modelService = new ModelService(studentRepository, eventRepository);
-    Event event = createAndSaveEvent("Event 1.1");
-    eventRepository.save(event);
-
-    Assert.assertEquals(event, modelService.loadEventById(event.getId()));
-  }
 
   @Test
   public void testAddStudentToEventIfStudentNotExistsInDatabase() {
@@ -86,22 +64,6 @@ public class ModelServiceTest {
 
   }
 
-  @Test
-  public void testGetAllEventsPerStudent() {
-    ModelService modelService = new ModelService(studentRepository, eventRepository);
-
-    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
-    Event event1 = createAndSaveEvent("Event 1.5");
-    Event event2 = createAndSaveEvent("Event 2.5");
-    student.addEvent(event1);
-    student.addEvent(event2);
-    studentRepository.save(student);
-
-    List<Event> events = getEventsFromEventRef(student);
-
-    Assert.assertTrue(compareTwoLists(events, modelService.getAllEventsPerStudent("testLogin5")));
-  }
-
   public boolean compareTwoLists(List<Event> list1, List<Event> list2) {
     for (Event event : list1) {
       if (!list2.contains(event)) {
@@ -113,12 +75,7 @@ public class ModelServiceTest {
 
 
   private List<Event> getEventsFromEventRef(Student student) {
-    List<Event> events = new ArrayList<>();
-    for (EventRef eventRef : student.getEvents()) {
-      Optional<Event> event = eventRepository.findById(eventRef.getEvent());
-      events.add(event.get());
-    }
-    return events;
+    return (List<Event>) eventRepository.findAllById(student.getEventsIds());
   }
 
   private Student createAndSaveStudent(String login, String email) {
