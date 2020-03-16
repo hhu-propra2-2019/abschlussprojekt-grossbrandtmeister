@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.email.EmailService;
+import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MailController {
   
   private final transient Counter authenticatedAccess;
-  public final transient EmailService emailService;
+  private final transient EmailService emailService;
   
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public MailController(MeterRegistry registry,
@@ -40,7 +41,12 @@ public class MailController {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     
-    emailService.sendMail();
+    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    final String name = principal.getName();
+    String gender = "male";
+    String matNr = "123912399";
+    
+    emailService.sendMail(name, gender, matNr);
     
     return "Email Sent!";
   }

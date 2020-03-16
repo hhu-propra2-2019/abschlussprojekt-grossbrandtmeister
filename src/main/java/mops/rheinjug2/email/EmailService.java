@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class EmailService {
   
-  public final transient CertificateService certificateService;
-  public final transient JavaMailSender emailSender;
+  private final transient CertificateService certificateService;
+  private final transient JavaMailSender emailSender;
+  
+  private final transient String recipient = "pamei104@uni-duesseldorf.de";
   
   public EmailService(CertificateService certificateService, JavaMailSender emailSender) {
     this.certificateService = certificateService;
@@ -27,11 +29,12 @@ public class EmailService {
   /**
    * Dummy Methode die beim aufrufen von /sendEmail eine
    * Test Email an eine angegebene Email sendet.
+   * Die Parameter beziehen sich auf die Angaben des/der Studenten/Studentin.
    */
-  public void sendMail() throws MessagingException {
-    final String recipient = "pamei104@uni-duesseldorf.de";
-    final String subject = "Test Email";
-    final String text = "Test";
+  public void sendMail(String name, String gender, String matNr) throws MessagingException {
+    final String subject = "Java in der Praxis: Scheinbeantragung von " + name;
+    final String text = setGender(gender) + name + " (Matr: " + matNr + ") beantragt folgende "
+        + "Veranstaltung(en) gegen 0.5 CP einzutauschen:";
     
     // Write certificate to outputStream
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -59,4 +62,16 @@ public class EmailService {
     
     emailSender.send(mimeMessage);
   }
+  
+  private String setGender(String gender) {
+    switch (gender) {
+      case "male":
+        return "Der Student ";
+      case "female":
+        return "Die Studentin ";
+      default:
+        return "";
+    }
+  }
+  
 }
