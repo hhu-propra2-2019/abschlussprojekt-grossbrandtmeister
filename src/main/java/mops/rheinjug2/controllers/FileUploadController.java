@@ -20,6 +20,7 @@ import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileCheckService;
 import mops.rheinjug2.fileupload.FileService;
+import mops.rheinjug2.fileupload.Summary;
 import org.apache.commons.io.IOUtils;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -88,18 +89,18 @@ public class FileUploadController {
   }
 
   /**
-   * Nimmt den Inhalt aus der Textarea-Box und gibt ihn an den FileService weiter
+   * Nimmt das Summary mit Inhalt und gibt den Inhalt an den FileService weiter
    * um das File zu speichern.
    */
   @PostMapping(path = "/student/summarysubmit")
   public String useForm(final KeycloakAuthenticationToken token, final RedirectAttributes attributes,
-                        @RequestParam("Inhalt") final String content) {
+                        final Summary summary) {
     try {
       final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
       final String username = principal.getName();
       if (!username.isEmpty()) {
         final String filename = username + "_" + Veranstaltung;
-        fileService.uploadeContentConvertToMd(content, filename);
+        fileService.uploadeContentConvertToMd(summary.getContent(), filename);
         attributes.addFlashAttribute("message", "You successfully uploaded the form !");
       }
 
@@ -108,7 +109,6 @@ public class FileUploadController {
       attributes.addFlashAttribute("message", "Your file was not able to be uploaded ");
     }
     authenticatedAccess.increment();
-    System.out.println(content);
     return "redirect:/rheinjug2/student/reportsubmit";
 
   }

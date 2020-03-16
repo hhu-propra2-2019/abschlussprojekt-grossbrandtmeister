@@ -33,7 +33,7 @@
     <div class="container bg-light rounded shadow-lg text-secondary "
          style=" padding: 10px; margin-top: 40px; margin-bottom: 50px">
         <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
-        <form action="summarysubmit" th:object="${summary}" method="post">
+        <form action="summarysubmit" th:object="${summary}" method="post" id="mysubmit">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <div class="form-group">
                 <div>
@@ -60,7 +60,8 @@
             <div class="form-group">
                 <label for="Inhalt">Inhalt</label>
                 <textarea class="form-control" id="Inhalt" name="Inhalt" rows="20"
-                          placeholder="Zusammenfassung hier schreiben..." th:text="*{content}"></textarea>
+                          placeholder="Zusammenfassung hier schreiben..." th:field="*{content}"
+                          form="mysubmit"></textarea>
             </div>
             <div class="form-group secondary">
                 <label class="" for="Todaysdate">heutige datum</label>
