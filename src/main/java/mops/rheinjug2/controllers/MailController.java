@@ -42,7 +42,10 @@ public class MailController {
     authenticatedAccess.increment();
     
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    final String name = principal.getName();
+    final String forename = principal.getKeycloakSecurityContext().getIdToken().getGivenName();
+    final String surname = principal.getKeycloakSecurityContext().getIdToken().getFamilyName();
+    final String name = forename + " " + surname;
+    
     String gender = "male";
     String matNr = "123912399";
     
