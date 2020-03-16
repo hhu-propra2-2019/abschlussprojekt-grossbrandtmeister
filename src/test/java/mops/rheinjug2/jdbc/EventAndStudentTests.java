@@ -4,6 +4,7 @@ package mops.rheinjug2.jdbc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
@@ -100,6 +101,8 @@ public class EventAndStudentTests {
   @Test
   public void testOneStudentAddsSummaryToEvent() {
     Event event = createAndSaveEvent("Veranstaltung");
+    event.setDate(LocalDateTime.now());
+    eventRepository.save(event);
     Student student = createAndSaveStudent("ax100", "ax@hhu.de");
     student.addEvent(event);
     student.addSummary(event);
@@ -111,7 +114,11 @@ public class EventAndStudentTests {
   @Test
   public void testOneStudentAddsSummaryToTwoEvents() {
     Event event = createAndSaveEvent("Veranstaltung A");
+    event.setDate(LocalDateTime.now());
+    eventRepository.save(event);
     Event event2 = createAndSaveEvent("Veranstaltung B");
+    event2.setDate(LocalDateTime.now());
+    eventRepository.save(event2);
     Student student = createAndSaveStudent("ax100", "ax@hhu.de");
     student.addEvent(event);
     student.addEvent(event2);

@@ -94,5 +94,8 @@ public class Student {
         .equals(event.getId())).findAny().get();
   }
 
-
+  public void setAccepted(boolean value, Event event) {
+    EventRef ref = findEventRef(event);
+    ref.setAccepted(value);
+  }
 }

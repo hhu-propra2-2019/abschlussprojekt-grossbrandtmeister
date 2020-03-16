@@ -30,16 +30,18 @@ public class ModelService {
     return (List<Event>) eventRepository.findAll();
   }
 
-  public void addStudentToEvent(String login, String email, Long eventId) {
+  public Student addStudentToEvent(String login, String email, Long eventId) {
     Event event = loadEventById(eventId);
     Student student = loadStudentByLogin(login);
     if (student == null) {
       Student newStudent = new Student(login, email);
       newStudent.addEvent(event);
       studentRepository.save(newStudent);
+      return newStudent;
     } else {
       student.addEvent(event);
       studentRepository.save(student);
+      return student;
     }
   }
 
@@ -53,11 +55,12 @@ public class ModelService {
     return events;
   }
 
-  public void submitSummary(String login, Long eventId) {
+  public Student submitSummary(String login, Long eventId) {
     Student student = loadStudentByLogin(login);
     Event event = loadEventById(eventId);
     student.addSummary(event);
     studentRepository.save(student);
+    return student;
   }
 
   public List<Event> getAllEventsForCP(String login) {
@@ -80,6 +83,14 @@ public class ModelService {
     }
   }
 
+  public Student acceptSummary(Long eventId, String login) {
+    Event event = loadEventById(eventId);
+    Student student = loadStudentByLogin(login);
+    student.setAccepted(true, event);
+    studentRepository.save(student);
+    return student;
+  }
+
   private boolean useForEntwickelbar(Student student, List<Event> events) {
     for (Event e : events) {
       if (e.getType().equalsIgnoreCase("Entwickelbar")) {
@@ -96,7 +107,7 @@ public class ModelService {
     return event.get();
   }
 
-  public Student loadStudentByLogin(String login) {
+  private Student loadStudentByLogin(String login) {
     return studentRepository.findByLogin(login);
   }
 
@@ -117,13 +128,14 @@ public class ModelService {
   private void addEventsWithNoSubmission(Map<Event, SubmissionStatus> events, Set<Long> eventsIds) {
     List<Event> eventsWithNoSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     for (Event e : eventsWithNoSummary) {
-      if (e.getStatus().equalsIgnoreCase("Upcoming")) {
-        addToMap(events, eventsWithNoSummary, SubmissionStatus.UPCOMING);
+      if (e.isUpcoming()) {
+        addToMap(events, List.of(e), SubmissionStatus.UPCOMING);
       } else if (e.isOpenForSubmission()) {
-        addToMap(events, eventsWithNoSummary, SubmissionStatus.OPEN_FOR_SUBMISSION);
+        addToMap(events, List.of(e), SubmissionStatus.OPEN_FOR_SUBMISSION);
       } else {
-        addToMap(events, eventsWithNoSummary, SubmissionStatus.NO_SUBMISSION);
+        addToMap(events, List.of(e), SubmissionStatus.NO_SUBMISSION);
       }
     }
   }
+
 }
