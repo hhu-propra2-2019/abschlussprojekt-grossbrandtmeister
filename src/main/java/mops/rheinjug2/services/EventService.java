@@ -1,6 +1,7 @@
 package mops.rheinjug2.services;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.meetupcom.Event;
@@ -30,6 +31,21 @@ public class EventService {
     for (final Event event : meetupEvents) {
       eventEntity = eventRepository.findEventByMeetupId(Long.parseLong(event.getId()));
       eventRepository.save(ModelConverter.parseMeetupEvent(event, eventEntity));
+    }
+  }
+
+  /**
+   * Prüft ob UPCOMING Events bereits vorbei sind und setzt diese auf PAST.
+   */
+  public void updateStatusOfPastEvents() {
+    final List<mops.rheinjug2.entities.Event> upcomingEvents =
+        eventRepository.findEventsByStatus("UPCOMING");
+
+    for (final mops.rheinjug2.entities.Event event : upcomingEvents) {
+      if (event.getDate().isBefore(LocalDateTime.now(ZoneId.of("Europe/Berlin")))) {
+        event.setStatus("PAST");
+        eventRepository.save(event);
+      }
     }
   }
 
