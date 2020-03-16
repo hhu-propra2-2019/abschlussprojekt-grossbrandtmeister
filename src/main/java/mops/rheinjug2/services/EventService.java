@@ -1,7 +1,6 @@
 package mops.rheinjug2.services;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.meetupcom.Event;
@@ -24,9 +23,8 @@ public class EventService {
   /**
    * Ruft Events von meetup.com ab und speichert diese in der Datenbank
    */
-  public void refreshRheinjugEvents() {
+  public void refreshRheinjugEvents(final LocalDateTime time) {
     mops.rheinjug2.entities.Event eventEntity;
-    final LocalDateTime time = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     final List<Event> meetupEvents = meetupComService.getRheinJugEventsSince(time);
     log.info("Fetched " + meetupEvents.size() + " events from meetup.com");
     for (final Event event : meetupEvents) {

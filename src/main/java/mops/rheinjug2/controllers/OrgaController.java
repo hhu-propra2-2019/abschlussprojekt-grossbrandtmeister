@@ -3,6 +3,7 @@ package mops.rheinjug2.controllers;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
@@ -74,7 +75,7 @@ public class OrgaController {
   public String getEventsFromApi(final KeycloakAuthenticationToken token) {
     final Account user = AccountCreator.createAccountFromPrincipal(token);
     log.info("User '" + user.getName() + "' requested event refresh");
-    eventService.refreshRheinjugEvents();
+    eventService.refreshRheinjugEvents(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
     return "redirect:/rheinjug2/orga/events";
   }
 }

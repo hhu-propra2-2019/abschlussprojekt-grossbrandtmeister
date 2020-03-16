@@ -1,5 +1,7 @@
 package mops.rheinjug2.services;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,6 +20,6 @@ public class EventServiceScheduler {
 
   @Scheduled(fixedDelayString = "${application.api-pump.delay}")
   private void schedule() {
-    eventService.refreshRheinjugEvents();
+    eventService.refreshRheinjugEvents(LocalDateTime.now(ZoneId.of("Europe/Berlin")));
   }
 }
