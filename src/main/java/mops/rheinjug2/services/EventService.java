@@ -29,7 +29,7 @@ public class EventService {
     final List<Event> meetupEvents = meetupComService.getRheinJugEventsSince(time);
     log.info("Fetched " + meetupEvents.size() + " events from meetup.com");
     for (final Event event : meetupEvents) {
-      eventEntity = eventRepository.findEventByMeetupId(Long.parseLong(event.getId()));
+      eventEntity = eventRepository.findEventByMeetupId(event.getId());
       eventRepository.save(ModelConverter.parseMeetupEvent(event, eventEntity));
     }
   }
