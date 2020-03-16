@@ -18,4 +18,8 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 
   @Query(value = "SELECT * FROM EVENT")
   List<Event> getAllEvents();
+
+  @Query(value = "SELECT COUNT(*) FROM student_event "
+      + "WHERE student_event.event = :id AND student_event.submitted_summary = TRUE ")
+  int countSubmittedSummaryPerEventById(@Param("id") Long id);
 }

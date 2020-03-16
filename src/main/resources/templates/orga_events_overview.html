@@ -43,7 +43,10 @@
                         <div class="col-12">
                             <i class="icono-calendar"></i>
                             <span th:text="${#temporals.format(event.getDate(), 'yyyy.MM.dd')}"
-                            >&nbsp;13.03.2020</span>
+                                  th:classappend="${event.getStatus() == 'PAST'} ? text-danger "
+                            >&nbsp;13.03.2020 </span>
+                            <small class="text-danger" th:if="${event.getStatus() == 'PAST'}">vergangene
+                                Veranstaltung</small>
                         </div>
                     </div>
                 </div>
@@ -53,7 +56,7 @@
                             <img src="/icons/icon-time-clock.png" style="width: 32px;height: 28px;">
                             <span>&nbsp;Abgabefrist</span>
                             <span th:text="${#temporals.format(event.getSubmissionDeadline(), 'yyyy.MM.dd hh:mm')}"
-                                  th:classappend="${event.getSubmissionDeadline().isBefore(datenow) and event.getSubmissionDeadline().isAfter(event.date)} ? text-success : text-danger">&nbsp;05.03.2020</span>
+                                  th:classappend="${event.getSubmissionDeadline().isAfter(datenow) and event.getStatus() == 'PAST'} ? text-success : text-danger">&nbsp;05.03.2020</span>
                         </div>
                     </div>
                 </div>
@@ -64,7 +67,8 @@
                     <div class="row">
                         <div class="col-12">
                             <span>Anzahl angemeldte Studenten:&nbsp;</span>
-                            <span class="text-success">15</span>
+                            <span class="text-success" th:text="${event.getNumberOfStudent()}"
+                                  th:classappend="${event.getNumberOfStudent() > 0} ? text-success : text-danger">15</span>
                         </div>
                     </div>
                 </div>
@@ -72,7 +76,8 @@
                     <div class="row">
                         <div class="col-12">
                             <span>Anzahl abgegebene Zusammenfassungen:&nbsp;</span>
-                            <span class="text-success">11</span>
+                            <span class="text-success" th:text="${event.getNumberOfSubmition()}"
+                                  th:classappend="${event.getNumberOfSubmition() > 0} ? text-success : text-danger">11</span>
                         </div>
                     </div>
                 </div>
