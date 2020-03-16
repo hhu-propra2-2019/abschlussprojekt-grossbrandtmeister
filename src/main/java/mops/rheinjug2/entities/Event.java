@@ -18,7 +18,6 @@ public class Event {
   private LocalDateTime date;
   private String address;
   private String url;
-
   private String status;
   private String type;
 

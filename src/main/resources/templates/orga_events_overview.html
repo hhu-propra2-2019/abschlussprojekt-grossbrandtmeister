@@ -28,11 +28,11 @@
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
     <h1 class="text-center text-secondary"> Rheinjug Veranstaltungen </h1>
-    <div>
+    <div th:remove="all-but-first" th:each="event : ${events}">
         <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
             <div class="row border-bottom  mx-1 my-1 align-content-center">
                 <div class="col-12 text-secondary text-center  my-1">
-                    <h2 class="font-weight-bold">
+                    <h2 class="font-weight-bold" th:text="${event.getTitle()}">
                         Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                     </h2>
                 </div>
@@ -42,7 +42,11 @@
                     <div class="row">
                         <div class="col-12">
                             <i class="icono-calendar"></i>
-                            <span>&nbsp;13.03.2020</span>
+                            <span th:text="${#temporals.format(event.getDate(), 'yyyy.MM.dd')}"
+                                  th:classappend="${event.getStatus() == 'PAST'} ? text-danger "
+                            >&nbsp;13.03.2020 </span>
+                            <small class="text-danger" th:if="${event.getStatus() == 'PAST'}">vergangene
+                                Veranstaltung</small>
                         </div>
                     </div>
                 </div>
@@ -51,7 +55,8 @@
                         <div class="col-12">
                             <img src="/icons/icon-time-clock.png" style="width: 32px;height: 28px;">
                             <span>&nbsp;Abgabefrist</span>
-                            <span>&nbsp;05.03.2020</span>
+                            <span th:text="${#temporals.format(event.getSubmissionDeadline(), 'yyyy.MM.dd hh:mm')}"
+                                  th:classappend="${event.getSubmissionDeadline().isAfter(datenow) and event.getStatus() == 'PAST'} ? text-success : text-danger">&nbsp;05.03.2020</span>
                         </div>
                     </div>
                 </div>
@@ -62,7 +67,8 @@
                     <div class="row">
                         <div class="col-12">
                             <span>Anzahl angemeldte Studenten:&nbsp;</span>
-                            <span class="text-success">15</span>
+                            <span class="text-success" th:text="${event.getNumberOfStudent()}"
+                                  th:classappend="${event.getNumberOfStudent() > 0} ? text-success : text-danger">15</span>
                         </div>
                     </div>
                 </div>
@@ -70,7 +76,8 @@
                     <div class="row">
                         <div class="col-12">
                             <span>Anzahl abgegebene Zusammenfassungen:&nbsp;</span>
-                            <span class="text-success">11</span>
+                            <span class="text-success" th:text="${event.getNumberOfSubmition()}"
+                                  th:classappend="${event.getNumberOfSubmition() > 0} ? text-success : text-danger">11</span>
                         </div>
                     </div>
                 </div>

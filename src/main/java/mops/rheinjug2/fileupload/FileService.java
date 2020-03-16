@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,18 +25,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
 
 @Service
+@Log4j2
 public class FileService {
 
   transient MinioClient minioClient;
 
-  @Value("${minio.bucket.name}")
-  transient String defaultBucketName;
+  final transient String defaultBucketName;
 
-  @Value("${minio.default.folder}")
-  String defaultBaseFolder;
+  final transient String defaultBaseFolder;
 
-  public FileService(final MinioClient minioClient) {
+  FileService(final MinioClient minioClient,
+              @Value("${minio.bucket.name}") final String defaultBucketName,
+              @Value("${minio.default.folder}") final String defaultBaseFolder) {
     this.minioClient = minioClient;
+    this.defaultBucketName = defaultBucketName;
+    this.defaultBaseFolder = defaultBaseFolder;
   }
 
   /**
@@ -71,9 +75,10 @@ public class FileService {
     minioClient.statObject(defaultBucketName, filename);
     final InputStream inputStream = minioClient.getObject(defaultBucketName, filename);
     try {
+      log.info("Reading file " + filename);
       final File file = new File(filename);
       FileUtils.copyInputStreamToFile(inputStream, file);
-      System.out.println(file);
+      log.info("File with length " + file.length() + " read.");
       return file;
     } catch (final Exception e) {
       throw new RuntimeException(e.getMessage());

@@ -50,14 +50,14 @@ public class FileUploadController {
 
   static final String Veranstaltung = "Veranstaltung";
 
-
   @Autowired
   public FileUploadController(final FileService fileService, final MeterRegistry registry) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
   }
 
-  @RequestMapping("/uploadfile")
+
+  @RequestMapping("/file")
   public String showPage(final Model model) {
     return "fileUpload";
   }
@@ -110,7 +110,6 @@ public class FileUploadController {
     }
     authenticatedAccess.increment();
     return "redirect:/rheinjug2/student/reportsubmit";
-
   }
 
   /**
@@ -147,6 +146,7 @@ public class FileUploadController {
   public void downloadFilebyToken(final KeycloakAuthenticationToken token,
                                   final HttpServletResponse response)
       throws IOException {
+
 
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     final String username = principal.getName();
