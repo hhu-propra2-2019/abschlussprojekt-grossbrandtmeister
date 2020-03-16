@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabaseInitializer implements ServletContextInitializer {
   transient Random random = new Random();
-  transient LocalDate date1 = LocalDate.of(120, 01, 01);
-  transient LocalDate date2 = LocalDate.of(120, 05, 01);
+  transient LocalDate date1 = LocalDate.of(2020, 01, 01);
+  transient LocalDate date2 = LocalDate.of(2020, 05, 01);
   transient LocalDateTime dateNow = LocalDateTime.now();
 
   final transient EventRepository eventRepository;
@@ -40,9 +40,9 @@ public class DatabaseInitializer implements ServletContextInitializer {
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
       if (event.getDate().isBefore(dateNow)) {
-        event.setStatus("PAST");
-      } else {
         event.setStatus("UPCOMING");
+      } else {
+        event.setStatus("PAST");
       }
 
       if (random.nextBoolean()) {
