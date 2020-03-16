@@ -97,12 +97,16 @@ public class ModelServiceTest {
   public void testGetAllEventsPerStudent() {
     Event eventUpcoming = createAndSaveEvent("Veranstaltung Java");
     eventUpcoming.setDate(LocalDateTime.of(2020, 4, 5, 13, 20));
+
     Event eventOpen = createAndSaveEvent("Veranstaltung Java2");
     eventOpen.setDate(LocalDateTime.now());
+
     Event eventPassed = createAndSaveEvent("Veranstaltung Java 3");
     eventPassed.setDate(LocalDateTime.of(2020, 1, 2, 12, 20));
+
     Event eventWithSubmissionNotAccepted = createAndSaveEvent("Veranstaltung Java 4");
     eventWithSubmissionNotAccepted.setDate(LocalDateTime.now());
+
     Event eventWithSubmissionAccepted = createAndSaveEvent("Veranstaltung Java 4");
     eventWithSubmissionAccepted.setDate(LocalDateTime.now());
 
@@ -110,6 +114,7 @@ public class ModelServiceTest {
     List<Event> events = List.of(eventOpen, eventPassed, eventUpcoming, eventWithSubmissionAccepted, eventWithSubmissionNotAccepted);
     addEventsToStudent(events, student);
     student.addSummary(eventWithSubmissionAccepted);
+    eventRepository.setAccepted(true, eventWithSubmissionAccepted.getId(), student.getId());
     student.addSummary(eventWithSubmissionNotAccepted);
 
 
