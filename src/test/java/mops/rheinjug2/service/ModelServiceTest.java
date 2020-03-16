@@ -2,7 +2,7 @@ package mops.rheinjug2.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import mops.rheinjug2.ModelService;
@@ -11,6 +11,7 @@ import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,8 +82,8 @@ public class ModelServiceTest {
     studentRepository.save(student);
     student.addSummary(event2);
     studentRepository.save(student);
-    eventRepository.setUsedForCertificate(true, event1.getId(), student.getId());
-    eventRepository.setUsedForCertificate(false, event2.getId(), student.getId());
+//    eventRepository.setUsedForCertificate(true, event1.getId(), student.getId());
+//    eventRepository.setUsedForCertificate(false, event2.getId(), student.getId());
 
     List<Event> events = Arrays.asList(event2);
     System.out.println(events);
@@ -92,8 +93,32 @@ public class ModelServiceTest {
 
   }
 
-  private List<Event> getEventsFromEventRef(Student student) {
-    return (List<Event>) eventRepository.findAllById(student.getEventsIds());
+  @Test
+  public void testGetAllEventsPerStudent() {
+    Event eventUpcoming = createAndSaveEvent("Veranstaltung Java");
+    eventUpcoming.setDate(LocalDateTime.of(2020, 4, 5, 13, 20));
+    Event eventOpen = createAndSaveEvent("Veranstaltung Java2");
+    eventOpen.setDate(LocalDateTime.now());
+    Event eventPassed = createAndSaveEvent("Veranstaltung Java 3");
+    eventPassed.setDate(LocalDateTime.of(2020, 1, 2, 12, 20));
+    Event eventWithSubmissionNotAccepted = createAndSaveEvent("Veranstaltung Java 4");
+    eventWithSubmissionNotAccepted.setDate(LocalDateTime.now());
+    Event eventWithSubmissionAccepted = createAndSaveEvent("Veranstaltung Java 4");
+    eventWithSubmissionAccepted.setDate(LocalDateTime.now());
+
+    Student student = createAndSaveStudent("ll100", "ll@hhu.de");
+    List<Event> events = List.of(eventOpen, eventPassed, eventUpcoming, eventWithSubmissionAccepted, eventWithSubmissionNotAccepted);
+    addEventsToStudent(events, student);
+    student.addSummary(eventWithSubmissionAccepted);
+    student.addSummary(eventWithSubmissionNotAccepted);
+
+
+  }
+
+  @AfterEach
+  public void cleanUpEach() {
+    eventRepository.deleteAll();
+    studentRepository.deleteAll();
   }
 
   private Student createAndSaveStudent(String login, String email) {
@@ -107,6 +132,11 @@ public class ModelServiceTest {
     event.setTitle(title);
     eventRepository.save(event);
     return event;
+  }
+
+  private void addEventsToStudent(List<Event> events, Student student) {
+    events.stream().forEach(x -> student.addEvent(x));
+    studentRepository.save(student);
   }
 
 }
