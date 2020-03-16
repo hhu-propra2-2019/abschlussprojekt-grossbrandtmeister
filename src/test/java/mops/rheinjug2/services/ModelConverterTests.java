@@ -16,7 +16,7 @@ import java.util.List;
 import mops.rheinjug2.meetupcom.Event;
 import mops.rheinjug2.meetupcom.MeetupCom;
 import mops.rheinjug2.meetupcom.MeetupComConfiguration;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -48,8 +48,8 @@ public class ModelConverterTests {
   /**
    * Erstellt eine fake Rückgabe von Meetup.com in Form eines JSON.
    */
-  @BeforeAll
-  public void init() throws URISyntaxException {
+  @BeforeEach
+  public void setUp() throws URISyntaxException {
     mockServer = MockRestServiceServer.createServer(restTemplate);
     mockServer.expect(ExpectedCount.once(),
         requestTo(new URI("http://api.meetup.com/rheinjug/events?no_earlier_than=1970-01-01T00:00:00.000&status=past,upcoming&desc=true")))
@@ -131,7 +131,7 @@ public class ModelConverterTests {
     assertEquals(
         LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
         eventEntity.getDate());
-    assertEquals("Universitätsstr. 1", eventEntity.getAddress());
+    assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());
     assertEquals("UPCOMING", eventEntity.getStatus());
     assertEquals("EntwickelBar", eventEntity.getType());
@@ -156,7 +156,7 @@ public class ModelConverterTests {
     assertEquals(
         LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
         eventEntity.getDate());
-    assertEquals("Universitätsstr. 1", eventEntity.getAddress());
+    assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());
     assertEquals("UPCOMING", eventEntity.getStatus());
     assertEquals("EntwickelBar", eventEntity.getType());
