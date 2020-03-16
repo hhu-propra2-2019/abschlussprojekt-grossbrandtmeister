@@ -18,6 +18,7 @@ public class Event {
   private double price;
   private LocalDateTime date;
   private String address;
+  private String venue;
   private String url;
   private String status;
   private String type;

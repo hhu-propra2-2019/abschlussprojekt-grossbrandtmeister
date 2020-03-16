@@ -46,7 +46,7 @@ public class ModelConverterTests {
   private transient MockRestServiceServer mockServer;
 
   /**
-   * Erstellt eine fake Rückgabe von Meetup.com in Form eines JSON.
+   * Erstellt eine mock Rückgabe von Meetup.com in Form eines JSON.
    */
   @BeforeEach
   public void setUp() throws URISyntaxException {
@@ -113,6 +113,10 @@ public class ModelConverterTests {
                 + "]\n"));
   }
 
+  /**
+   * Teste ModelConverter mit einer leeren Event Entity.
+   * Erwarte ID = null und Werte wie im Mock oben.
+   */
   @Test
   public void convertIntoNewEventEntity() {
     final LocalDateTime time0 = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -132,11 +136,16 @@ public class ModelConverterTests {
         LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
         eventEntity.getDate());
     assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
+    assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenue());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());
     assertEquals("UPCOMING", eventEntity.getStatus());
     assertEquals("EntwickelBar", eventEntity.getType());
   }
 
+  /**
+   * Teste ModelConverter mit vorhandener Event Entity.
+   * Erwarte ID wie eingestellt (34) und Werte wie im Mock oben.
+   */
   @Test
   public void convertIntoExistingEventEntity() {
     final LocalDateTime time0 = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -157,6 +166,7 @@ public class ModelConverterTests {
         LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
         eventEntity.getDate());
     assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
+    assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenue());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());
     assertEquals("UPCOMING", eventEntity.getStatus());
     assertEquals("EntwickelBar", eventEntity.getType());
