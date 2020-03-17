@@ -80,7 +80,7 @@ public class StudentController {
       InvalidBucketNameException, InsufficientDataException, ErrorResponseException {
     final LocalDate today = LocalDate.now();
     final String eventname = "das coolste Event";
-    String content = fileService.getContentOfFileAsString("Vorlage.md");
+    String content = fileService.getContentOfFileAsString("VorlageZusammenfassung.md");
     if (content.isEmpty()) {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
