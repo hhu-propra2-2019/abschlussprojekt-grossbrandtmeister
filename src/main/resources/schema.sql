@@ -10,6 +10,7 @@ CREATE TABLE event
     price       double,
     date        datetime,
     address     varchar(200),
+    venue_name  varchar(255),
     url         text,
     status      varchar(30),
     type        varchar(30)
