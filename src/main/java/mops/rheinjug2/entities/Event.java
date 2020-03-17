@@ -44,5 +44,5 @@ public class Event {
     return date.isAfter(LocalDateTime.now());
   }
 }
-}
+
 
