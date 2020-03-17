@@ -31,8 +31,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) {
-    KeycloakAuthenticationProvider keycloakAuthenticationProvider
+  public void configureGlobal(final AuthenticationManagerBuilder auth) {
+    final KeycloakAuthenticationProvider keycloakAuthenticationProvider
         = keycloakAuthenticationProvider();
     keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
     auth.authenticationProvider(keycloakAuthenticationProvider);
@@ -49,7 +49,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST,
       proxyMode = ScopedProxyMode.TARGET_CLASS)
   public AccessToken getAccessToken() {
-    HttpServletRequest request =
+    final HttpServletRequest request =
         ((ServletRequestAttributes) RequestContextHolder
             .currentRequestAttributes()).getRequest();
     return ((KeycloakPrincipal) request.getUserPrincipal())
@@ -57,7 +57,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   }
 
   @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  protected void configure(final HttpSecurity http) throws Exception {
     super.configure(http);
     http.authorizeRequests()
         .antMatchers("/h2-console/**").permitAll()
