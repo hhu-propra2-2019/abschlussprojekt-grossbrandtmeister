@@ -97,8 +97,8 @@ public class ModelServiceTest {
     modelService.submitSummary("testLogin5", event1.getId());
     Student savedStudent =
         modelService.submitSummary("testLogin5", event2.getId());
-    assertThat(savedStudent.getEventsIdsWithSummaryNotAccepted()).
-        containsExactly(event1.getId(), event2.getId());
+    assertThat(savedStudent.getEventsIdsWithSummaryNotAccepted())
+        .containsExactly(event1.getId(), event2.getId());
   }
 
   @Test
@@ -136,7 +136,8 @@ public class ModelServiceTest {
         entry(eventOpen, ModelService.SubmissionStatus.OPEN_FOR_SUBMISSION),
         entry(eventPassed, ModelService.SubmissionStatus.NO_SUBMISSION),
         entry(eventWithSubmissionAccepted, ModelService.SubmissionStatus.SUBMITTED_ACCEPTED),
-        entry(eventWithSubmissionNotAccepted, ModelService.SubmissionStatus.SUBMITTED_NOT_ACCEPTED));
+        entry(eventWithSubmissionNotAccepted,
+            ModelService.SubmissionStatus.SUBMITTED_NOT_ACCEPTED));
 
   }
 
