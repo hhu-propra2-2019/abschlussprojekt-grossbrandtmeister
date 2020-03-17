@@ -33,7 +33,7 @@ public class ModelConverter {
     event.setUrl(meetupEvent.getLink().toString());
     event.setStatus(meetupEvent.getStatus().name());
     event.setType(meetupEvent.getName().toLowerCase(Locale.GERMAN).contains("entwickelbar")
-        ? "EntwickelBar" : "Normal");
+        ? "EntwickelBar" : "Abendveranstaltung");
 
     return event;
   }

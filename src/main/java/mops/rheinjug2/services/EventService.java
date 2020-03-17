@@ -2,7 +2,9 @@ package mops.rheinjug2.services;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.meetupcom.Event;
 import mops.rheinjug2.meetupcom.MeetupCom;
@@ -20,6 +22,14 @@ public class EventService {
   public EventService(final MeetupCom meetupComService, final EventRepository eventRepository) {
     this.meetupComService = meetupComService;
     this.eventRepository = eventRepository;
+  }
+
+  /**
+   * Ruft einmalig alle Events von meetup.com ab, wenn unsere Anwendung startet.
+   */
+  @PostConstruct
+  private void getAllEvents() {
+    refreshRheinjugEvents(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
   }
 
   /**
