@@ -55,7 +55,7 @@ public class ModelServiceTest {
 
   @Test
   public void testAddStudentToEventIfStudentExistsInDatabase() {
-    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
+    createAndSaveStudent("testLogin5", "test5@hhu.de");
     Event event = createAndSaveEvent("Event 1.4");
     Student savedStudent =
         modelService.addStudentToEvent("testLogin5", "test4@hhu.de", event.getId());
