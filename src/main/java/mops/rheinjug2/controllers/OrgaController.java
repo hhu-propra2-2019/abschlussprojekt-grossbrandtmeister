@@ -43,7 +43,8 @@ public class OrgaController {
   @GetMapping("/events")
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
-    model.addAttribute("events", orgaService.getEvents());
+    authenticatedAccess.increment();
+    model.addAttribute("events", service.getEvents());
     model.addAttribute("datenow", LocalDateTime.now());
     return "orga_events_overview";
   }
@@ -65,6 +66,7 @@ public class OrgaController {
   public String getReports(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
+    model.addAttribute("summaries", service.getSummaries());
     return "orga_reports_overview";
   }
 
