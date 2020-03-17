@@ -1,0 +1,22 @@
+/*
+from https://stackoverflow.com/questions/52332952/can-we-use-partial-collapse-concept-in-bootstrap-4
+*/
+
+#partial-collapse a.collapsed:after {
+    content: '(mehr)';
+}
+
+#partial-collapse a:not(.collapsed):after {
+    content: '(weniger)';
+}
+
+#partial-collapse .partial-collapse.collapse:not(.show) {
+    display: block;
+    /* height = lineheight * no of lines to display */
+    height: 3em;
+    overflow: hidden;
+}
+
+#partial-collapse .partial-collapse.collapsing {
+    height: 3em;
+}
