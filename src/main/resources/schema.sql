@@ -5,13 +5,14 @@ DROP TABLE IF EXISTS student_event;
 CREATE TABLE event
 (
     id          integer primary key auto_increment,
+    meetup_id   varchar(30),
     title       varchar(255),
-    description text,
+    description varchar,
     price       double,
     date        datetime,
     address     varchar(200),
-    venue_name  varchar(255),
-    url         text,
+    venue       varchar(200),
+    url         varchar,
     status      varchar(30),
     type        varchar(30)
 );
