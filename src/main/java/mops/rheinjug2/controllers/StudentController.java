@@ -18,7 +18,8 @@ public class StudentController {
 
   private final transient Counter authenticatedAccess;
 
-  public StudentController(MeterRegistry registry) {
+
+  public StudentController(final MeterRegistry registry) {
     authenticatedAccess = registry.counter("access.authenticated");
   }
 
@@ -26,7 +27,7 @@ public class StudentController {
    * Event Übersicht für Studenten.
    */
   @GetMapping("/events")
-  public String getEvents(KeycloakAuthenticationToken token, Model model) {
+  public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     return "student_events_overview";
@@ -36,7 +37,8 @@ public class StudentController {
    * Übersicht der Events für die der aktuelle Student angemeldet war/ist.
    */
   @GetMapping("/visitedevents")
-  public String getPersonal(KeycloakAuthenticationToken token, Model model) {
+  public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
+
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     return "personalView";
@@ -46,7 +48,10 @@ public class StudentController {
    * Formular zum Beantragen von Credit-Points.
    */
   @GetMapping("/creditpoints")
-  public String getCreditPoints(KeycloakAuthenticationToken token, Model model) {
+  public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
+    // überprüfung von genug besuchten Veranstaltungen
+    // Rückgabe von boolean ob genug Veranstaltungen da sind
+
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     return "credit_points_apply";
@@ -56,7 +61,7 @@ public class StudentController {
    * Formular zur Einreichung der Zusammenfassung.
    */
   @GetMapping("/reportsubmit")
-  public String reportsubmit(KeycloakAuthenticationToken token, Model model) {
+  public String reportsubmit(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     return "report_submit";
