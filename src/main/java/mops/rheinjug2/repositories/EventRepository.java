@@ -22,4 +22,11 @@ public interface EventRepository extends CrudRepository<Event, Long> {
       + " :eventid = student_event.event AND student_event.student = :studentid")
   int setAccepted(@Param("accepted") boolean accepted,
                   @Param("eventid") Long eventid, @Param("studentid") Long studentid);
+  
+  @Query(value = "SELECT * FROM EVENT")
+  List<Event> getAllEvents();
+
+  @Query(value = "SELECT COUNT(*) FROM student_event "
+      + "WHERE student_event.event = :id AND student_event.submitted_summary = TRUE ")
+  int countSubmittedSummaryPerEventById(@Param("id") Long id);
 }

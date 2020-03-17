@@ -1,0 +1,25 @@
+== Fileupload
+
+=== Luca + Hannah
+
+To do: +
+
+- [*] Bestätigung der Speicherung des Dokumentes +
+- [ ] Fehlerbehandlung
+- [ ] Teste
+- [ ] in personalView: Abgabe der Zusammenfassungen mit upload logisch verbinden über eigenes Template
+- [ ] getMapping-Methode entfernen nach Entwickeln
+- [x] sinnvolle Speicherung der Abgaben in einem Bucket überlegen
+- [x] putObject-Methode überarbeiten: Hashmap - Edit: doch keine Hashmap
+- [ ] Ansicht für Jens
+- [x] download Methode schreiben (für alle)
+- [ ] Refactoring
+- [x] Dateieinschränkung nur für adoc
+- [x] beim Hochladen der Datei: zeige an, wenn das Format falsch ist
+
+Erweiterungen:
+- [ ] Inlineediting
+- [ ] Vorlage herunterladen
+
+
+

@@ -41,21 +41,26 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.github.javafaker:javafaker:1.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation "mops:styleguide:2.1.0"
+    implementation "mops:styleguide:2.2.0"
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
     implementation 'org.keycloak.bom:keycloak-adapter-bom:3.3.0.Final'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile 'org.asciidoctor:asciidoctorj:2.2.0'
     compile 'org.springframework:spring-context-support'
     compile 'javax.mail:mail:1.4.1'
+    compile 'io.minio:minio:6.0.13'
     compileOnly 'org.projectlombok:lombok'
     testCompile group: 'org.jvnet.mock-javamail', name: 'mock-javamail', version: '1.1'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -64,7 +69,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.tngtech.keycloakmock:mock-junit5:0.2.0'
     testCompile 'com.tngtech.archunit:archunit-junit5:0.13.1'
-    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.1'
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.19'
     compile group: 'com.sun.istack', name: 'istack-commons-runtime', version: '3.0.10'
 }
 
@@ -80,6 +85,8 @@ spotbugs {
 checkstyle {
     toolVersion = "8.28"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    ignoreFailures = false
+    maxWarnings = 0
 }
 
 pmd {

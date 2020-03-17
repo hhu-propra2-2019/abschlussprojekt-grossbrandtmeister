@@ -16,8 +16,12 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 public final class MeetupCom {
-  @Autowired
   private RestTemplate restTemplate;
+
+  @Autowired
+  public MeetupCom(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
 
   /**
    * Holt die Liste der RheinJUG-Veranstaltungen von api.meetup.com.
