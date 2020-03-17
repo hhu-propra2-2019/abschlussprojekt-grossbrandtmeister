@@ -50,16 +50,6 @@ public class OrgaController {
   }
 
   /**
-   * Übersicht der Anträge für Credit Points.
-   */
-  @GetMapping("/creditpoints")
-  public String getCreditpoins(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
-    authenticatedAccess.increment();
-    return "orga_creditpoints";
-  }
-
-  /**
    * Übersicht der noch unbewerteten Abgaben.
    */
   @GetMapping("/reports")
