@@ -2,9 +2,9 @@ package mops.rheinjug2.repositories;
 
 import java.util.List;
 import mops.rheinjug2.entities.Event;
-import org.springframework.data.jdbc.repository.query.Modifying;
 import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.model.UnacceptedSummaryId;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

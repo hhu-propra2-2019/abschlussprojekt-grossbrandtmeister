@@ -65,8 +65,8 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .hasRole("monitoring")
         .anyRequest()
         .permitAll();
-    http.csrf().disable();
-    http.headers().frameOptions().disable();
+    //http.csrf().disable();
+    //http.headers().frameOptions().disable();
   }
 
   /**
