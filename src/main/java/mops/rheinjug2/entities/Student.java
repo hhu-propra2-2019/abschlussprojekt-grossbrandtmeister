@@ -53,8 +53,8 @@ public class Student {
    * Eine Zusammenfassung hinzufügen.
    */
   public void addSummary(Event event) {
-    EventRef ref = findEventRef(event);
     if (event.isOpenForSubmission()) {
+      EventRef ref = findEventRef(event);
       ref.setSubmittedSummary(true);
       ref.setTimeOfSubmission(LocalDateTime.now());
     }

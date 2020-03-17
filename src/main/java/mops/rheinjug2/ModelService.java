@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ModelService {
+  private final static int MAX_AMOUNT_EVENTS = 3;
+
   private final transient StudentRepository studentRepository;
   private final transient EventRepository eventRepository;
 
@@ -26,10 +28,16 @@ public class ModelService {
     UPCOMING, OPEN_FOR_SUBMISSION, NO_SUBMISSION, SUBMITTED_NOT_ACCEPTED, SUBMITTED_ACCEPTED
   }
 
+  /**
+   * Alle Veranstaltungen zurückgeben.
+   */
   public List<Event> getAllEvents() {
     return (List<Event>) eventRepository.findAll();
   }
 
+  /**
+   * Ein Student zu einer Veranstaltung hinzufügen.
+   */
   public Student addStudentToEvent(String login, String email, Long eventId) {
     Event event = loadEventById(eventId);
     Student student = loadStudentByLogin(login);
@@ -45,6 +53,10 @@ public class ModelService {
     }
   }
 
+  /**
+   * Alle Veranstaltungen, für die sich ein Student angemeldet hat,
+   * mit dem entsprechenden Status zurückgeben.
+   */
   public Map<Event, SubmissionStatus> getAllEventsPerStudent(String login) {
     Student student = loadStudentByLogin(login);
     Map<Event, SubmissionStatus> events = new HashMap<>();
@@ -55,6 +67,10 @@ public class ModelService {
     return events;
   }
 
+
+  /**
+   * Ein Student gibt eine Zusammenfassung ab.
+   */
   public Student submitSummary(String login, Long eventId) {
     Student student = loadStudentByLogin(login);
     Event event = loadEventById(eventId);
@@ -63,18 +79,25 @@ public class ModelService {
     return student;
   }
 
+  /**
+   * Alle Veranstaltungen zurückgeben, die ein Student noch nicht
+   * für CPs verbraucht hat.
+   */
   public List<Event> getAllEventsForCP(String login) {
     Student student = loadStudentByLogin(login);
     Set<Long> eventsIds = student.getEventsIdsWithSummaryAcceptedNotUsed();
     return (List<Event>) eventRepository.findAllById(eventsIds);
   }
 
+  /**
+   * Veranstaltungen werden für CPs verbraucht, wenn möglich.
+   */
   public boolean useEventsForCertificate(String login) {
     Student student = loadStudentByLogin(login);
     List<Event> events = getAllEventsForCP(login);
     if (useForEntwickelbar(student, events)) {
       return true;
-    } else if (events.size() < 3) {
+    } else if (events.size() < MAX_AMOUNT_EVENTS) {
       return false;
     } else {
       student.useEventsForCP(events.subList(0, 3));
@@ -83,6 +106,9 @@ public class ModelService {
     }
   }
 
+  /**
+   * Eine Zusammenfassung wird akzeptiert.
+   */
   public Student acceptSummary(Long eventId, String login) {
     Event event = loadEventById(eventId);
     Student student = loadStudentByLogin(login);
@@ -111,7 +137,8 @@ public class ModelService {
     return studentRepository.findByLogin(login);
   }
 
-  private static void addToMap(Map<Event, SubmissionStatus> map, List<Event> events, SubmissionStatus staus) {
+  private static void addToMap(Map<Event, SubmissionStatus> map,
+                               List<Event> events, SubmissionStatus staus) {
     events.forEach(event -> map.put(event, staus));
   }
 

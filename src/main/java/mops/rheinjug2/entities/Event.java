@@ -29,11 +29,18 @@ public class Event {
     return "Event{" + "id=" + id + ", title='" + title + '\'' + '}';
   }
 
+  /**
+   * Gibt an, ob für eine Veranstaltung Zusammenfassungen abgegeben
+   * werden können.
+   */
   public boolean isOpenForSubmission() {
     LocalDateTime afterOneWeek = date.plusDays(7);
     return LocalDateTime.now().isBefore(afterOneWeek);
   }
 
+  /**
+   * Gibt an, ob eine Veranstaltung ansteht.
+   */
   public boolean isUpcoming() {
     return date.isAfter(LocalDateTime.now());
   }
