@@ -28,7 +28,7 @@ public class EventService {
    * Ruft einmalig alle Events von meetup.com ab, wenn unsere Anwendung startet.
    */
   @PostConstruct
-  private void getAllEvents() {
+  public void getAllEvents() {
     refreshRheinjugEvents(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
   }
 
