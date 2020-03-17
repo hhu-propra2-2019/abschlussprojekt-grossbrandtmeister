@@ -29,6 +29,7 @@ public class EventService {
    */
   @PostConstruct
   public void getAllEvents() {
+    log.info("Get all available rheinjug events");
     refreshRheinjugEvents(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
   }
 
