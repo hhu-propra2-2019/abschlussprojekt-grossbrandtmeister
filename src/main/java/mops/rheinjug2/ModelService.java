@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ModelService {
-  private final static int MAX_AMOUNT_EVENTS = 3;
+  private static final int MAX_AMOUNT_EVENTS = 3;
 
   private final transient StudentRepository studentRepository;
   private final transient EventRepository eventRepository;

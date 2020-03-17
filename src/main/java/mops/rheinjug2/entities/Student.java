@@ -19,7 +19,6 @@ public class Student {
   private String login;
   private String name;
   private String email;
-  private String venueName;
 
   private Set<EventRef> events = new HashSet<>();
 
