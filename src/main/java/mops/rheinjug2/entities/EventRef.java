@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table("student_event")
 @Data
-class EventRef {
+public class EventRef {
 
   private Long event;
 

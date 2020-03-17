@@ -43,189 +43,200 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
-    <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-        <div class="row border-bottom  mx-1 my-1 align-content-center">
-            <div class="col-12 text-secondary text-center  my-1">
-                <h3 class="font-weight-bold">
-                    Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                </h3>
-            </div>
-        </div>
-        <div class="row border-bottom  mx-1 my-1">
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>Student Name:</span>
-                <span>&nbsp;Ein Student</span>
-            </div>
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>Email:</span>
-                <span>&nbsp;ein.student@hhu.de</span>
-            </div>
-        </div>
-        <div class="row border-bottom  mx-1 my-1">
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>Abgabe Frist:</span>
-                <span>&nbsp;15.03.2020</span>
-            </div>
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>hochgeladen am:</span>
-                <span>&nbsp;12.03.2020</span>
-            </div>
-        </div>
-        <div class="row  mx-1 my-1">
-            <div class="col-12 my-1">
-                <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#inhalt1"
-                        aria-expanded="true">
-                    jetzt bewerten
-                </button>
-            </div>
-        </div>
-        <div id="inhalt1" class="collapse">
-            <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
-                <div class="col-12 my-1">
-                    <span>Inhalt</span>
+    <div th:remove="all-but-first" th:each="summary : ${summaries}">
+        <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+            <div class="row border-bottom  mx-1 my-1 align-content-center">
+                <div class="col-12 text-secondary text-center  my-1">
+                    <h3 class="font-weight-bold" th:text="${summary.getEventTitle()}">
+                        Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                    </h3>
                 </div>
-                <div class="col-12 my-1 mb-2">
+            </div>
+            <div class="row border-bottom  mx-1 my-1">
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>Student Name:</span>
+                    <span th:text="${summary.getStudentName()}">&nbsp;Ein Student</span>
+                </div>
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>Email:</span>
+                    <span th:text="${summary.getStudentEmail()}">&nbsp;ein.student@hhu.de</span>
+                </div>
+            </div>
+            <div class="row border-bottom  mx-1 my-1">
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>Abgabe Frist:</span>
+                    <span th:text="${#temporals.format(summary.getSubmissionDeadline(), 'yyyy.MM.dd hh:mm')}">&nbsp;15.03.2020</span>
+                </div>
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>hochgeladen am:</span>
+                    <span th:text="${#temporals.format(summary.getTimeOfSubmission(), 'yyyy.MM.dd hh:mm')}"
+                          th:classappend="${summary.getTimeOfSubmission().isAfter(summary.getSubmissionDeadline())} ? text-danger : text-success">
+                        &nbsp;12.03.2020</span>
+                    <small class="text-danger"
+                           th:if="${summary.getTimeOfSubmission().isAfter(summary.getSubmissionDeadline())}">
+                        verspätete Abgabe</small>
+                </div>
+            </div>
+            <div class=" row mx-1 my-1">
+                <div class="col-12 my-1">
+                    <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
+                            data-target="#inhalt1"
+                            aria-expanded="true">
+                        jetzt bewerten
+                    </button>
+                </div>
+            </div>
+            <div id="inhalt1" class="collapse">
+                <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
+                    <div class="col-12 my-1">
+                        <span>Inhalt</span>
+                    </div>
+                    <div class="col-12 my-1 mb-2">
                     <textarea class="input-group" placeholder="hier steht die Zusammenfassung .... "
                               rows="12" readonly></textarea>
+                    </div>
+                </div>
+                <div class=" row mx-1 my-1 ">
+                    <div class="col-12 col-sm-6 my-1">
+                        <button class="btn btn-danger btn-block" type="button">
+                            Zusammenfassung ablehnen
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-6 my-1 mb-2">
+                        <button class="btn btn-success btn-block" type="button">
+                            Zusammenfassung akzeptieren
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class=" row mx-1 my-1 ">
-                <div class="col-12 col-sm-6 my-1">
-                    <button class="btn btn-danger btn-block" type="button">
-                        Zusammenfassung ablehnen
-                    </button>
-                </div>
-                <div class="col-12 col-sm-6 my-1 mb-2">
-                    <button class="btn btn-success btn-block" type="button">
-                        Zusammenfassung akzeptieren
-                    </button>
-                </div>
-            </div>
+
         </div>
 
-    </div>
-
-    <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-        <div class="row border-bottom  mx-1 my-1 align-content-center">
-            <div class="col-12 text-secondary text-center  my-1">
-                <h3 class="font-weight-bold">
-                    Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                </h3>
+        <div class="container bg-light rounded shadow-lg "
+             style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+            <div class="row border-bottom  mx-1 my-1 align-content-center">
+                <div class="col-12 text-secondary text-center  my-1">
+                    <h3 class="font-weight-bold">
+                        Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                    </h3>
+                </div>
             </div>
-        </div>
-        <div class="row border-bottom  mx-1 my-1">
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>Student Name:</span>
-                <span>&nbsp;Ein Student</span>
+            <div class="row border-bottom  mx-1 my-1">
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>Student Name:</span>
+                    <span>&nbsp;Ein Student</span>
+                </div>
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>Email:</span>
+                    <span>&nbsp;ein.student@hhu.de</span>
+                </div>
             </div>
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>Email:</span>
-                <span>&nbsp;ein.student@hhu.de</span>
+            <div class="row border-bottom  mx-1 my-1">
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>Abgabe Frist:</span>
+                    <span>&nbsp;15.03.2020</span>
+                </div>
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>hochgeladen am:</span>
+                    <span>&nbsp;12.03.2020</span>
+                </div>
             </div>
-        </div>
-        <div class="row border-bottom  mx-1 my-1">
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>Abgabe Frist:</span>
-                <span>&nbsp;15.03.2020</span>
-            </div>
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>hochgeladen am:</span>
-                <span>&nbsp;12.03.2020</span>
-            </div>
-        </div>
-        <div class="row  mx-1 my-1">
-            <div class="col-12 my-1">
-                <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
-                        data-target="#inhalt2" aria-expanded="false" aria-controls="inhalt2">
-                    jetzt bewerten
-                </button>
-            </div>
-        </div>
-        <div id="inhalt2" class="collapse">
-            <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
+            <div class="row  mx-1 my-1">
                 <div class="col-12 my-1">
-                    <span>Inhalt</span>
+                    <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
+                            data-target="#inhalt2" aria-expanded="false" aria-controls="inhalt2">
+                        jetzt bewerten
+                    </button>
                 </div>
-                <div class="col-12 my-1 mb-2">
+            </div>
+            <div id="inhalt2" class="collapse">
+                <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
+                    <div class="col-12 my-1">
+                        <span>Inhalt</span>
+                    </div>
+                    <div class="col-12 my-1 mb-2">
                         <textarea class="input-group" placeholder="hier steht die Zusammenfassung .... "
                                   rows="12" readonly></textarea>
+                    </div>
                 </div>
-            </div>
-            <div class=" row mx-1 my-1 ">
-                <div class="col-12 col-sm-6 my-1">
-                    <button class="btn btn-danger btn-block" type="button">
-                        Zusammenfassung ablehnen
-                    </button>
-                </div>
-                <div class="col-12 col-sm-6 my-1 mb-2">
-                    <button class="btn btn-success btn-block" type="button">
-                        Zusammenfassung akzeptieren
-                    </button>
+                <div class=" row mx-1 my-1 ">
+                    <div class="col-12 col-sm-6 my-1">
+                        <button class="btn btn-danger btn-block" type="button">
+                            Zusammenfassung ablehnen
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-6 my-1 mb-2">
+                        <button class="btn btn-success btn-block" type="button">
+                            Zusammenfassung akzeptieren
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
-    <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-        <div class="row border-bottom  mx-1 my-1 align-content-center">
-            <div class="col-12 text-secondary text-center  my-1">
-                <h3 class="font-weight-bold">
-                    Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                </h3>
+        <div class="container bg-light rounded shadow-lg "
+             style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+            <div class="row border-bottom  mx-1 my-1 align-content-center">
+                <div class="col-12 text-secondary text-center  my-1">
+                    <h3 class="font-weight-bold">
+                        Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                    </h3>
+                </div>
             </div>
-        </div>
-        <div class="row border-bottom  mx-1 my-1">
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>Student Name:</span>
-                <span>&nbsp;Ein Student</span>
+            <div class="row border-bottom  mx-1 my-1">
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>Student Name:</span>
+                    <span>&nbsp;Ein Student</span>
+                </div>
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>Email:</span>
+                    <span>&nbsp;ein.student@hhu.de</span>
+                </div>
             </div>
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>Email:</span>
-                <span>&nbsp;ein.student@hhu.de</span>
+            <div class="row border-bottom  mx-1 my-1">
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>Abgabe Frist:</span>
+                    <span>&nbsp;15.03.2020</span>
+                </div>
+                <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                    <span>hochgeladen am:</span>
+                    <span>&nbsp;12.03.2020</span>
+                </div>
             </div>
-        </div>
-        <div class="row border-bottom  mx-1 my-1">
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>Abgabe Frist:</span>
-                <span>&nbsp;15.03.2020</span>
-            </div>
-            <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                <span>hochgeladen am:</span>
-                <span>&nbsp;12.03.2020</span>
-            </div>
-        </div>
-        <div class="row  mx-1 my-1">
-            <div class="col-12 my-1">
-                <button id="collapsebtn" class="btn btn-primary btn-block" type="button" data-toggle="collapse"
-                        data-target="#inhalt3" aria-expanded="false" aria-controls="inhalt3">jetzt bewerten
-                </button>
-            </div>
-        </div>
-        <div id="inhalt3" class="collapse">
-            <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
+            <div class="row  mx-1 my-1">
                 <div class="col-12 my-1">
-                    <span>Inhalt</span>
+                    <button id="collapsebtn" class="btn btn-primary btn-block" type="button" data-toggle="collapse"
+                            data-target="#inhalt3" aria-expanded="false" aria-controls="inhalt3">jetzt bewerten
+                    </button>
                 </div>
-                <div class="col-12 my-1 mb-2">
+            </div>
+            <div id="inhalt3" class="collapse">
+                <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
+                    <div class="col-12 my-1">
+                        <span>Inhalt</span>
+                    </div>
+                    <div class="col-12 my-1 mb-2">
                         <textarea class="input-group" placeholder="hier steht die Zusammenfassung .... "
                                   rows="12" readonly></textarea>
+                    </div>
                 </div>
-            </div>
-            <div class=" row mx-1 my-1 ">
-                <div class="col-12 col-sm-6 my-1">
-                    <button class="btn btn-danger btn-block" type="button">
-                        Zusammenfassung ablehnen
-                    </button>
-                </div>
-                <div class="col-12 col-sm-6 my-1 mb-2">
-                    <button class="btn btn-success btn-block" type="button">
-                        Zusammenfassung akzeptieren
-                    </button>
+                <div class=" row mx-1 my-1 ">
+                    <div class="col-12 col-sm-6 my-1">
+                        <button class="btn btn-danger btn-block" type="button">
+                            Zusammenfassung ablehnen
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-6 my-1 mb-2">
+                        <button class="btn btn-success btn-block" type="button">
+                            Zusammenfassung akzeptieren
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </main>
 </body>
 </html>
