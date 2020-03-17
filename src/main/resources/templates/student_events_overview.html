@@ -6,9 +6,22 @@
     <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+              integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+              crossorigin="anonymous"
+              th:remove="all">
+        <link rel="stylesheet" href="https://icono-49d6.kxcdn.com/icono.min.css" th:remove="all">
+        <script src="../../static/js/jquery.min.js"
+                th:src="@{/js/jquery.min.js}"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+                th:src="@{/js/bootstrap.min.js}"></script>
+        <link rel="stylesheet" type="text/css"
+              href="../../static/css/partial_collapse.css"
+              th:href="@{/css/partial_collapse.css}">
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/student/events}"><span class="icono-leftArrow icono-"></span> zurück zu Übersicht</a>
+                <a th:href="@{/rheinjug2/student/events}"><span class="icono-leftArrow icono-"></span> zurück zu
+                    Übersicht</a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/student/events}"> Veranstaltugen Übersicht </a>
@@ -46,10 +59,10 @@
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
     <h1 class="text-center text-secondary"> Rheinjug Veranstaltungen </h1>
-    <div>
+    <div id="partial-collapse">
         <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-            <div class="row border-bottom  mx-1 my-1">
-                <div class="col-6 col-sm-3  border-right text-secondary my-1">
+            <div class="row border-bottom mx-1 my-1">
+                <div class="col-6 col-sm-3 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
                             <i class="icono-calendar"></i>
@@ -57,7 +70,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-3  border-right  text-secondary my-1">
+                <div class="col-6 col-sm-3 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
@@ -65,10 +78,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-3  border-right my-1">
+                <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row ">
                         <div class="col-12">
-                            <img src="/icons/icon-credit-points.png" style="width: 32px;height: 28px;">
+                            <img src="../../static/icons/icon-credit-points.png"
+                                 th:src="@{/icons/icon-credit-points.png}"
+                                 style="width: 32px;height: 28px;">
                             <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
                         </div>
                     </div>
@@ -76,20 +91,22 @@
                 <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row">
                         <div class="col-12">
-                            <img src="/icons/icon-payment.png" style="width: 32px;height: 28px;">
+                            <img src="../../static/icons/icon-payment.png"
+                                 th:src="@{/icons/icon-payment.png}"
+                                 style="width: 32px;height: 28px;">
                             <span class="text-success">&nbsp;kostenfrei</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center  my-1">
+            <div class="row border-bottom mx-1 my-1 align-content-center">
+                <div class="col-12 text-secondary text-center my-1">
                     <h2 class="font-weight-bold">
                         Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                     </h2>
                 </div>
             </div>
-            <div class="row border-bottom   text-light mx-1 ">
+            <div class="row border-bottom text-light mx-1 ">
                 <div class=" container col-12 my-2">
                     <div class="text-secondary justify-content-start">
                         <h3 class="font-weight-bold">
@@ -97,34 +114,43 @@
                         </h3>
                     </div>
                     <div class="text-secondary">
-
-                        <p>
-                            Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java Server
-                            Pages
-                            (JSP)
-                            und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die Anforderungen
-                            an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API 1.0
-                            soll
-                            dieses Problem gelöst.
-                        </p>
+                        <div id="description-1" class="collapse partial-collapse" aria-expanded="false">
+                            <p>
+                                Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
+                                Server
+                                Pages
+                                (JSP)
+                                und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
+                                Anforderungen
+                                an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API
+                                1.0
+                                soll
+                                dieses Problem gelöst werden.
+                            </p>
+                        </div>
+                        <a role="button" class="collapsed" data-toggle="collapse" href="#description-1"
+                           aria-expanded="false"
+                           aria-controls="description-1"></a>
                     </div>
                 </div>
             </div>
             <div class=" row border-bottom mx-1 my-1 align-content-center justify-content-center">
-                <div class="col-12 text-secondary  text-small my-1">
-                    <img src="/icons/icon-location.png" style="width: 32px;height: 28px;">
+                <div class="col-12 text-secondary text-small my-1">
+                    <img src="../../static/icons/icon-location.png"
+                         th:src="@{/icons/icon-location.png}"
+                         style="width: 32px;height: 28px;">
                     <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
                 </div>
             </div>
             <div class="row text-light justify-content-around mx-1 ">
-                <div class="col-12 col-sm-3 col-md-4  mt-2">
+                <div class="col-12 col-sm-3 col-md-4 mt-2">
                     <form action="#" method="POST">
                         <button class="btn btn-outline-secondary btn-block" type="submit">
                             anmelden
                         </button>
                     </form>
                 </div>
-                <div class="col-12 col-sm-5  col-md-4 mt-2">
+                <div class="col-12 col-sm-5 col-md-4 mt-2">
                     </form>
                     <form action="#" method="POST">
                         <div>
@@ -148,8 +174,8 @@
 
         <div class="container bg-light rounded shadow-lg "
              style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-            <div class="row border-bottom  mx-1 my-1">
-                <div class="col-6 col-sm-3  border-right text-secondary my-1">
+            <div class="row border-bottom mx-1 my-1">
+                <div class="col-6 col-sm-3 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
                             <i class="icono-calendar"></i>
@@ -157,7 +183,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-3  border-right  text-secondary my-1">
+                <div class="col-6 col-sm-3 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
@@ -165,10 +191,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-3  border-right my-1">
+                <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row ">
                         <div class="col-12">
-                            <img src="/icons/icon-credit-points.png" style="width: 32px;height: 28px;">
+                            <img src="../../static/icons/icon-credit-points.png"
+                                 th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
                             <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span>
                         </div>
                     </div>
@@ -176,20 +203,22 @@
                 <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row">
                         <div class="col-12">
-                            <img src="/icons/icon-payment.png" style="width: 32px;height: 28px;">
+                            <img src="../../static/icons/icon-payment.png"
+                                 th:src="@{/icons/icon-payment.png}"
+                                 style="width: 32px;height: 28px;">
                             <span class="text-success">&nbsp;kostenfrei</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center  my-1">
+            <div class="row border-bottom mx-1 my-1 align-content-center">
+                <div class="col-12 text-secondary text-center my-1">
                     <h2 class="font-weight-bold">
                         Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                     </h2>
                 </div>
             </div>
-            <div class="row border-bottom   text-light mx-1 ">
+            <div class="row border-bottom text-light mx-1 ">
                 <div class=" container col-12 my-2">
                     <div class="text-secondary justify-content-start">
                         <h3 class="font-weight-bold">
@@ -197,32 +226,39 @@
                         </h3>
                     </div>
                     <div class="text-secondary">
-                        <p>
-                            Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
-                            Server Pages (JSP)
-                            und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
-                            Anforderungen
-                            an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API
-                            1.0 soll dieses Problem gelöst
-                        </p>
+                        <div id="description-2" class="collapse partial-collapse" aria-expanded="false">
+                            <p>
+                                Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
+                                Server Pages (JSP)
+                                und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
+                                Anforderungen
+                                an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API
+                                1.0 soll dieses Problem gelöst werden.
+                            </p>
+                        </div>
+                        <a role="button" class="collapsed" data-toggle="collapse" href="#description-2"
+                           aria-expanded="false"
+                           aria-controls="description-2"></a>
                     </div>
                 </div>
             </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center justify-content-center">
-                <div class="col-12 text-secondary  text-small my-1">
-                    <img src="/icons/icon-location.png" style="width: 32px;height: 28px;">
+            <div class="row border-bottom mx-1 my-1 align-content-center justify-content-center">
+                <div class="col-12 text-secondary text-small my-1">
+                    <img src="../../static/icons/icon-location.png"
+                         th:src="@{/icons/icon-location.png}"
+                         style="width: 32px;height: 28px;">
                     <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
                 </div>
             </div>
             <div class="row text-light justify-content-around mx-1 ">
-                <div class="col-12 col-sm-4 col-md-4  mt-2">
+                <div class="col-12 col-sm-4 col-md-4 mt-2">
                     <form action="#" method="POST">
                         <button class="btn btn-outline-danger btn-block" disabled type="submit">
                             Anmeldung nicht mehr möglich
                         </button>
                     </form>
                 </div>
-                <div class="col-12 col-sm-5  col-md-4 mt-2">
+                <div class="col-12 col-sm-5 col-md-4 mt-2">
                     </form>
                     <form action="#" method="POST">
                         <div>
@@ -244,8 +280,8 @@
         </div>
         <div class="container bg-light rounded shadow-lg "
              style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-            <div class="row border-bottom  mx-1 my-1">
-                <div class="col-6 col-sm-3  border-right text-secondary my-1">
+            <div class="row border-bottom mx-1 my-1">
+                <div class="col-6 col-sm-3 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
                             <i class="icono-calendar"></i>
@@ -253,7 +289,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-3  border-right  text-secondary my-1">
+                <div class="col-6 col-sm-3 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
@@ -261,10 +297,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-3  border-right my-1">
+                <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row ">
                         <div class="col-12">
-                            <img src="/icons/icon-credit.png" style="width: 32px;height: 28px;">
+                            <img src="../../static/icons/icon-credit.png"
+                                 th:src="@{/icons/icon-credit.png}"
+                                 style="width: 32px;height: 28px;">
                             <span class="text-secondary"> <sup>1</sup>/<sub>6</sub> CP</span>
                         </div>
                     </div>
@@ -272,20 +310,22 @@
                 <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row">
                         <div class="col-12">
-                            <img src="/icons/icon-payment.png" style="width: 32px;height: 28px;">
+                            <img src="../../static/icons/icon-payment.png"
+                                 th:src="@{/icons/icon-payment.png}"
+                                 style="width: 32px;height: 28px;">
                             <span class="text-success">&nbsp;kostenfrei</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center  my-1">
+            <div class="row border-bottom mx-1 my-1 align-content-center">
+                <div class="col-12 text-secondary text-center my-1">
                     <h2 class="font-weight-bold">
                         Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                     </h2>
                 </div>
             </div>
-            <div class="row border-bottom   text-light mx-1 ">
+            <div class="row border-bottom text-light mx-1 ">
                 <div class=" container col-12 my-2">
                     <div class="text-secondary justify-content-start">
                         <h3 class="font-weight-bold">
@@ -293,33 +333,39 @@
                         </h3>
                     </div>
                     <div class="text-secondary">
-                        <p>
-                            Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
-                            Server Pages (JSP)
-                            und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
-                            Anforderungen
-                            an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API
-                            1.0 soll dieses Problem gelöst
-                            <werden class=""></werden>
-                        </p>
+                        <div id="description-3" class="collapse partial-collapse" aria-expanded="false">
+                            <p>
+                                Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
+                                Server Pages (JSP)
+                                und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
+                                Anforderungen
+                                an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API
+                                1.0 soll dieses Problem gelöst werden.
+                            </p>
+                        </div>
+                        <a role="button" class="collapsed" data-toggle="collapse" href="#description-3"
+                           aria-expanded="false"
+                           aria-controls="description-3"></a>
                     </div>
                 </div>
             </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center justify-content-center">
-                <div class="col-12 text-secondary  text-small my-1">
-                    <img src="/icons/icon-location.png" style="width: 32px;height: 28px;">
+            <div class="row border-bottom mx-1 my-1 align-content-center justify-content-center">
+                <div class="col-12 text-secondary text-small my-1">
+                    <img src="../../static/icons/icon-location.png"
+                         th:src="@{/icons/icon-location.png}"
+                         style="width: 32px;height: 28px;">
                     <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
                 </div>
             </div>
             <div class="row text-light justify-content-around mx-1 ">
-                <div class="col-12 col-sm-4 col-md-4  mt-2">
+                <div class="col-12 col-sm-4 col-md-4 mt-2">
                     <form action="#" method="POST">
                         <button class="btn btn-outline-secondary btn-block" type="submit">
                             anmelden
                         </button>
                     </form>
                 </div>
-                <div class="col-12 col-sm-5  col-md-4 mt-2">
+                <div class="col-12 col-sm-5 col-md-4 mt-2">
                     </form>
                     <form action="#" method="POST">
                         <div>
