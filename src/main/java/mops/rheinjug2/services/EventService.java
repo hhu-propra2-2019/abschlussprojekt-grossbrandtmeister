@@ -38,15 +38,19 @@ public class EventService {
    * Prüft ob UPCOMING Events bereits vorbei sind und setzt diese auf PAST.
    */
   public void updateStatusOfPastEvents() {
+    int invalidStatusCount = 0;
     final List<mops.rheinjug2.entities.Event> upcomingEvents =
         eventRepository.findEventsByStatus("UPCOMING");
 
     for (final mops.rheinjug2.entities.Event event : upcomingEvents) {
       if (event.getDate().isBefore(LocalDateTime.now(ZoneId.of("Europe/Berlin")))) {
+        invalidStatusCount++;
+        log.debug("Event '" + event.getTitle() + "' has invalid status");
         event.setStatus("PAST");
         eventRepository.save(event);
       }
     }
+    log.info("Fixed " + invalidStatusCount + " Events with invalid status");
   }
 
 }
