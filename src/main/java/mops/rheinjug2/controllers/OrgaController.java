@@ -4,7 +4,6 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDateTime;
 import mops.rheinjug2.AccountCreator;
-import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.services.OrgaService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
@@ -20,14 +19,10 @@ public class OrgaController {
 
   private final transient Counter authenticatedAccess;
   transient OrgaService service;
-  transient EventRepository eventRepository;
 
-  public OrgaController(MeterRegistry registry,
-                        OrgaService service,
-                        EventRepository eventRepository) {
+  public OrgaController(MeterRegistry registry, OrgaService service) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.service = service;
-    this.eventRepository = eventRepository;
   }
 
   /**

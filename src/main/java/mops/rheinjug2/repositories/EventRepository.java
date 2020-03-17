@@ -35,5 +35,6 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 
   @Query(value = "SELECT * FROM student_event WHERE"
       + " student_event.student = :studentid AND student_event.event= :eventid")
-  EventRef getEventRefByStudentIdAndEventId(@Param("studentid") Long studentId, @Param("eventid") Long eventId);
+  EventRef getEventRefByStudentIdAndEventId(@Param("studentid") Long studentId,
+                                            @Param("eventid") Long eventId);
 }
