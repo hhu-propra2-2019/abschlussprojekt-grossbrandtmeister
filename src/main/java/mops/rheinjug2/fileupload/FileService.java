@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -105,17 +106,18 @@ public class FileService {
   /**
    * Speichert String in MinIO Server.
    *
-   * @param content    Inhalt des Files.
-   * @param objektname Name des gesuchten File.
+   * @param content  Inhalt des Files.
+   * @param filename Name des gesuchten File.
    */
-  public void uploadeContentConvertToMd(final String content, final String objektname)
+  public void uploadContentConvertToMd(final String content, final String filename)
       throws IOException {
-    final InputStream inputStream = new ByteArrayInputStream(content.getBytes());
+    final InputStream inputStream = new ByteArrayInputStream(content.getBytes(
+        Charset.forName("UTF-8")));
     try {
       if (!minioClient.bucketExists(defaultBucketName)) {
         minioClient.makeBucket(defaultBucketName);
       }
-      minioClient.putObject(defaultBucketName, objektname, inputStream,
+      minioClient.putObject(defaultBucketName, filename, inputStream,
           (long) content.length(), null, null, "text/markdown");
     } catch (final Exception e) {
       throw new RuntimeException(e.getMessage());

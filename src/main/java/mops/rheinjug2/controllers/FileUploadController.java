@@ -79,6 +79,9 @@ public class FileUploadController {
         attributes.addFlashAttribute("message",
             "Your file was not able to be uploaded ");
       }
+    } else {
+      attributes.addFlashAttribute("message",
+          "Your file has the wrong format. It needs to be a markdown file!");
     }
     authenticatedAccess.increment();
     return "redirect:/rheinjug2/student/reportsubmit";
@@ -96,7 +99,7 @@ public class FileUploadController {
       final String username = principal.getName();
       if (!username.isEmpty()) {
         final String filename = username + "_" + Veranstaltung;
-        fileService.uploadeContentConvertToMd(summary.getContent(), filename);
+        fileService.uploadContentConvertToMd(summary.getContent(), filename);
         attributes.addFlashAttribute("message",
             "You successfully uploaded the form !");
       }
@@ -174,7 +177,7 @@ public class FileUploadController {
                                              final HttpServletResponse response)
       throws IOException {
 
-    final String filename = "Vorlage.md";
+    final String filename = "VorlageZusammenfassung.md";
     try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
       response.addHeader("Content-disposition", "attachment;filename=" + filename);
       response.setContentType(URLConnection.guessContentTypeFromName(filename));
