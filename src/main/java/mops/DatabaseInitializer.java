@@ -9,26 +9,47 @@ import java.util.stream.IntStream;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import mops.rheinjug2.entities.Event;
+import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
+import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DatabaseInitializer implements ServletContextInitializer {
   transient Random random = new Random();
-  transient LocalDate date1 = LocalDate.of(120, 01, 01);
-  transient LocalDate date2 = LocalDate.of(120, 04, 01);
+  transient LocalDate date1 = LocalDate.of(2020, 01, 01);
+  transient LocalDate date2 = LocalDate.of(2020, 05, 01);
   transient LocalDateTime dateNow = LocalDateTime.now();
 
-  final transient EventRepository eventRepository;
+  transient EventRepository eventRepository;
+  transient StudentRepository studentRepository;
 
-  public DatabaseInitializer(EventRepository eventRepository) {
+
+  public DatabaseInitializer(EventRepository eventRepository, StudentRepository studentRepository) {
     this.eventRepository = eventRepository;
+    this.studentRepository = studentRepository;
   }
 
   @Override
   public void onStartup(ServletContext servletContext) throws ServletException {
     Faker faker = new Faker(Locale.GERMAN);
+    fakeEvent(faker);
+    fakeStudent(faker);
+  }
+
+
+  private void fakeStudent(Faker faker) {
+    IntStream.range(0, 30).forEach(value -> {
+      Student student = new Student();
+      student.setLogin(faker.name().firstName() + faker.number().digits(3));
+      student.setEmail(faker.internet().emailAddress());
+      student.setName(faker.name().firstName());
+      studentRepository.save(student);
+    });
+  }
+
+  private void fakeEvent(Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
       Event event = new Event();
       event.setTitle(faker.job().title());
@@ -40,9 +61,9 @@ public class DatabaseInitializer implements ServletContextInitializer {
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
       if (event.getDate().isBefore(dateNow)) {
-        event.setStatus("PAST");
-      } else {
         event.setStatus("UPCOMING");
+      } else {
+        event.setStatus("PAST");
       }
 
       if (random.nextBoolean()) {

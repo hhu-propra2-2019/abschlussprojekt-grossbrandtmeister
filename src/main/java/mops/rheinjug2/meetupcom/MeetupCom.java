@@ -26,7 +26,7 @@ public final class MeetupCom {
   /**
    * Holt die Liste der RheinJUG-Veranstaltungen von api.meetup.com.
    */
-  List<Event> getRheinJugEventsSince(LocalDateTime localDateTime) {
+  public List<Event> getRheinJugEventsSince(LocalDateTime localDateTime) {
     String dateIso = asIso8601String(localDateTime);
 
     var url = String.format("http://api.meetup.com/rheinjug/events?no_earlier_than=%s&status=past,upcoming&desc=true", dateIso);
