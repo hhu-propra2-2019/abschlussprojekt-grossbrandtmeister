@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Log4j2
 @Service
+@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class EventService {
 
   private final transient MeetupCom meetupComService;

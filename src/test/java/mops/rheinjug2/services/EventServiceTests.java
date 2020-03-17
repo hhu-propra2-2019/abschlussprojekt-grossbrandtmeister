@@ -23,10 +23,10 @@ public class EventServiceTests {
 
   @Spy
   @InjectMocks
-  EventService eventService;
+  private transient EventService eventService;
 
   @Mock
-  EventRepository eventRepository;
+  private transient EventRepository eventRepository;
 
   /**
    * Setzt ein Event mit ungültigem Status auf.
@@ -43,7 +43,7 @@ public class EventServiceTests {
 
     when(eventRepository.findEventsByStatus(anyString())).thenReturn(events);
     when(eventRepository.save(any(Event.class)))
-        .thenAnswer(invocation -> invocation.getArguments()[0]);
+        .thenAnswer(invocation -> invocation.getArgument(0));
   }
 
   @Test
