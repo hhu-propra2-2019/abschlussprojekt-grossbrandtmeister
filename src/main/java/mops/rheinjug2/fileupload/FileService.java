@@ -31,11 +31,11 @@ public class FileService {
 
   final transient String defaultBaseFolder;
 
-
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public FileService(final MinioClient minioClient,
-                     @Value("${minio.bucket.name}") final String defaultBucketName,
-                     @Value("${minio.default.folder}") final String defaultBaseFolder) {
+  FileService(final MinioClient minioClient,
+              @Value("${minio.bucket.name}") final String defaultBucketName,
+              @Value("${minio.default.folder}") final String defaultBaseFolder) {
+
     this.minioClient = minioClient;
     this.defaultBucketName = defaultBucketName;
     this.defaultBaseFolder = defaultBaseFolder;

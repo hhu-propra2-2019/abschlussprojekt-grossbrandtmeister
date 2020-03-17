@@ -11,14 +11,15 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Event {
   @Id
   private Long id;
+  private String meetupId;
 
   private String title;
   private String description;
   private double price;
   private LocalDateTime date;
   private String address;
+  private String venue;
   private String url;
-
   private String status;
   private String type;
 
