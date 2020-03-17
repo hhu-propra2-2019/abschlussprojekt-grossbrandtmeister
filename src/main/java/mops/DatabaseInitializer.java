@@ -26,7 +26,8 @@ public class DatabaseInitializer implements ServletContextInitializer {
   transient StudentRepository studentRepository;
 
 
-  public DatabaseInitializer(final EventRepository eventRepository, final StudentRepository studentRepository) {
+  public DatabaseInitializer(
+      final EventRepository eventRepository, final StudentRepository studentRepository) {
     this.eventRepository = eventRepository;
     this.studentRepository = studentRepository;
   }
