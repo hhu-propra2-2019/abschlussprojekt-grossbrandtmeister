@@ -43,6 +43,7 @@ public class EventService {
       eventEntity = eventRepository.findEventByMeetupId(event.getId());
       eventRepository.save(ModelConverter.parseMeetupEvent(event, eventEntity));
     }
+    updateStatusOfPastEvents();
   }
 
   /**
