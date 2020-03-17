@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @DataJdbcTest
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class ModelServiceTest {
 
   @Autowired
@@ -29,7 +30,7 @@ public class ModelServiceTest {
   @Autowired
   private transient StudentRepository studentRepository;
 
-  private ModelService modelService;
+  private transient ModelService modelService;
 
   @BeforeEach
   public void init() {
@@ -47,27 +48,28 @@ public class ModelServiceTest {
   @Test
   public void testAddStudentToEventIfStudentNotExistsInDatabase() {
     Event event = createAndSaveEvent("Event 1.3");
-    Student savedStudent = modelService.addStudentToEvent("testLogin3", "test3@hhu.de", event.getId());
+    Student savedStudent =
+        modelService.addStudentToEvent("testLogin3", "test3@hhu.de", event.getId());
     assertThat(savedStudent.getEventsIds()).containsExactly(event.getId());
   }
 
   @Test
   public void testAddStudentToEventIfStudentExistsInDatabase() {
-    Student student = createAndSaveStudent("testLogin4", "test4@hhu.de");
+    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     Event event = createAndSaveEvent("Event 1.4");
-    Student savedStudent = modelService.addStudentToEvent("testLogin4", "test4@hhu.de", event.getId());
+    Student savedStudent =
+        modelService.addStudentToEvent("testLogin5", "test4@hhu.de", event.getId());
     assertThat(savedStudent.getEventsIds()).containsExactly(event.getId());
   }
 
   @Test
   public void testGetAllEventsForCP() {
-    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     Event event1 = createAndSaveEvent("Event 5");
     Event event2 = createAndSaveEvent("Event 6");
     event1.setDate(LocalDateTime.now());
     event2.setDate(LocalDateTime.now());
-    eventRepository.save(event1);
-    eventRepository.save(event2);
+    eventRepository.saveAll(List.of(event1, event2));
+    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     student.addEvent(event1);
     student.addEvent(event2);
     student.addSummary(event1);
@@ -81,51 +83,54 @@ public class ModelServiceTest {
   }
 
   @Test
-  public void testSubmit() {
-    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
+  public void testSubmitSummary() {
     Event event1 = createAndSaveEvent("Event 5");
+    Event event2 = createAndSaveEvent("Event 6");
     event1.setDate(LocalDateTime.now());
-    eventRepository.save(event1);
-
+    event2.setDate(LocalDateTime.now());
+    eventRepository.saveAll(List.of(event1, event2));
+    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     student.addEvent(event1);
-
+    student.addEvent(event2);
     studentRepository.save(student);
-    System.out.println(studentRepository.findAll());
-    Student s = modelService.submitSummary("testLogin5", event1.getId());
-    System.out.println(s);
+
+    modelService.submitSummary("testLogin5", event1.getId());
+    Student savedStudent =
+        modelService.submitSummary("testLogin5", event2.getId());
+    assertThat(savedStudent.getEventsIdsWithSummaryNotAccepted()).
+        containsExactly(event1.getId(), event2.getId());
   }
 
   @Test
   public void testGetAllEventsPerStudent() {
     Event eventUpcoming = createAndSaveEvent("Veranstaltung Java");
     eventUpcoming.setDate(LocalDateTime.now().plusDays(1));
-    eventRepository.save(eventUpcoming);
 
     Event eventOpen = createAndSaveEvent("Veranstaltung Java2");
     eventOpen.setDate(LocalDateTime.now());
-    eventRepository.save(eventOpen);
 
     Event eventPassed = createAndSaveEvent("Veranstaltung Java 3");
     eventPassed.setDate(LocalDateTime.of(2020, 1, 2, 12, 20));
-    eventRepository.save(eventPassed);
 
     Event eventWithSubmissionNotAccepted = createAndSaveEvent("Veranstaltung Java 4");
     eventWithSubmissionNotAccepted.setDate(LocalDateTime.now());
-    eventRepository.save(eventWithSubmissionNotAccepted);
 
     Event eventWithSubmissionAccepted = createAndSaveEvent("Veranstaltung Java 4");
     eventWithSubmissionAccepted.setDate(LocalDateTime.now());
-    eventRepository.save(eventWithSubmissionAccepted);
-    
+
+    List<Event> events = List.of(eventOpen, eventPassed, eventUpcoming,
+        eventWithSubmissionAccepted, eventWithSubmissionNotAccepted);
+    eventRepository.saveAll(events);
+
     Student student = createAndSaveStudent("ll100", "ll@hhu.de");
-    List<Event> events = List.of(eventOpen, eventPassed, eventUpcoming, eventWithSubmissionAccepted, eventWithSubmissionNotAccepted);
     addEventsToStudent(events, student);
     student.addSummary(eventWithSubmissionAccepted);
     student.addSummary(eventWithSubmissionNotAccepted);
     studentRepository.save(student);
-    Student savedStudent = modelService.acceptSummary(eventWithSubmissionAccepted.getId(), "ll100");
+    modelService.acceptSummary(eventWithSubmissionAccepted.getId(), "ll100");
 
-    Map<Event, ModelService.SubmissionStatus> allEvents = modelService.getAllEventsPerStudent(student.getLogin());
+    Map<Event, ModelService.SubmissionStatus> allEvents =
+        modelService.getAllEventsPerStudent(student.getLogin());
 
     assertThat(allEvents).containsOnly(entry(eventUpcoming, ModelService.SubmissionStatus.UPCOMING),
         entry(eventOpen, ModelService.SubmissionStatus.OPEN_FOR_SUBMISSION),
@@ -133,6 +138,72 @@ public class ModelServiceTest {
         entry(eventWithSubmissionAccepted, ModelService.SubmissionStatus.SUBMITTED_ACCEPTED),
         entry(eventWithSubmissionNotAccepted, ModelService.SubmissionStatus.SUBMITTED_NOT_ACCEPTED));
 
+  }
+
+  @Test
+  public void testGetCertificateEntwickelbar() {
+    Event event1 = createAndSaveEvent("Event 5");
+    Event event2 = createAndSaveEvent("Event 6");
+    event1.setDate(LocalDateTime.now());
+    event1.setType("Entwickelbar");
+    event2.setDate(LocalDateTime.now());
+    event2.setType("Normal");
+    eventRepository.saveAll(List.of(event1, event2));
+    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
+    addEventsToStudent(List.of(event1, event2), student);
+    student.addSummary(event1);
+    student.addSummary(event2);
+    studentRepository.save(student);
+    modelService.acceptSummary(event1.getId(), student.getLogin());
+    modelService.acceptSummary(event2.getId(), student.getLogin());
+
+    assertThat(modelService.useEventsForCertificate(student.getLogin())).isTrue();
+
+  }
+
+  @Test
+  public void testGetCertificateThreeNormalEvents() {
+    Event event1 = createAndSaveEvent("Event 5");
+    event1.setDate(LocalDateTime.now());
+    event1.setType("Normal");
+    Event event2 = createAndSaveEvent("Event 6");
+    event2.setDate(LocalDateTime.now());
+    event2.setType("Normal");
+    Event event3 = createAndSaveEvent("Event 7");
+    event3.setDate(LocalDateTime.now());
+    event3.setType("Normal");
+    eventRepository.saveAll(List.of(event1, event2, event3));
+    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
+    addEventsToStudent(List.of(event1, event2, event3), student);
+    student.addSummary(event1);
+    student.addSummary(event2);
+    student.addSummary(event3);
+    studentRepository.save(student);
+    modelService.acceptSummary(event1.getId(), student.getLogin());
+    modelService.acceptSummary(event2.getId(), student.getLogin());
+    modelService.acceptSummary(event3.getId(), student.getLogin());
+
+    assertThat(modelService.useEventsForCertificate(student.getLogin())).isTrue();
+  }
+
+  @Test
+  public void testGetCertificateNotEnoughEvents() {
+    Event event1 = createAndSaveEvent("Event 5");
+    Event event2 = createAndSaveEvent("Event 6");
+    event1.setDate(LocalDateTime.now());
+    event1.setType("Normal");
+    event2.setDate(LocalDateTime.now());
+    event2.setType("Normal");
+    eventRepository.saveAll(List.of(event1, event2));
+    Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
+    addEventsToStudent(List.of(event1, event2), student);
+    student.addSummary(event1);
+    student.addSummary(event2);
+    studentRepository.save(student);
+    modelService.acceptSummary(event1.getId(), student.getLogin());
+    modelService.acceptSummary(event2.getId(), student.getLogin());
+
+    assertThat(modelService.useEventsForCertificate(student.getLogin())).isFalse();
   }
 
   @AfterEach
