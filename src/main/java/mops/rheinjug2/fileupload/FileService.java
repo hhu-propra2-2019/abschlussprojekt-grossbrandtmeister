@@ -90,8 +90,8 @@ public class FileService {
   /**
    * Sucht über den Filenamen das Objekt vom MinIO-Server und gibt es als Inputstream zurück.
    *
-   * @param filename Name der Datei
-   * @return Inputstream
+   * @param filename Name der Datei.
+   * @return Inputstream.
    */
   public InputStream getFileInputStream(final String filename)
       throws IOException, InvalidKeyException, NoSuchAlgorithmException,
@@ -105,11 +105,11 @@ public class FileService {
   /**
    * Speichert String in MinIO Server.
    *
-   * @param content
-   * @param objektname
-   * @throws IOException
+   * @param content    Inhalt des Files.
+   * @param objektname Name des gesuchten File.
    */
-  public void uploadeContentConvertToMd(final String content, final String objektname) throws IOException {
+  public void uploadeContentConvertToMd(final String content, final String objektname)
+      throws IOException {
     final InputStream inputStream = new ByteArrayInputStream(content.getBytes());
     try {
       if (!minioClient.bucketExists(defaultBucketName)) {
@@ -124,10 +124,25 @@ public class FileService {
     }
   }
 
-  public String getExampleContent(final String vorlage) throws IOException, XmlPullParserException, NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException, InvalidResponseException, ErrorResponseException, NoResponseException, InvalidBucketNameException, InsufficientDataException, InternalException {
-    final InputStream inputStream = getFileInputStream(vorlage);
-    final String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-    inputStream.close();
-    return content;
+  /**
+   * Gebt den Inhalt des gesucheten Files als String zurück.
+   *
+   * @param filename Name des gesuchten Files.
+   * @return String filecontent.
+   */
+  public String getContentOfFileAsString(final String filename) throws IOException,
+      XmlPullParserException, NoSuchAlgorithmException, InvalidKeyException,
+      InvalidArgumentException, InvalidResponseException, ErrorResponseException,
+      NoResponseException, InvalidBucketNameException, InsufficientDataException,
+      InternalException {
+    final InputStream inputStream = getFileInputStream(filename);
+    try {
+      final String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+      return content;
+    } catch (final Exception e) {
+      throw new RuntimeException(e.getMessage());
+    } finally {
+      inputStream.close();
+    }
   }
 }

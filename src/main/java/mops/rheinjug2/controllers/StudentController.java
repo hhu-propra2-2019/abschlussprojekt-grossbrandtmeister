@@ -32,7 +32,7 @@ public class StudentController {
 
   private final transient Counter authenticatedAccess;
 
-  FileService fileService;
+  transient FileService fileService;
 
   public StudentController(final MeterRegistry registry, final FileService fileService) {
     this.fileService = fileService;
@@ -71,12 +71,16 @@ public class StudentController {
 
   /**
    * Formular zur Einreichung der Zusammenfassung.
+   * Das Summary-Objekt muss noch auf die Datenbank angepasst werden.
    */
   @GetMapping("/reportsubmit")
-  public String reportsubmit(final KeycloakAuthenticationToken token, final Model model) throws IOException, InvalidKeyException, NoSuchAlgorithmException, XmlPullParserException, InvalidArgumentException, InvalidResponseException, InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException, ErrorResponseException {
+  public String reportsubmit(final KeycloakAuthenticationToken token, final Model model)
+      throws IOException, InvalidKeyException, NoSuchAlgorithmException, XmlPullParserException,
+      InvalidArgumentException, InvalidResponseException, InternalException, NoResponseException,
+      InvalidBucketNameException, InsufficientDataException, ErrorResponseException {
     final LocalDate today = LocalDate.now();
     final String eventname = "das coolste Event";
-    String content = fileService.getExampleContent("Vorlage.md");
+    String content = fileService.getContentOfFileAsString("Vorlage.md");
     if (content.isEmpty()) {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }

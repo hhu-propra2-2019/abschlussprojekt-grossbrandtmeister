@@ -11,7 +11,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
-    id 'com.github.spotbugs' version '4.0.1'
+    id 'com.github.spotbugs' version '4.0.2'
     id 'pmd'
     id 'checkstyle'
 }

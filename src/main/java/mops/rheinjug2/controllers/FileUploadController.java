@@ -40,6 +40,7 @@ import org.xmlpull.v1.XmlPullParserException;
 @Secured({"ROLE_studentin"})
 @RequestMapping("/rheinjug2")
 @Log4j2
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class FileUploadController {
 
   transient FileService fileService;
@@ -56,18 +57,12 @@ public class FileUploadController {
     this.fileService = fileService;
   }
 
-
-  @RequestMapping("/file")
-  public String showPage(final Model model) {
-    return "fileUpload";
-  }
-
-
   /**
    * Gibt das File an den FileService weiter um das File zu speichern.
    */
   @PostMapping(path = "/student/reportsubmit")
-  public String uploadFile(final KeycloakAuthenticationToken token, final RedirectAttributes attributes,
+  public String uploadFile(final KeycloakAuthenticationToken token,
+                           final RedirectAttributes attributes,
                            @RequestParam(value = "file") final MultipartFile file) {
     if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
@@ -76,16 +71,17 @@ public class FileUploadController {
         if (!username.isEmpty()) {
           final String filename = username + "_" + Veranstaltung;
           fileService.uploadFile(file, filename);
-          attributes.addFlashAttribute("message", "You successfully uploaded " + filename + '!');
+          attributes.addFlashAttribute("message",
+              "You successfully uploaded " + filename + '!');
         }
       } catch (final Exception e) {
         log.catching(e);
-        attributes.addFlashAttribute("message", "Your file was not able to be uploaded ");
+        attributes.addFlashAttribute("message",
+            "Your file was not able to be uploaded ");
       }
     }
     authenticatedAccess.increment();
     return "redirect:/rheinjug2/student/reportsubmit";
-    //return "report_submit";
   }
 
   /**
@@ -93,20 +89,22 @@ public class FileUploadController {
    * um das File zu speichern.
    */
   @PostMapping(path = "/student/summarysubmit")
-  public String useForm(final KeycloakAuthenticationToken token, final RedirectAttributes attributes,
-                        final Summary summary) {
+  public String useForm(final KeycloakAuthenticationToken token,
+                        final RedirectAttributes attributes, final Summary summary) {
     try {
       final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
       final String username = principal.getName();
       if (!username.isEmpty()) {
         final String filename = username + "_" + Veranstaltung;
         fileService.uploadeContentConvertToMd(summary.getContent(), filename);
-        attributes.addFlashAttribute("message", "You successfully uploaded the form !");
+        attributes.addFlashAttribute("message",
+            "You successfully uploaded the form !");
       }
 
     } catch (final Exception e) {
       log.catching(e);
-      attributes.addFlashAttribute("message", "Your file was not able to be uploaded ");
+      attributes.addFlashAttribute("message",
+          "Your file was not able to be uploaded ");
     }
     authenticatedAccess.increment();
     return "redirect:/rheinjug2/student/reportsubmit";
@@ -139,7 +137,7 @@ public class FileUploadController {
   }
 
   /**
-   * Die methode lädt die passende datei aus dem Fileserver herunter.
+   * Die Methode lädt die passende Datei des Studenten aus dem Fileserver herunter.
    */
   @RequestMapping("/download/file")
   @ResponseBody
@@ -168,12 +166,13 @@ public class FileUploadController {
   }
 
   /**
-   * Die methode lädt die Maarkdown-Vorlage aus dem Fileserver herunter.
+   * Die Methode lädt die Markdown-Vorlage aus dem Fileserver herunter.
    */
   @RequestMapping("/download/presentation")
   @ResponseBody
   public void downloadPResentationforSummary(final KeycloakAuthenticationToken token,
-                                             final HttpServletResponse response) throws IOException {
+                                             final HttpServletResponse response)
+      throws IOException {
 
     final String filename = "Vorlage.md";
     try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
