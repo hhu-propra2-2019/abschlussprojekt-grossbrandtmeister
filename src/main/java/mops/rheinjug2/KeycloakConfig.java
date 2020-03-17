@@ -16,3 +16,4 @@ public class KeycloakConfig {
     return new KeycloakSpringBootConfigResolver();
   }
 }
+

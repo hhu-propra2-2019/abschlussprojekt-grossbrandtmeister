@@ -16,13 +16,17 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 public final class MeetupCom {
-  @Autowired
   private RestTemplate restTemplate;
+
+  @Autowired
+  public MeetupCom(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
 
   /**
    * Holt die Liste der RheinJUG-Veranstaltungen von api.meetup.com.
    */
-  List<Event> getRheinJugEventsSince(LocalDateTime localDateTime) {
+  public List<Event> getRheinJugEventsSince(LocalDateTime localDateTime) {
     String dateIso = asIso8601String(localDateTime);
 
     var url = String.format("http://api.meetup.com/rheinjug/events?no_earlier_than=%s&status=past,upcoming&desc=true", dateIso);

@@ -46,13 +46,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation "mops:styleguide:2.1.0"
+    implementation "mops:styleguide:2.2.0"
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
     implementation 'org.keycloak.bom:keycloak-adapter-bom:3.3.0.Final'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile 'org.asciidoctor:asciidoctorj:2.2.0'
     compile 'org.springframework:spring-context-support'
     compile 'javax.mail:mail:1.4.1'
+    compile 'io.minio:minio:6.0.13'
     compileOnly 'org.projectlombok:lombok'
     testCompile group: 'org.jvnet.mock-javamail', name: 'mock-javamail', version: '1.1'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -82,6 +85,8 @@ spotbugs {
 checkstyle {
     toolVersion = "8.28"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    ignoreFailures = false
+    maxWarnings = 0
 }
 
 pmd {

@@ -12,7 +12,7 @@ import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.OidcKeycloakAccount;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.IDToken;
+import org.keycloak.representations.AccessToken;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -31,7 +31,7 @@ public class AccountCreatorTests {
   private static KeycloakSecurityContext keycloakSecurityContext;
 
   @Mock
-  private static IDToken idToken;
+  private static AccessToken accessToken;
 
   private static final Set<String> roles = new HashSet<>();
 
@@ -40,14 +40,14 @@ public class AccountCreatorTests {
    */
   @BeforeEach
   public void setUp() {
-    roles.add("Tester");
+    roles.add("tester");
 
     MockitoAnnotations.initMocks(this);
 
     when(keycloakAuthenticationToken.getPrincipal()).thenReturn(keycloakPrincipal);
     when(keycloakAuthenticationToken.getAccount()).thenReturn(keycloakAccount);
     when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(keycloakSecurityContext);
-    when(keycloakPrincipal.getName()).thenReturn("Test Name");
+    when(keycloakPrincipal.getName()).thenReturn("login");
     when(keycloakAccount.getRoles()).thenReturn(roles);
   }
 
@@ -57,28 +57,18 @@ public class AccountCreatorTests {
    */
   @Test
   public void createAccountWithIdToken() {
-    when(keycloakSecurityContext.getIdToken()).thenReturn(idToken);
-    when(idToken.getEmail()).thenReturn("test@e.mail");
+    when(keycloakSecurityContext.getToken()).thenReturn(accessToken);
+    when(accessToken.getEmail()).thenReturn("test@e.mail");
+    when(accessToken.getGivenName()).thenReturn("Maria");
+    when(accessToken.getFamilyName()).thenReturn("Musterfrau");
 
     Account account = AccountCreator.createAccountFromPrincipal(keycloakAuthenticationToken);
 
-    assertEquals("Test Name", account.getName());
+    assertEquals("login", account.getName());
     assertEquals("test@e.mail", account.getEmail());
     assertNull(account.getImage());
     assertEquals(roles, account.getRoles());
-  }
-
-  /**
-   * Setze kein IDToken fest, um einen Zugriff über Authorization Header Bearer zu simulieren.
-   * Erwarte einen Account mit korrektem Namen und Rollen, aber ohne E-Mail.
-   */
-  @Test
-  public void createAccountWithoutIdToken() {
-    Account account = AccountCreator.createAccountFromPrincipal(keycloakAuthenticationToken);
-
-    assertEquals("Test Name", account.getName());
-    assertEquals("", account.getEmail());
-    assertNull(account.getImage());
-    assertEquals(roles, account.getRoles());
+    assertEquals("Maria", account.getGivenName());
+    assertEquals("Musterfrau", account.getFamilyName());
   }
 }
