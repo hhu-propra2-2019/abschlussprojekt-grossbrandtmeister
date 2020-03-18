@@ -10,7 +10,7 @@ public class FileCheckService {
    * überprüft ob ein File das Format Markdown enthält.
    *
    * @param file zu überprüfende Datei
-   * @return
+   * @return boolean
    */
   public static boolean checkIfIsMarkdown(final MultipartFile file) {
     if (!file.isEmpty()) {
