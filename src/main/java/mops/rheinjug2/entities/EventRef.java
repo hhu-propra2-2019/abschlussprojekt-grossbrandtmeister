@@ -23,4 +23,12 @@ public class EventRef {
   boolean isSubmittedAndAcceptedButNotUsed() {
     return submittedSummary && accepted && (!usedForCertificate);
   }
+
+  boolean isSubmittedAndNotAccepted() {
+    return submittedSummary && !accepted;
+  }
+
+  boolean isSubmittedAndAccepted() {
+    return submittedSummary && accepted;
+  }
 }

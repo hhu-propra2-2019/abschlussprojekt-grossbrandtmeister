@@ -20,6 +20,7 @@ import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileCheckService;
 import mops.rheinjug2.fileupload.FileService;
+import mops.rheinjug2.fileupload.Summary;
 import org.apache.commons.io.IOUtils;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -32,12 +33,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xmlpull.v1.XmlPullParserException;
 
 @Controller
 @Secured({"ROLE_studentin"})
 @RequestMapping("/rheinjug2")
 @Log4j2
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class FileUploadController {
 
   transient FileService fileService;
@@ -54,19 +57,13 @@ public class FileUploadController {
     this.fileService = fileService;
   }
 
-  @RequestMapping("/file")
-  public String showPage(final Model model) {
-    return "fileUpload";
-  }
-
-
   /**
    * Gibt das File an den FileService weiter um das File zu speichern.
    */
-  @PostMapping(path = "/file")
+  @PostMapping(path = "/student/reportsubmit")
   public String uploadFile(final KeycloakAuthenticationToken token,
-                           @RequestParam(value = "file") final MultipartFile file,
-                           final Model model) {
+                           final RedirectAttributes attributes,
+                           @RequestParam(value = "file") final MultipartFile file) {
     if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
         final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
@@ -74,14 +71,46 @@ public class FileUploadController {
         if (!username.isEmpty()) {
           final String filename = username + "_" + Veranstaltung;
           fileService.uploadFile(file, filename);
+          attributes.addFlashAttribute("message",
+              "You successfully uploaded " + filename + '!');
         }
-
       } catch (final Exception e) {
         log.catching(e);
+        attributes.addFlashAttribute("message",
+            "Your file was not able to be uploaded ");
       }
+    } else {
+      attributes.addFlashAttribute("message",
+          "Your file has the wrong format. It needs to be a markdown file!");
     }
     authenticatedAccess.increment();
-    return "report_submit";
+    return "redirect:/rheinjug2/student/reportsubmit";
+  }
+
+  /**
+   * Nimmt das Summary mit Inhalt und gibt den Inhalt an den FileService weiter
+   * um das File zu speichern.
+   */
+  @PostMapping(path = "/student/summarysubmit")
+  public String useForm(final KeycloakAuthenticationToken token,
+                        final RedirectAttributes attributes, final Summary summary) {
+    try {
+      final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+      final String username = principal.getName();
+      if (!username.isEmpty()) {
+        final String filename = username + "_" + Veranstaltung;
+        fileService.uploadContentConvertToMd(summary.getContent(), filename);
+        attributes.addFlashAttribute("message",
+            "You successfully uploaded the form !");
+      }
+
+    } catch (final Exception e) {
+      log.catching(e);
+      attributes.addFlashAttribute("message",
+          "Your file was not able to be uploaded ");
+    }
+    authenticatedAccess.increment();
+    return "redirect:/rheinjug2/student/reportsubmit";
   }
 
   /**
@@ -111,16 +140,14 @@ public class FileUploadController {
   }
 
   /**
-   * Die methode lädt die passende datei aus dem Fileserver herunter.
+   * Die Methode lädt die passende Datei des Studenten aus dem Fileserver herunter.
    */
   @RequestMapping("/download/file")
   @ResponseBody
   public void downloadFilebyToken(final KeycloakAuthenticationToken token,
                                   final HttpServletResponse response)
-      throws IOException, XmlPullParserException, NoSuchAlgorithmException,
-      InvalidKeyException, InvalidArgumentException, InvalidResponseException,
-      ErrorResponseException, NoResponseException, InvalidBucketNameException,
-      InsufficientDataException, InternalException {
+      throws IOException {
+
 
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     final String username = principal.getName();
@@ -131,14 +158,34 @@ public class FileUploadController {
         response.setContentType(URLConnection.guessContentTypeFromName(filename));
         IOUtils.copy(inputStream, response.getOutputStream());
         response.flushBuffer();
+      } catch (final Exception e) {
+        log.catching(e);
       }
-
     } else {
-      response.sendError(404, "File not found");
+      response.sendError(403);
     }
 
     authenticatedAccess.increment();
   }
 
-}
+  /**
+   * Die Methode lädt die Markdown-Vorlage aus dem Fileserver herunter.
+   */
+  @RequestMapping("/download/presentation")
+  @ResponseBody
+  public void downloadPResentationforSummary(final KeycloakAuthenticationToken token,
+                                             final HttpServletResponse response)
+      throws IOException {
 
+    final String filename = "VorlageZusammenfassung.md";
+    try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
+      response.addHeader("Content-disposition", "attachment;filename=" + filename);
+      response.setContentType(URLConnection.guessContentTypeFromName(filename));
+      IOUtils.copy(inputStream, response.getOutputStream());
+      response.flushBuffer();
+    } catch (final Exception e) {
+      response.sendError(404, "File not found");
+    }
+    authenticatedAccess.increment();
+  }
+}

@@ -42,9 +42,8 @@ public class DatabaseInitializer implements ServletContextInitializer {
 
   private void fakeStudent(final Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
-      final Student student = new Student();
-      student.setLogin(faker.name().firstName() + faker.number().digits(3));
-      student.setEmail(faker.internet().emailAddress());
+      Student student = new Student(faker.name().firstName() + faker.number().digits(3),
+          faker.internet().emailAddress());
       student.setName(faker.name().firstName());
       studentRepository.save(student);
     });
