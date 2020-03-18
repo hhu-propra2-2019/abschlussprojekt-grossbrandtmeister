@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
+@Log4j2
 @Table("student")
 public class Student {
   @Id
@@ -52,12 +54,18 @@ public class Student {
   /**
    * Eine Zusammenfassung hinzufügen.
    */
-  public void addSummary(Event event) {
+
+  public boolean addSummary(Event event, String url) {
     if (event.isOpenForSubmission()) {
       EventRef ref = findEventRef(event);
       ref.setSubmittedSummary(true);
+      ref.setUrl(url);
       ref.setTimeOfSubmission(LocalDateTime.now());
+      log.info("Summary submitted.");
+      return true;
     }
+    log.info("For this event there is a submission.");
+    return false;
   }
 
   public void useEventsForCP(List<Event> events) {

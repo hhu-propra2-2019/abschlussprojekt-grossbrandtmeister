@@ -71,10 +71,10 @@ public class ModelService {
   /**
    * Ein Student gibt eine Zusammenfassung ab.
    */
-  public Student submitSummary(String login, Long eventId) {
+  public Student submitSummary(String login, Long eventId, String url) {
     Student student = loadStudentByLogin(login);
     Event event = loadEventById(eventId);
-    student.addSummary(event);
+    student.addSummary(event, url);
     studentRepository.save(student);
     return student;
   }

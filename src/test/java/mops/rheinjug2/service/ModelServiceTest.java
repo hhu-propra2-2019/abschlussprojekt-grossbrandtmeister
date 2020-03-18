@@ -70,10 +70,12 @@ public class ModelServiceTest {
     event2.setDate(LocalDateTime.now());
     eventRepository.saveAll(List.of(event1, event2));
     Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
+    String url1 = "Test-Url 1";
+    String url2 = "Test-Url 2";
     student.addEvent(event1);
     student.addEvent(event2);
-    student.addSummary(event1);
-    student.addSummary(event2);
+    student.addSummary(event1, url1);
+    student.addSummary(event2, url2);
     student.useEventsForCP(List.of(event1));
     studentRepository.save(student);
     modelService.acceptSummary(event2.getId(), student.getLogin());
@@ -89,14 +91,16 @@ public class ModelServiceTest {
     event1.setDate(LocalDateTime.now());
     event2.setDate(LocalDateTime.now());
     eventRepository.saveAll(List.of(event1, event2));
+
     Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     student.addEvent(event1);
     student.addEvent(event2);
     studentRepository.save(student);
-
-    modelService.submitSummary("testLogin5", event1.getId());
+    String url1 = "Test-Url 3";
+    String url2 = "Test-Url 4";
+    modelService.submitSummary("testLogin5", event1.getId(), url1);
     Student savedStudent =
-        modelService.submitSummary("testLogin5", event2.getId());
+        modelService.submitSummary("testLogin5", event2.getId(), url2);
     assertThat(savedStudent.getEventsIdsWithSummaryNotAccepted())
         .containsExactly(event1.getId(), event2.getId());
   }
@@ -122,10 +126,13 @@ public class ModelServiceTest {
         eventWithSubmissionAccepted, eventWithSubmissionNotAccepted);
     eventRepository.saveAll(events);
 
+    String url1 = "Test-Url 1";
+    String url2 = "Test-Url 2";
+
     Student student = createAndSaveStudent("ll100", "ll@hhu.de");
     addEventsToStudent(events, student);
-    student.addSummary(eventWithSubmissionAccepted);
-    student.addSummary(eventWithSubmissionNotAccepted);
+    student.addSummary(eventWithSubmissionAccepted, url1);
+    student.addSummary(eventWithSubmissionNotAccepted, url2);
     studentRepository.save(student);
     modelService.acceptSummary(eventWithSubmissionAccepted.getId(), "ll100");
 
@@ -150,10 +157,12 @@ public class ModelServiceTest {
     event2.setDate(LocalDateTime.now());
     event2.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2));
+    String url1 = "Test-Url 1";
+    String url2 = "Test-Url 2";
     Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     addEventsToStudent(List.of(event1, event2), student);
-    student.addSummary(event1);
-    student.addSummary(event2);
+    student.addSummary(event1, url1);
+    student.addSummary(event2, url2);
     studentRepository.save(student);
     modelService.acceptSummary(event1.getId(), student.getLogin());
     modelService.acceptSummary(event2.getId(), student.getLogin());
@@ -174,11 +183,15 @@ public class ModelServiceTest {
     event3.setDate(LocalDateTime.now());
     event3.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2, event3));
+
     Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     addEventsToStudent(List.of(event1, event2, event3), student);
-    student.addSummary(event1);
-    student.addSummary(event2);
-    student.addSummary(event3);
+    String url1 = "Test-Url 1";
+    String url2 = "Test-Url 2";
+    String url3 = "Test-Url 3";
+    student.addSummary(event1, url1);
+    student.addSummary(event2, url2);
+    student.addSummary(event3, url3);
     studentRepository.save(student);
     modelService.acceptSummary(event1.getId(), student.getLogin());
     modelService.acceptSummary(event2.getId(), student.getLogin());
@@ -196,10 +209,12 @@ public class ModelServiceTest {
     event2.setDate(LocalDateTime.now());
     event2.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2));
+    String url1 = "Test-Url 1";
+    String url2 = "Test-Url 2";
     Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     addEventsToStudent(List.of(event1, event2), student);
-    student.addSummary(event1);
-    student.addSummary(event2);
+    student.addSummary(event1, url1);
+    student.addSummary(event2, url2);
     studentRepository.save(student);
     modelService.acceptSummary(event1.getId(), student.getLogin());
     modelService.acceptSummary(event2.getId(), student.getLogin());
