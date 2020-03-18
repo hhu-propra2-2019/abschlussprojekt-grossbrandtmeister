@@ -4,7 +4,6 @@ import static com.tngtech.keycloakmock.api.TokenConfig.aTokenConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.tngtech.keycloakmock.junit5.KeycloakMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
