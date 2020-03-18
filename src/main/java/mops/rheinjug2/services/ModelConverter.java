@@ -29,7 +29,7 @@ public class ModelConverter {
     event.setDate(eventTime);
     event.setAddress(meetupEvent.getVenue().getAddress1()
         + ", " + meetupEvent.getVenue().getCity());
-    event.setVenueName(meetupEvent.getVenue().getName());
+    event.setVenue(meetupEvent.getVenue().getName());
     event.setUrl(meetupEvent.getLink().toString());
     event.setStatus(meetupEvent.getStatus().name());
     event.setType(meetupEvent.getName().toLowerCase(Locale.GERMAN).contains("entwickelbar")
