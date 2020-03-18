@@ -37,14 +37,18 @@ public class EventService {
    * Ruft Events von meetup.com ab und speichert diese in der Datenbank
    */
   public void refreshRheinjugEvents(final LocalDateTime time) {
-    mops.rheinjug2.entities.Event eventEntity;
-    final List<Event> meetupEvents = meetupComService.getRheinJugEventsSince(time);
-    log.info("Fetched " + meetupEvents.size() + " events from meetup.com");
-    for (final Event event : meetupEvents) {
-      eventEntity = eventRepository.findEventByMeetupId(event.getId());
-      eventRepository.save(ModelConverter.parseMeetupEvent(event, eventEntity));
+    try {
+      mops.rheinjug2.entities.Event eventEntity;
+      final List<Event> meetupEvents = meetupComService.getRheinJugEventsSince(time);
+      log.info("Fetched " + meetupEvents.size() + " events from meetup.com");
+      for (final Event event : meetupEvents) {
+        eventEntity = eventRepository.findEventByMeetupId(event.getId());
+        eventRepository.save(ModelConverter.parseMeetupEvent(event, eventEntity));
+      }
+      updateStatusOfPastEvents();
+    } catch (final Exception e) {
+      log.error("Could not get fetch events from meetup.com. " + e.getMessage());
     }
-    updateStatusOfPastEvents();
   }
 
   /**
