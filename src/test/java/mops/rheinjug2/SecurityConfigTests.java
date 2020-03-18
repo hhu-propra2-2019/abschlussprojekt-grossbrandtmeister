@@ -4,6 +4,7 @@ import static com.tngtech.keycloakmock.api.TokenConfig.aTokenConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.tngtech.keycloakmock.junit5.KeycloakMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +60,6 @@ public class SecurityConfigTests {
       "studentin, /rheinjug2/student/creditpoints, 200",
       "studentin, /rheinjug2/student/reportsubmit, 200",
       "orga, /rheinjug2/orga/events, 200",
-      "orga, /rheinjug2/orga/creditpoints, 200",
       "orga, /rheinjug2/orga/reports, 200",
 
       ", /actuator, 302",
@@ -68,7 +68,6 @@ public class SecurityConfigTests {
       ", /rheinjug2/student/creditpoints, 302",
       ", /rheinjug2/student/reportsubmit, 302",
       ", /rheinjug2/orga/events, 302",
-      ", /rheinjug2/orga/creditpoints, 302",
       ", /rheinjug2/orga/reports, 302",
 
       "invalid, /actuator, 403",
@@ -77,7 +76,6 @@ public class SecurityConfigTests {
       "invalid, /rheinjug2/student/creditpoints, 403",
       "invalid, /rheinjug2/student/reportsubmit, 403",
       "invalid, /rheinjug2/orga/events, 403",
-      "invalid, /rheinjug2/orga/creditpoints, 403",
       "invalid, /rheinjug2/orga/reports, 403"
   })
   public void userRolesProvideCorrectAccess(
