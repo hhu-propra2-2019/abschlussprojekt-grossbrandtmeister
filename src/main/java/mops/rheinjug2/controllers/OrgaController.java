@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Log4j2
 @Controller
@@ -47,6 +48,14 @@ public class OrgaController {
     model.addAttribute("events", orgaService.getEvents());
     model.addAttribute("datenow", LocalDateTime.now());
     return "orga_events_overview";
+  }
+
+  @PostMapping("/summaryaccepting")
+  public String summaryAccepting(@RequestParam Long eventid, @RequestParam Long studentid, final Model model, final KeycloakAuthenticationToken token) {
+    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    authenticatedAccess.increment();
+    orgaService.setSummaryAcception(studentid, eventid);
+    return "redirect:/rheinjug2/orga/reports";
   }
 
   /**

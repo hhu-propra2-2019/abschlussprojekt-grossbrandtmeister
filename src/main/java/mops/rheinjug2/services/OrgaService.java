@@ -39,7 +39,7 @@ public class OrgaService {
    * @return Anzahl der Abgegebene Zusammenfassungen
    */
   private int getnumberOfSubmition(Long id) {
-    return eventRepository.countStudentsPerEventById(id);
+    return eventRepository.countSubmittedSummaryPerEventById(id);
   }
 
   /**
@@ -49,7 +49,7 @@ public class OrgaService {
    * @return Anzahl der Studenten
    */
   private int getNumberOfStudent(Long id) {
-    return eventRepository.countSubmittedSummaryPerEventById(id);
+    return eventRepository.countStudentsPerEventById(id);
   }
 
   /**
@@ -98,5 +98,9 @@ public class OrgaService {
    */
   private Student getStudentForSummary(Long studentId) {
     return studentRepository.getStudentById(studentId);
+  }
+
+  public void setSummaryAcception(Long studentid, Long eventid) {
+    eventRepository.updateSummarytoaccepted(studentid, eventid);
   }
 }

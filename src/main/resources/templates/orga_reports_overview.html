@@ -100,9 +100,10 @@
                         </button>
                     </div>
                     <div class="col-12 col-sm-6 my-1 mb-2">
-                        <button class="btn btn-success btn-block" type="button">
-                            Zusammenfassung akzeptieren
-                        </button>
+                        <form action="#" method="POST"
+                              th:action="@{/rheinjug2/orga/summaryaccepting(studentid=${summary.getStudentId()}, eventid=${summary.getEventId()})} ">
+                            <button class="btn btn-success btn-block" type="submit">Zusammenfassung akzeptieren</button>
+                        </form>
                     </div>
                 </div>
             </div>
