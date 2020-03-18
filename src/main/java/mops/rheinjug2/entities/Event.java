@@ -43,7 +43,7 @@ public class Event {
    * Gibt an, ob eine Veranstaltung ansteht.
    */
   public boolean isUpcoming() {
-    return date.isAfter(LocalDateTime.now());
+    return this.getStatus().equalsIgnoreCase("Upcoming");
   }
 }
 

@@ -155,7 +155,7 @@ public class ModelService {
   private void addEventsWithNoSubmission(Map<Event, SubmissionStatus> events, Set<Long> eventsIds) {
     List<Event> eventsWithNoSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     for (Event e : eventsWithNoSummary) {
-      if (e.getStatus().equalsIgnoreCase("Upcoming")) {
+      if (e.isUpcoming()) {
         addToMap(events, List.of(e), SubmissionStatus.UPCOMING);
       } else if (e.isOpenForSubmission()) {
         addToMap(events, List.of(e), SubmissionStatus.OPEN_FOR_SUBMISSION);
