@@ -12,6 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
@@ -29,6 +31,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
+
+  private final Environment env;
+
+  SecurityConfig(@Autowired final Environment env) {
+    this.env = env;
+  }
 
   @Autowired
   public void configureGlobal(final AuthenticationManagerBuilder auth) {
@@ -65,8 +73,12 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .hasRole("monitoring")
         .anyRequest()
         .permitAll();
-    //http.csrf().disable();
-    //http.headers().frameOptions().disable();
+
+    if (env.acceptsProfiles(Profiles.of("dev"))) {
+      //h2-console needs following
+      http.csrf().disable();
+      http.headers().frameOptions().disable();
+    }
   }
 
   /**
