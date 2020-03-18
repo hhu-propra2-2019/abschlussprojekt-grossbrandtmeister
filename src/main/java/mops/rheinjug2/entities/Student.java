@@ -83,7 +83,7 @@ public class Student {
   }
 
   public Set<Long> getEventsIdsWithSummaryNotAccepted() {
-    return events.stream().filter(EventRef::isSubmittedNotAccepted)
+    return events.stream().filter(EventRef::isSubmittedAndNotAccepted)
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
 
