@@ -39,13 +39,13 @@ public class EmailService {
     // Write certificate to outputStream
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     // Dummy Values for testing purposes
-    certificateService.createCertificatePdf(outputStream, "foo", "bar", "foo.bar@foobar.de");
+    certificateService.createCertificatePdf(outputStream, name, gender, matNr);
     byte[] bytes = outputStream.toByteArray();
     
     ByteArrayDataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");
     MimeBodyPart pdfBodyPart = new MimeBodyPart();
     pdfBodyPart.setDataHandler(new DataHandler(dataSource));
-    pdfBodyPart.setFileName("DummyCertificate.pdf");
+    pdfBodyPart.setFileName("Schein_" + matNr + ".pdf");
     
     MimeBodyPart textBodyPart = new MimeBodyPart();
     textBodyPart.setText(text);
