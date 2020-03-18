@@ -23,7 +23,7 @@ public class EventServiceScheduler {
 
   @PostConstruct
   public static void getAllEvents() {
-    log.info("Started scheduler to get rheinjug events every ");
+    log.info("Initialized scheduler for EventService");
   }
 
   @Scheduled(fixedDelayString = "${application.api-pump.delay}")
