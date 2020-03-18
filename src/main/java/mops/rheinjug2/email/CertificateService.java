@@ -41,8 +41,9 @@ public class CertificateService {
       acroForm.getField("Veranstaltung 1").setValue("foo");
       acroForm.getField("Veranstaltung 2").setValue("bär");
       acroForm.getField("Veranstaltung 3").setValue("baz");
-      acroForm.getField("Datum 1").setValue("13.24.12421");
-      acroForm.getField("Datum 2").setValue("13.24.12421");
+      
+      acroForm.getField("Datum 1").setValue(setCertificateDate());
+      acroForm.getField("Datum 2").setValue(setCertificateDate());
       
       // pdfForm.save("DummyCertificate" + forename + ".pdf");
       pdfForm.save(outputStream);
@@ -59,18 +60,13 @@ public class CertificateService {
   
   /**
    * Setzt beim Schein das aktuelle Datum.
-   *
-   * @param acroForm Schein-PDF
    */
-  private static void setCertificateDate(PDAcroForm acroForm) throws IOException {
+  private static String setCertificateDate() {
     LocalDate currentDate = LocalDate.now();
     int day = currentDate.getDayOfMonth();
     int month = currentDate.getMonthValue();
     int year = currentDate.getYear();
-    
-    acroForm.getField("date7[day]").setValue(Integer.toString(day));
-    acroForm.getField("date7[month]").setValue(Integer.toString(month));
-    acroForm.getField("date7[year]").setValue(Integer.toString(year));
+    return day + "." + month + "." + year;
   }
   
   private String setGenderFormOfAddress(String gender) {
