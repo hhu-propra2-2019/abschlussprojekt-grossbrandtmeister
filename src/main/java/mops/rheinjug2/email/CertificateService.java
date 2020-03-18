@@ -25,7 +25,9 @@ public class CertificateService {
    * @param email        des Studenten/der Studentin
    */
   public void createCertificatePdf(final ByteArrayOutputStream outputStream,
-                                   final String forename, final String surname, final String email) {
+                                   final String forename,
+                                   final String surname,
+                                   final String email) {
     final File pdf = new File("./DummyCertificate.pdf");
     try {
       pdfForm = PDDocument.load(pdf);
