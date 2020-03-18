@@ -1,7 +1,6 @@
 package mops.rheinjug2;
 
 import com.github.javafaker.Faker;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Random;
@@ -20,10 +19,7 @@ import org.springframework.stereotype.Component;
 @Profile("dev")
 public class DatabaseInitializer implements ServletContextInitializer {
   transient Random random = new Random();
-  transient LocalDate date1 = LocalDate.of(2020, 01, 01);
-  transient LocalDate date2 = LocalDate.of(2020, 05, 01);
   transient LocalDateTime dateNow = LocalDateTime.now();
-
   transient EventRepository eventRepository;
   transient StudentRepository studentRepository;
   transient ModelService modelService;
@@ -78,9 +74,11 @@ public class DatabaseInitializer implements ServletContextInitializer {
       event.setTitle(faker.job().title());
       event.setDescription(faker.yoda().quote());
       event.setPrice(faker.number().randomDigit());
-      event.setDate(new java.sql.Timestamp(
-          faker.date().between(java.sql.Date.valueOf(date1), java.sql.Date.valueOf(date2))
-              .getTime()).toLocalDateTime());
+      event.setDate(LocalDateTime.of(2020,
+          faker.number().numberBetween(2, 5),
+          faker.number().numberBetween(1, 28),
+          faker.number().numberBetween(16, 20),
+          faker.number().numberBetween(1, 60)));
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
       if (event.getDate().isBefore(dateNow)) {
