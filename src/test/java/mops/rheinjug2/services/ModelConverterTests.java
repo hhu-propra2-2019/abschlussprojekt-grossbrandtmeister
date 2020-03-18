@@ -136,7 +136,7 @@ public class ModelConverterTests {
         LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
         eventEntity.getDate());
     assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
-    assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenue());
+    assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenueName());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());
     assertEquals("UPCOMING", eventEntity.getStatus());
     assertEquals("EntwickelBar", eventEntity.getType());
@@ -166,7 +166,7 @@ public class ModelConverterTests {
         LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
         eventEntity.getDate());
     assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
-    assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenue());
+    assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenueName());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());
     assertEquals("UPCOMING", eventEntity.getStatus());
     assertEquals("EntwickelBar", eventEntity.getType());

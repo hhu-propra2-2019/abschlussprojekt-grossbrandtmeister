@@ -107,29 +107,34 @@ public class ModelServiceTest {
 
   @Test
   public void testGetAllEventsPerStudent() {
-    Event eventUpcoming = createAndSaveEvent("Veranstaltung Java");
+    final Event eventUpcoming = createAndSaveEvent("Veranstaltung Java");
     eventUpcoming.setDate(LocalDateTime.now().plusDays(1));
+    eventUpcoming.setStatus("Upcoming");
 
-    Event eventOpen = createAndSaveEvent("Veranstaltung Java2");
+    final Event eventOpen = createAndSaveEvent("Veranstaltung Java2");
     eventOpen.setDate(LocalDateTime.now());
+    eventOpen.setStatus("Past");
 
-    Event eventPassed = createAndSaveEvent("Veranstaltung Java 3");
+    final Event eventPassed = createAndSaveEvent("Veranstaltung Java 3");
     eventPassed.setDate(LocalDateTime.of(2020, 1, 2, 12, 20));
+    eventPassed.setStatus("Past");
 
-    Event eventWithSubmissionNotAccepted = createAndSaveEvent("Veranstaltung Java 4");
+    final Event eventWithSubmissionNotAccepted = createAndSaveEvent("Veranstaltung Java 4");
     eventWithSubmissionNotAccepted.setDate(LocalDateTime.now());
+    eventWithSubmissionNotAccepted.setStatus("Past");
 
-    Event eventWithSubmissionAccepted = createAndSaveEvent("Veranstaltung Java 4");
+    final Event eventWithSubmissionAccepted = createAndSaveEvent("Veranstaltung Java 4");
     eventWithSubmissionAccepted.setDate(LocalDateTime.now());
+    eventWithSubmissionAccepted.setStatus("Past");
 
-    List<Event> events = List.of(eventOpen, eventPassed, eventUpcoming,
+    final List<Event> events = List.of(eventOpen, eventPassed, eventUpcoming,
         eventWithSubmissionAccepted, eventWithSubmissionNotAccepted);
     eventRepository.saveAll(events);
 
     String url1 = "Test-Url 1";
     String url2 = "Test-Url 2";
 
-    Student student = createAndSaveStudent("ll100", "ll@hhu.de");
+    final Student student = createAndSaveStudent("ll100", "ll@hhu.de");
     addEventsToStudent(events, student);
     student.addSummary(eventWithSubmissionAccepted, url1);
     student.addSummary(eventWithSubmissionNotAccepted, url2);
