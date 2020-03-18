@@ -20,6 +20,9 @@ import java.security.NoSuchAlgorithmException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -146,5 +149,24 @@ public class FileService {
     } finally {
       inputStream.close();
     }
+  }
+
+  /**
+   * Gives the content of a markdown file back as a HTML-file in format of a String.
+   *
+   * @param summaryStudent filename of the searched summary.
+   * @return String as HTML file gerenders.
+   */
+  public String getFileAsHtmlString(final String summaryStudent) {
+    try {
+      final String content = getContentOfFileAsString(summaryStudent);
+      final Parser parser = Parser.builder().build();
+      final Node document = parser.parse(content);
+      final HtmlRenderer renderer = HtmlRenderer.builder().build();
+      return renderer.render(document);
+    } catch (final Exception e) {
+      log.catching(e);
+    }
+    return "File Not Found";
   }
 }
