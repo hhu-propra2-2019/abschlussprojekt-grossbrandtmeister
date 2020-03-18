@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
+import mops.rheinjug2.services.ModelService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -20,11 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class StudentController {
 
   private final transient Counter authenticatedAccess;
+  private final transient ModelService modelService;
 
   transient FileService fileService;
 
-  public StudentController(final MeterRegistry registry, final FileService fileService) {
+  public StudentController(final MeterRegistry registry, final FileService fileService,
+                           final ModelService modelService) {
     this.fileService = fileService;
+    this.modelService = modelService;
     authenticatedAccess = registry.counter("access.authenticated");
   }
 
