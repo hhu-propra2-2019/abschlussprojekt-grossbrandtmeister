@@ -24,7 +24,6 @@ public class StudentController {
 
   transient FileService fileService;
 
-
   public StudentController(final MeterRegistry registry, final FileService fileService) {
     this.fileService = fileService;
     authenticatedAccess = registry.counter("access.authenticated");

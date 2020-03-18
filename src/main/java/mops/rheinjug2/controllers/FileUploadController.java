@@ -87,7 +87,7 @@ public class FileUploadController {
           "Your file has the wrong format. It needs to be a markdown file!");
     }
     authenticatedAccess.increment();
-    return "redirect:/rheinjug2/student/reportsubmit";
+    return "redirect:/rheinjug2/student/reportsubmit?eventId=" + eventId;
   }
 
   /**
@@ -102,8 +102,6 @@ public class FileUploadController {
       final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
       final String username = principal.getName();
       if (!username.isEmpty()) {
-        System.out.println(summary.getEventId());
-        System.out.println(eventId + "die ohne das objekt");
         final String filename = username + "_" + eventId;
         fileService.uploadContentConvertToMd(summary.getContent(), filename);
         attributes.addFlashAttribute("message",
@@ -116,7 +114,7 @@ public class FileUploadController {
           "Your file was not able to be uploaded ");
     }
     authenticatedAccess.increment();
-    return "redirect:/rheinjug2/student/reportsubmit";
+    return "redirect:/rheinjug2/student/reportsubmit?eventId=" + eventId;
   }
 
   /**
