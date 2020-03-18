@@ -11,7 +11,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
-    id 'com.github.spotbugs' version '4.0.1'
+    id 'com.github.spotbugs' version '4.0.2'
     id 'pmd'
     id 'checkstyle'
 }
@@ -71,6 +71,7 @@ dependencies {
     testCompile 'com.tngtech.archunit:archunit-junit5:0.13.1'
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.19'
     compile group: 'com.sun.istack', name: 'istack-commons-runtime', version: '3.0.10'
+    compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.14.0'
 }
 
 test {

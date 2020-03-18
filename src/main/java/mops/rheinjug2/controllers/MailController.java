@@ -1,12 +1,18 @@
 package mops.rheinjug2.controllers;
 
+import com.sun.istack.ByteArrayDataSource;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import lombok.extern.log4j.Log4j2;
+import java.io.ByteArrayOutputStream;
+import javax.activation.DataHandler;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import mops.rheinjug2.AccountCreator;
-import mops.rheinjug2.email.EmailService;
-import org.keycloak.KeycloakPrincipal;
+import mops.rheinjug2.email.CertificateService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,41 +22,64 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Secured({"ROLE_studentin"})
 @RequestMapping("/rheinjug2")
-@Log4j2
 public class MailController {
-  
+
   private final transient Counter authenticatedAccess;
-  private final transient EmailService emailService;
-  
+  public final transient CertificateService certificateService;
+  public final transient JavaMailSender emailSender;
+
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public MailController(MeterRegistry registry,
-                        EmailService emailService) {
+  public MailController(final MeterRegistry registry,
+                        final CertificateService certificateService,
+                        final JavaMailSender emailSender) {
     authenticatedAccess = registry.counter("access.authenticated");
-    this.emailService = emailService;
+    this.certificateService = certificateService;
+    this.emailSender = emailSender;
   }
-  
+
   /**
-   * Sends email with Certificate.
+   * Dummy Methode die beim aufrufen von /sendEmail eine
+   * Test Email an eine angegebene Email sendet.
    *
    * @return Dummy String
    */
   @ResponseBody
   @RequestMapping("/sendEmail")
-  public String sendEmailWithCertificate(KeycloakAuthenticationToken token,
-                                         Model model) throws Exception {
+  public String sendEmailWithCertificate(final KeycloakAuthenticationToken token,
+                                         final Model model) throws Exception {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
-    
-    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    final String forename = principal.getKeycloakSecurityContext().getIdToken().getGivenName();
-    final String surname = principal.getKeycloakSecurityContext().getIdToken().getFamilyName();
-    final String name = forename + " " + surname;
-    
-    String gender = "male";
-    String matNr = "123912399";
-    
-    emailService.sendMail(name, gender, matNr);
-    
+
+    final String recipient = "pamei104@uni-duesseldorf.de";
+    final String subject = "Test Email";
+    final String text = "Test";
+
+    // Write certificate to outputStream
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    // Dummy Values for testing purposes
+    certificateService.createCertificatePdf(outputStream, "foo", "bar", "foo.bar@foobar.de");
+    final byte[] bytes = outputStream.toByteArray();
+
+    final ByteArrayDataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");
+    final MimeBodyPart pdfBodyPart = new MimeBodyPart();
+    pdfBodyPart.setDataHandler(new DataHandler(dataSource));
+    pdfBodyPart.setFileName("DummyCertificate.pdf");
+
+    final MimeBodyPart textBodyPart = new MimeBodyPart();
+    textBodyPart.setText(text);
+
+    final MimeMultipart mimeMultipart = new MimeMultipart();
+    mimeMultipart.addBodyPart(textBodyPart);
+    mimeMultipart.addBodyPart(pdfBodyPart);
+
+    final MimeMessage mimeMessage = emailSender.createMimeMessage();
+    final MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+    mimeMessageHelper.setSubject(subject);
+    mimeMessageHelper.setTo(recipient);
+    mimeMessage.setContent(mimeMultipart);
+
+    emailSender.send(mimeMessage);
+
     return "Email Sent!";
   }
 }

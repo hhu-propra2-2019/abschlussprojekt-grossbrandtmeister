@@ -30,7 +30,7 @@ CREATE TABLE student_event
     student              integer,
     event                integer,
     submitted_summary    boolean,
-    url                  text,
+    url                  varchar(600),
     time_of_submission   datetime,
     accepted             boolean,
     used_for_certificate boolean,
