@@ -32,7 +32,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
-  private final Environment env;
+  private final transient Environment env;
 
   SecurityConfig(@Autowired final Environment env) {
     this.env = env;
