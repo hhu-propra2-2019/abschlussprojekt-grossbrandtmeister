@@ -50,8 +50,12 @@ public class OrgaController {
     return "orga_events_overview";
   }
 
+  /**
+   * Mapping der Annahme von Zussamenfassungen.
+   */
   @PostMapping("/summaryaccepting")
-  public String summaryAccepting(@RequestParam Long eventid, @RequestParam Long studentid, final Model model, final KeycloakAuthenticationToken token) {
+  public String summaryAccepting(@RequestParam Long eventid, @RequestParam Long studentid,
+                                 final Model model, final KeycloakAuthenticationToken token) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     orgaService.setSummaryAcception(studentid, eventid);

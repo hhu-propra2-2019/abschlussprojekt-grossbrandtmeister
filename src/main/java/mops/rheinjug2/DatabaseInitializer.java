@@ -1,4 +1,4 @@
-package mops;
+package mops.rheinjug2;
 
 import com.github.javafaker.Faker;
 import java.time.LocalDate;
@@ -13,9 +13,11 @@ import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("dev")
 public class DatabaseInitializer implements ServletContextInitializer {
   transient Random random = new Random();
   transient LocalDate date1 = LocalDate.of(2020, 01, 01);
@@ -24,11 +26,22 @@ public class DatabaseInitializer implements ServletContextInitializer {
 
   transient EventRepository eventRepository;
   transient StudentRepository studentRepository;
+  transient ModelService modelService;
 
 
-  public DatabaseInitializer(EventRepository eventRepository, StudentRepository studentRepository) {
+  /**
+   * DB mit daten zum Tseten füllen.
+   *
+   * @param eventRepository   event Repo
+   * @param studentRepository student Repo
+   * @param modelService      model service
+   */
+  public DatabaseInitializer(EventRepository eventRepository,
+                             StudentRepository studentRepository,
+                             ModelService modelService) {
     this.eventRepository = eventRepository;
     this.studentRepository = studentRepository;
+    this.modelService = modelService;
   }
 
   @Override
@@ -36,6 +49,17 @@ public class DatabaseInitializer implements ServletContextInitializer {
     Faker faker = new Faker(Locale.GERMAN);
     fakeEvent(faker);
     fakeStudent(faker);
+    fakerEventRef(faker);
+  }
+
+  private void fakerEventRef(Faker faker) {
+    studentRepository.findAll().forEach(student -> {
+      Long eventid = (long) faker.number().numberBetween(1, 30);
+      modelService.addStudentToEvent(student.getLogin(), student.getEmail(), eventid);
+      if (random.nextBoolean()) {
+        modelService.submitSummary(student.getLogin(), eventid, faker.internet().url());
+      }
+    });
   }
 
 
