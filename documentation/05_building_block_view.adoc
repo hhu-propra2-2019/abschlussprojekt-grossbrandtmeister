@@ -71,9 +71,11 @@ _**<Übersichtsdiagramm>**_
 
 Begründung:: _<Erläuternder Text>_
 
-Enthaltene Bausteine:: _<Beschreibung der enthaltenen Bausteine (Blackboxen)>_
+Enthaltene Bausteine:: Unser System teilt sich wie im obigen Diagramm in verschiedene Subsysteme.
 
-Wichtige Schnittstellen:: _<Beschreibung wichtiger Schnittstellen>_
+Wichtige Schnittstellen:: Die wichtigsten Schnittstellen unseres Systems sind die Website zur Bedienung des Systems durch die Nutzer,
+die Schnittstelle zu MinIO, dem Fileserver auf dem Dateien für unser System gespeichert werden
+und die Schnittstelle zur meetup.com API, über die aktuelle Events abgerufen und in unserem System verfügbar gemacht werden.
 
 [role="arc42help"]
 ****
@@ -92,7 +94,16 @@ Falls Sie die ausführliche Liste von Blackbox-Beschreibungen wählen, beschreib
 Dessen Überschrift ist jeweils der Namen dieser Blackbox.
 ****
 
-==== <Name Blackbox 1>
+[cols="1,2" options="header"]
+|===
+| **Subsystem** | **Kurzbeschreibung**
+| Controller | Leitet http Anfragen an unser System an die entsprechenden Subsysteme weiter.
+| API Pumpe | Ruft Events von meetup.com ab und füllt diese in unsere Datenbank.
+| _<Blackbox 2>_ | _<Text>_
+| ... | ...
+|===
+
+==== Controller
 
 [role="arc42help"]
 ****
@@ -109,6 +120,10 @@ Hierzu gehören eventuell auch Qualitäts- und Leistungsmerkmale dieser Schnitts
 
 _<Zweck/Verantwortung>_
 
+Das Controller System ist dafür zuständig Anfragen, die per http an unser System gestellt werden zu verarbeiten.
+Genauer bedeutet dies, dass dieses System die Schnittstellen der anderen Systeme nach Daten abfragt und diese auf
+unseren Websites zur Verfügung stellt.
+
 _<Schnittstelle(n)>_
 
 _<(Optional) Qualitäts-/Leistungsmerkmale>_
@@ -119,9 +134,26 @@ _<(Optional) Erfüllte Anforderungen>_
 
 _<(optional) Offene Punkte/Probleme/Risiken>_
 
-==== <Name Blackbox 2>
+==== API Pumpe
 
-_<Blackbox-Template>_
+_<Zweck/Verantwortung>_
+
+Die API Pumpe ist dafür da, Daten von einer externen API abzurufen und für unsere eigene Datenbank anzupassen und
+auch dort zu speichern. Dieses System besteht dabei aus verschiedenen Subsystemen.
+
+_<Schnittstelle(n)>_
+
+Dieses System stellt seine Funktionalität über die Klasse mops.rheinjug2.services.EventService
+zur Verfügung, darüber können mit refreshRheinjugEvents(LocalDateTime) zu einer gegebenen Zeit
+alle Events ab diesem Zeitpunkt abgerufen werden.
+
+Außerdem stellt die Klasse updateStatusOfPastEvents() zur Verfügung womit manuell der Status
+aller vergangenen Events auf Korrektheit geprüft werden kann, falls so gewünscht.
+
+_<(optional) Offene Punkte/Probleme/Risiken>_
+
+Falls von meetup.com ein Event mit fehlenden wichtigen Daten (z.B. Name) geliefert wird, kann es in diesem System
+zu Problemen kommen, dies sollte allerdings niemals der Fall sein.
 
 ==== <Name Blackbox n>
 
