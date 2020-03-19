@@ -59,7 +59,6 @@ public class DatabaseInitializer implements ServletContextInitializer {
               .getTime()).toLocalDateTime());
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
-      event.setVenue("Universität Düsseldorf, Gebäude 25.22 U1");
       if (event.getDate().isBefore(dateNow)) {
         event.setStatus("UPCOMING");
       } else {

@@ -11,6 +11,7 @@ import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import mops.rheinjug2.services.ModelService;
+import mops.rheinjug2.services.SubmissionStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -141,15 +142,15 @@ public class ModelServiceTest {
     studentRepository.save(student);
     modelService.acceptSummary(eventWithSubmissionAccepted.getId(), "ll100");
 
-    final Map<Event, ModelService.SubmissionStatus> allEvents =
+    final Map<Event, SubmissionStatus> allEvents =
         modelService.getAllEventsPerStudent(student.getLogin());
 
-    assertThat(allEvents).containsOnly(entry(eventUpcoming, ModelService.SubmissionStatus.UPCOMING),
-        entry(eventOpen, ModelService.SubmissionStatus.OPEN_FOR_SUBMISSION),
-        entry(eventPassed, ModelService.SubmissionStatus.NO_SUBMISSION),
-        entry(eventWithSubmissionAccepted, ModelService.SubmissionStatus.SUBMITTED_ACCEPTED),
+    assertThat(allEvents).containsOnly(entry(eventUpcoming, SubmissionStatus.UPCOMING),
+        entry(eventOpen, SubmissionStatus.OPEN_FOR_SUBMISSION),
+        entry(eventPassed, SubmissionStatus.NO_SUBMISSION),
+        entry(eventWithSubmissionAccepted, SubmissionStatus.SUBMITTED_ACCEPTED),
         entry(eventWithSubmissionNotAccepted,
-            ModelService.SubmissionStatus.SUBMITTED_NOT_ACCEPTED));
+            SubmissionStatus.SUBMITTED_NOT_ACCEPTED));
 
   }
 

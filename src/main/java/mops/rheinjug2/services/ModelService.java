@@ -1,6 +1,7 @@
 package mops.rheinjug2.services;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,6 @@ public class ModelService {
   public ModelService(final StudentRepository studentRepository, final EventRepository eventRepository) {
     this.studentRepository = studentRepository;
     this.eventRepository = eventRepository;
-  }
-
-  public enum SubmissionStatus {
-    UPCOMING, OPEN_FOR_SUBMISSION, NO_SUBMISSION, SUBMITTED_NOT_ACCEPTED, SUBMITTED_ACCEPTED
   }
 
   /**
@@ -60,10 +57,11 @@ public class ModelService {
   public Map<Event, SubmissionStatus> getAllEventsPerStudent(final String login) {
     final Student student = loadStudentByLogin(login);
     final Map<Event, SubmissionStatus> events = new HashMap<>();
-
-    addEventsWithNoSubmission(events, student.getEventsIdsWithNoSummary());
-    addNotAcceptedEvents(events, student.getEventsIdsWithSummaryNotAccepted());
-    addAcceptedEvents(events, student.getEventsIdsWithSummaryAccepted());
+    if (student != null) {
+      addEventsWithNoSubmission(events, student.getEventsIdsWithNoSummary());
+      addNotAcceptedEvents(events, student.getEventsIdsWithSummaryNotAccepted());
+      addAcceptedEvents(events, student.getEventsIdsWithSummaryAccepted());
+    }
     return events;
   }
 
@@ -85,8 +83,12 @@ public class ModelService {
    */
   public List<Event> getAllEventsForCP(final String login) {
     final Student student = loadStudentByLogin(login);
-    final Set<Long> eventsIds = student.getEventsIdsWithSummaryAcceptedNotUsed();
-    return (List<Event>) eventRepository.findAllById(eventsIds);
+    if (student != null) {
+      final Set<Long> eventsIds = student.getEventsIdsWithSummaryAcceptedNotUsed();
+      return eventsIds == null ? Collections.emptyList() :
+          (List<Event>) eventRepository.findAllById(eventsIds);
+    }
+    return Collections.emptyList();
   }
 
   /**
@@ -104,6 +106,26 @@ public class ModelService {
       studentRepository.save(student);
       return true;
     }
+  }
+
+  public boolean useEventsIsPossible(final String login) {
+    final List<Event> events = getAllEventsForCP(login);
+    for (final Event e : events) {
+      if (e.getType().equalsIgnoreCase("Entwickelbar")
+          || events.size() >= MAX_AMOUNT_EVENTS) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean acceptedEventsExist(final String login) {
+    final List<Event> events = getAllEventsForCP(login);
+    return !events.isEmpty();
+  }
+
+  public boolean studentExists(final String login) {
+    return loadStudentByLogin(login) != null;
   }
 
   /**

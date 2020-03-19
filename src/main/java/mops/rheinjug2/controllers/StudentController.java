@@ -3,6 +3,7 @@ package mops.rheinjug2.controllers;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDate;
+import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
@@ -51,7 +52,12 @@ public class StudentController {
    */
   @GetMapping("/visitedevents")
   public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+//  final long eventId = 1;
+//  modelService.addStudentToEvent(account.getName(), account.getEmail(), eventId);
+    model.addAttribute("account", account);
+    model.addAttribute("exists", modelService.studentExists(account.getName()));
+    model.addAttribute("studentEvents", modelService.getAllEventsPerStudent(account.getName()));
     authenticatedAccess.increment();
     return "personalView";
   }
@@ -61,7 +67,11 @@ public class StudentController {
    */
   @GetMapping("/creditpoints")
   public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("eventsExist", modelService.acceptedEventsExist(account.getName()));
+    model.addAttribute("events", modelService.getAllEventsForCP(account.getName()));
+    model.addAttribute("useForCP", modelService.useEventsIsPossible(account.getName()));
+    model.addAttribute("exists", modelService.studentExists(account.getName()));
     authenticatedAccess.increment();
     return "credit_points_apply";
   }

@@ -1,11 +1,7 @@
 package mops.rheinjug2.entities;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
@@ -49,15 +45,6 @@ public class Event {
   public boolean isUpcoming() {
     return this.getStatus().equalsIgnoreCase("Upcoming");
   }
-
-  public String printDate(){
-    return date.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-  }
-
-  public String printTime(){
-    return date.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-  }
-
 }
 
 
