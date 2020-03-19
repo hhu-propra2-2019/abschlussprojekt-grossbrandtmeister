@@ -136,21 +136,21 @@ _<(optional) Offene Punkte/Probleme/Risiken>_
 
 ==== API Pumpe
 
-_<Zweck/Verantwortung>_
+_Zweck/Verantwortung_
 
 Die API Pumpe ist dafür da, Daten von einer externen API abzurufen und für unsere eigene Datenbank anzupassen und
-auch dort zu speichern. Dieses System besteht dabei aus verschiedenen Subsystemen.
+auch dort zu speichern. Dieses System besteht dabei aus verschiedenen Subsystemen (siehe Ebene 2).
 
-_<Schnittstelle(n)>_
+_Schnittstellen_
 
-Dieses System stellt seine Funktionalität über die Klasse mops.rheinjug2.services.EventService
-zur Verfügung, darüber können mit refreshRheinjugEvents(LocalDateTime) zu einer gegebenen Zeit
+Dieses System stellt seine Funktionalität über die Klasse `mops.rheinjug2.services.EventService`
+zur Verfügung, darüber können mit `refreshRheinjugEvents(LocalDateTime)` zu einer gegebenen Zeit
 alle Events ab diesem Zeitpunkt abgerufen werden.
 
-Außerdem stellt die Klasse updateStatusOfPastEvents() zur Verfügung womit manuell der Status
+Außerdem stellt die Klasse `updateStatusOfPastEvents()` zur Verfügung womit manuell der Status
 aller vergangenen Events auf Korrektheit geprüft werden kann, falls so gewünscht.
 
-_<(optional) Offene Punkte/Probleme/Risiken>_
+_Offene Punkte/Probleme/Risiken_
 
 Falls von meetup.com ein Event mit fehlenden wichtigen Daten (z.B. Name) geliefert wird, kann es in diesem System
 zu Problemen kommen, dies sollte allerdings niemals der Fall sein.
@@ -178,12 +178,24 @@ Skizzieren Sie wichtige, überraschende, riskante, komplexe oder besonders volat
 Normale, einfache oder standardisierte Teile sollten Sie weglassen.
 ****
 
-==== Whitebox _<Baustein 1>_
+==== Whitebox API Pumpe
 
-[role="arc42help"]
-****
-...zeigt das Innenleben von _Baustein 1_.
-****
+_**<Übersichtsdiagramm>**_
+
+Enthaltene Bausteine:: Die API Pumpe teilt sich wie im Diagramm zu sehen in die drei Subsysteme `MeetupCom`, `EventService` und
+`ModelConverter`.
+
+Wichtige Schnittstellen:: Die wichtigen Schnittstellen sind hier die Verbindung zur API von meetup.com und die Verbindung zur
+Datenbank über unsere Repositories. Dann natürlich noch die Schnittstellen zu unseren anderen Systemen über die in Ebene 1
+genannten Funktionen.
+
+[cols="1,2" options="header"]
+|===
+| **Subsystem** | **Kurzbeschreibung**
+| `MeetupCom` | Stellt die Anfrage per http request an die meetup.com API und speichert die Antwort in eigenen Objekten.
+| `EventService` | Interne Schnittstelle zwischen `MeetupCom` und `ModelConverter`, prüft ob Events bereits in unserer Datenbank vorhanden sind und schreibt diese an die richtige Stelle.
+| `ModelConverter` | Wandelt die Antwort von `MeetupCom` in ein Datenbank geeignetes Format um.
+|===
 
 _<Whitebox-Template>_
 
