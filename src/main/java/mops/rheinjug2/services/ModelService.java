@@ -1,6 +1,7 @@
 package mops.rheinjug2.services;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,8 +83,12 @@ public class ModelService {
    */
   public List<Event> getAllEventsForCP(final String login) {
     final Student student = loadStudentByLogin(login);
-    final Set<Long> eventsIds = student.getEventsIdsWithSummaryAcceptedNotUsed();
-    return (List<Event>) eventRepository.findAllById(eventsIds);
+    if (student != null) {
+      final Set<Long> eventsIds = student.getEventsIdsWithSummaryAcceptedNotUsed();
+      return eventsIds == null ? Collections.emptyList() :
+          (List<Event>) eventRepository.findAllById(eventsIds);
+    }
+    return Collections.emptyList();
   }
 
   /**
@@ -103,6 +108,26 @@ public class ModelService {
     }
   }
 
+  public boolean useEventsIsPossible(final String login) {
+    final List<Event> events = getAllEventsForCP(login);
+    for (final Event e : events) {
+      if (e.getType().equalsIgnoreCase("Entwickelbar")
+          || events.size() >= MAX_AMOUNT_EVENTS) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean acceptedEventsExist(final String login) {
+    final List<Event> events = getAllEventsForCP(login);
+    return !events.isEmpty();
+  }
+
+  public boolean studentExists(final String login) {
+    return loadStudentByLogin(login) != null;
+  }
+
   /**
    * Eine Zusammenfassung wird akzeptiert.
    */
@@ -112,15 +137,6 @@ public class ModelService {
     student.setAccepted(true, event);
     studentRepository.save(student);
     return student;
-  }
-
-  public boolean studentHasEvents(final String login) {
-    final Student student = loadStudentByLogin(login);
-    if (student == null) {
-      return false;
-    } else {
-      return !student.getEventsIds().isEmpty();
-    }
   }
 
   private boolean useForEntwickelbar(final Student student, final List<Event> events) {
