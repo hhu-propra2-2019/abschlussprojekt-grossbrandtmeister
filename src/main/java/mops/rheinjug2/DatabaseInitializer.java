@@ -46,10 +46,10 @@ public class DatabaseInitializer implements ServletContextInitializer {
     final Faker faker = new Faker(Locale.GERMAN);
     fakeEvent(faker);
     fakeStudent(faker);
-    fakerEventRef(faker);
+    fakeEventRef(faker);
   }
 
-  private void fakerEventRef(final Faker faker) {
+  private void fakeEventRef(final Faker faker) {
     studentRepository.findAll().forEach(student -> {
       final Long eventid = (long) faker.number().numberBetween(1, 30);
       modelService.addStudentToEvent(student.getLogin(), student.getEmail(), eventid);

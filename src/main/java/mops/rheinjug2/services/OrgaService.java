@@ -132,6 +132,6 @@ public class OrgaService {
   }
 
   public void setSummaryAcception(final Long studentid, final Long eventid) {
-    eventRepository.updateSummarytoaccepted(studentid, eventid);
+    eventRepository.updateSummaryToAccepted(studentid, eventid);
   }
 }
