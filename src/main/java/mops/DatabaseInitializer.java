@@ -26,31 +26,31 @@ public class DatabaseInitializer implements ServletContextInitializer {
   transient StudentRepository studentRepository;
 
 
-  public DatabaseInitializer(EventRepository eventRepository, StudentRepository studentRepository) {
+  public DatabaseInitializer(final EventRepository eventRepository, final StudentRepository studentRepository) {
     this.eventRepository = eventRepository;
     this.studentRepository = studentRepository;
   }
 
   @Override
-  public void onStartup(ServletContext servletContext) throws ServletException {
-    Faker faker = new Faker(Locale.GERMAN);
+  public void onStartup(final ServletContext servletContext) throws ServletException {
+    final Faker faker = new Faker(Locale.GERMAN);
     fakeEvent(faker);
     fakeStudent(faker);
   }
 
 
-  private void fakeStudent(Faker faker) {
+  private void fakeStudent(final Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
-      Student student = new Student(faker.name().firstName() + faker.number().digits(3),
+      final Student student = new Student(faker.name().firstName() + faker.number().digits(3),
           faker.internet().emailAddress());
       student.setName(faker.name().firstName());
       studentRepository.save(student);
     });
   }
 
-  private void fakeEvent(Faker faker) {
+  private void fakeEvent(final Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
-      Event event = new Event();
+      final Event event = new Event();
       event.setTitle(faker.job().title());
       event.setDescription(faker.yoda().quote());
       event.setPrice(faker.number().randomDigit());
@@ -60,7 +60,7 @@ public class DatabaseInitializer implements ServletContextInitializer {
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
       event.setVenue("Universität Düsseldorf, Gebäude 25.22 U1");
-      if (event.getDate().isBefore(dateNow)) {
+      if (event.getDate().isAfter(dateNow)) {
         event.setStatus("UPCOMING");
       } else {
         event.setStatus("PAST");
