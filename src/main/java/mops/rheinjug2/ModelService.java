@@ -15,26 +15,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class ModelService {
   private static final int MAX_AMOUNT_EVENTS = 3;
-
+  
   private final transient StudentRepository studentRepository;
   private final transient EventRepository eventRepository;
-
+  
   public ModelService(StudentRepository studentRepository, EventRepository eventRepository) {
     this.studentRepository = studentRepository;
     this.eventRepository = eventRepository;
   }
-
+  
   public enum SubmissionStatus {
     UPCOMING, OPEN_FOR_SUBMISSION, NO_SUBMISSION, SUBMITTED_NOT_ACCEPTED, SUBMITTED_ACCEPTED
   }
-
+  
   /**
    * Alle Veranstaltungen zurückgeben.
    */
   public List<Event> getAllEvents() {
     return (List<Event>) eventRepository.findAll();
   }
-
+  
   /**
    * Ein Student zu einer Veranstaltung hinzufügen.
    */
@@ -52,7 +52,7 @@ public class ModelService {
       return student;
     }
   }
-
+  
   /**
    * Alle Veranstaltungen, für die sich ein Student angemeldet hat,
    * mit dem entsprechenden Status zurückgeben.
@@ -60,14 +60,14 @@ public class ModelService {
   public Map<Event, SubmissionStatus> getAllEventsPerStudent(String login) {
     Student student = loadStudentByLogin(login);
     Map<Event, SubmissionStatus> events = new HashMap<>();
-
+    
     addEventsWithNoSubmission(events, student.getEventsIdsWithNoSummary());
     addNotAcceptedEvents(events, student.getEventsIdsWithSummaryNotAccepted());
     addAcceptedEvents(events, student.getEventsIdsWithSummaryAccepted());
     return events;
   }
-
-
+  
+  
   /**
    * Ein Student gibt eine Zusammenfassung ab.
    */
@@ -78,7 +78,7 @@ public class ModelService {
     studentRepository.save(student);
     return student;
   }
-
+  
   /**
    * Alle Veranstaltungen zurückgeben, die ein Student noch nicht
    * für CPs verbraucht hat.
@@ -88,7 +88,21 @@ public class ModelService {
     Set<Long> eventsIds = student.getEventsIdsWithSummaryAcceptedNotUsed();
     return (List<Event>) eventRepository.findAllById(eventsIds);
   }
-
+  
+  /**
+   * Es wird geprüft ob Veranstaltungen für CP eingereicht werden können.
+   */
+  public boolean checkEventsForCertificate(String login) {
+    List<Event> events = getAllEventsForCP(login);
+    if (checkForEntwickelbar(events)) {
+      return true;
+    } else if (events.size() < MAX_AMOUNT_EVENTS) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
   /**
    * Veranstaltungen werden für CPs verbraucht, wenn möglich.
    */
@@ -105,7 +119,7 @@ public class ModelService {
       return true;
     }
   }
-
+  
   /**
    * Eine Zusammenfassung wird akzeptiert.
    */
@@ -116,7 +130,16 @@ public class ModelService {
     studentRepository.save(student);
     return student;
   }
-
+  
+  private static boolean checkForEntwickelbar(List<Event> events) {
+    for (Event e : events) {
+      if (e.getType().equalsIgnoreCase("Entwickelbar")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   private boolean useForEntwickelbar(Student student, List<Event> events) {
     for (Event e : events) {
       if (e.getType().equalsIgnoreCase("Entwickelbar")) {
@@ -127,31 +150,31 @@ public class ModelService {
     }
     return false;
   }
-
+  
   private Event loadEventById(Long eventId) {
     Optional<Event> event = eventRepository.findById(eventId);
     return event.get();
   }
-
-  private Student loadStudentByLogin(String login) {
+  
+  public Student loadStudentByLogin(String login) {
     return studentRepository.findByLogin(login);
   }
-
+  
   private static void addToMap(Map<Event, SubmissionStatus> map,
                                List<Event> events, SubmissionStatus staus) {
     events.forEach(event -> map.put(event, staus));
   }
-
+  
   private void addNotAcceptedEvents(Map<Event, SubmissionStatus> events, Set<Long> eventsIds) {
     List<Event> eventsWithNotAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithNotAcceptedSummary, SubmissionStatus.SUBMITTED_NOT_ACCEPTED);
   }
-
+  
   private void addAcceptedEvents(Map<Event, SubmissionStatus> events, Set<Long> eventsIds) {
     List<Event> eventsWithAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithAcceptedSummary, SubmissionStatus.SUBMITTED_ACCEPTED);
   }
-
+  
   private void addEventsWithNoSubmission(Map<Event, SubmissionStatus> events, Set<Long> eventsIds) {
     List<Event> eventsWithNoSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     for (Event e : eventsWithNoSummary) {
@@ -164,5 +187,5 @@ public class ModelService {
       }
     }
   }
-
+  
 }
