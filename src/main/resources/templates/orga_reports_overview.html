@@ -62,12 +62,12 @@
             <div class="row border-bottom  mx-1 my-1">
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <span>Abgabe Frist:</span>
-                    <span th:text="${#temporals.format(summary.getSubmissionDeadline(), 'yyyy.MM.dd hh:mm')}">&nbsp;15.03.2020</span>
+                    <span th:text="${#temporals.format(summary.getSubmissionDeadline(), 'yyyy.MM.dd HH:mm')}">&nbsp;15.03.2020</span>
                 </div>
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <span>hochgeladen am:</span>
-                    <span th:text="${#temporals.format(summary.getTimeOfSubmission(), 'yyyy.MM.dd hh:mm')}"
-                          th:classappend="${summary.getTimeOfSubmission().isAfter(summary.getSubmissionDeadline())} ? text-danger : text-success">
+                    <span th:text="${#temporals.format(summary.getTimeOfSubmission(), 'yyyy.MM.dd HH:mm')}"
+                          th:classappend="${summary.getTimeOfSubmission().isAfter(summary.getSubmissionDeadline())} ? 'text-danger' : 'text-success'">
                         &nbsp;12.03.2020</span>
                     <small class="text-danger"
                            th:if="${summary.getTimeOfSubmission().isAfter(summary.getSubmissionDeadline())}">
