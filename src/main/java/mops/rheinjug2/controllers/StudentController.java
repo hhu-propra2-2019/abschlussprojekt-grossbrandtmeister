@@ -18,65 +18,65 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/rheinjug2/student")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class StudentController {
-
+  
   private final transient Counter authenticatedAccess;
-
+  
   transient FileService fileService;
-
-  public StudentController(final MeterRegistry registry, final FileService fileService) {
+  
+  public StudentController(MeterRegistry registry, FileService fileService) {
     this.fileService = fileService;
     authenticatedAccess = registry.counter("access.authenticated");
   }
-
+  
   /**
    * Event Übersicht für Studenten.
    */
   @GetMapping("/events")
-  public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
+  public String getEvents(KeycloakAuthenticationToken token, Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     return "student_events_overview";
   }
-
+  
   /**
    * Übersicht der Events für die der aktuelle Student angemeldet war/ist.
    */
   @GetMapping("/visitedevents")
-  public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
+  public String getPersonal(KeycloakAuthenticationToken token, Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     return "personalView";
   }
 
-  /**
-   * Formular zum Beantragen von Credit-Points.
-   */
-  @GetMapping("/creditpoints")
-  public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
-    authenticatedAccess.increment();
-    return "credit_points_apply";
-  }
-
+//  /**
+//   * Formular zum Beantragen von Credit-Points.
+//   */
+//  @GetMapping("/creditpoints")
+//  public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
+//    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+//    authenticatedAccess.increment();
+//    return "credit_points_apply";
+//  }
+  
   /**
    * Formular zur Einreichung der Zusammenfassung.
    * Das Summary-Objekt muss noch auf die Datenbank angepasst werden.
    */
   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
   @GetMapping("/reportsubmit")
-  public String reportsubmit(final KeycloakAuthenticationToken token, final Model model) {
-    final LocalDate today = LocalDate.now();
+  public String reportsubmit(KeycloakAuthenticationToken token, Model model) {
+    LocalDate today = LocalDate.now();
     final String eventname = "das coolste Event";
     String content;
     try {
       content = fileService.getContentOfFileAsString("VorlageZusammenfassung.md");
       content = content.isEmpty()
           ? "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein." : content;
-    } catch (final Exception e) {
+    } catch (Exception e) {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
     final String student = "Hannah Hengelbrock";
-    final Summary summary = new Summary(eventname, student, content, today);
+    Summary summary = new Summary(eventname, student, content, today);
     model.addAttribute("summary", summary);
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
