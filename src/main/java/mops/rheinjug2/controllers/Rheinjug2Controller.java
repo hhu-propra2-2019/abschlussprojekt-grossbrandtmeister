@@ -16,7 +16,7 @@ public class Rheinjug2Controller {
 
   private final transient Counter publicAccess;
 
-  public Rheinjug2Controller(MeterRegistry registry) {
+  public Rheinjug2Controller(final MeterRegistry registry) {
     publicAccess = registry.counter("access.public");
   }
 
@@ -29,7 +29,7 @@ public class Rheinjug2Controller {
    * Startseite, übergibt den Account falls jemand eingelogt ist.
    */
   @GetMapping("/")
-  public String getEvents(KeycloakAuthenticationToken token, Model model) {
+  public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     if (token != null) {
       model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     }
@@ -38,7 +38,7 @@ public class Rheinjug2Controller {
   }
 
   @GetMapping("/logout")
-  public String logout(HttpServletRequest request) throws Exception {
+  public String logout(final HttpServletRequest request) throws Exception {
     request.logout();
     return "redirect:/rheinjug2/";
   }

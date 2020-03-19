@@ -62,7 +62,7 @@ public class AccountCreatorTests {
     when(accessToken.getGivenName()).thenReturn("Maria");
     when(accessToken.getFamilyName()).thenReturn("Musterfrau");
 
-    Account account = AccountCreator.createAccountFromPrincipal(keycloakAuthenticationToken);
+    final Account account = AccountCreator.createAccountFromPrincipal(keycloakAuthenticationToken);
 
     assertEquals("login", account.getName());
     assertEquals("test@e.mail", account.getEmail());
