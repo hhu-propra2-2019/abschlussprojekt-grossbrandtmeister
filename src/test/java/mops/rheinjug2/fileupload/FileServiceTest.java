@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 
@@ -16,7 +17,7 @@ class FileServiceTest {
 
   private static final String ACCESS_KEY = "minio";
   private static final String SECRET_KEY = "minio123";
-  private static final String minioServerUrl = "http://127.0.0.1:9001";
+  private static String minioServerUrl;
 
   @Container
   private static final GenericContainer minioServer = new GenericContainer(
@@ -28,6 +29,10 @@ class FileServiceTest {
 
   @BeforeAll
   static void setUp() throws Exception {
+    minioServer.start();
+    final Integer mappedPort = minioServer.getFirstMappedPort();
+    Testcontainers.exposeHostPorts(mappedPort);
+    minioServerUrl = String.format("http://%s:%s", minioServer.getContainerIpAddress(), mappedPort);
 
   }
 
