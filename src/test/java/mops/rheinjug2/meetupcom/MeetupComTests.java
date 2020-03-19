@@ -110,13 +110,13 @@ class MeetupComTests {
                 + "    }\n"
                 + "]\n"));
 
-    var time0 = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-    var events = meetupcom.getRheinJugEventsSince(time0);
+    final var time0 = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+    final var events = meetupcom.getRheinJugEventsSince(time0);
     mockServer.verify();
 
     assertNotNull(events, "events is null");
     assertEquals(events.size(), 1, "events size isn't 1");
-    var event = events.get(0);
+    final var event = events.get(0);
     // only check properties we are interested in
     assertEquals(event.getId(), "269005066",
         "Id isn't as expected");

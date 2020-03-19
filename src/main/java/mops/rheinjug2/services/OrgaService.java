@@ -24,7 +24,7 @@ public class OrgaService {
    * @return Liste alle events
    */
   public List<OrgaEvent> getEvents() {
-    List<OrgaEvent> result = new ArrayList<>();
+    final List<OrgaEvent> result = new ArrayList<>();
     eventRepository.findAll().forEach(event -> result.add(new OrgaEvent(event,
         getNumberOfStudent(event.getId()),
         getnumberOfSubmition(event.getId())
@@ -38,7 +38,7 @@ public class OrgaService {
    * @param id einer Veranstaltung
    * @return Anzahl der Abgegebene Zusammenfassungen
    */
-  private int getnumberOfSubmition(Long id) {
+  private int getnumberOfSubmition(final Long id) {
     return eventRepository.countSubmittedSummaryPerEventById(id);
   }
 
@@ -48,7 +48,7 @@ public class OrgaService {
    * @param id einer Veranstaltung
    * @return Anzahl der Studenten
    */
-  private int getNumberOfStudent(Long id) {
+  private int getNumberOfStudent(final Long id) {
     return eventRepository.countStudentsPerEventById(id);
   }
 
@@ -58,7 +58,7 @@ public class OrgaService {
    * @return liste alle Bewertungsanfrage.
    */
   public List<OrgaSummary> getSummaries() {
-    List<OrgaSummary> result = new ArrayList<>();
+    final List<OrgaSummary> result = new ArrayList<>();
     eventRepository.getSubmittedAndUnacceptedSummaries().forEach(unacceptrdSummary ->
         result.add(new OrgaSummary(
             getEventRef(unacceptrdSummary.getStudent(), unacceptrdSummary.getEvent()),
@@ -76,7 +76,7 @@ public class OrgaService {
    * @param eventId   id einer Veranstaltung.
    * @return Beziehungobjekt Zwischen Student und Event
    */
-  private EventRef getEventRef(Long studentId, Long eventId) {
+  private EventRef getEventRef(final Long studentId, final Long eventId) {
     return eventRepository.getEventRefByStudentIdAndEventId(studentId, eventId);
   }
 
@@ -86,7 +86,7 @@ public class OrgaService {
    * @param eventId Veranstaltung id.
    * @return gibt Die Veranstaltung zurueck, über die, die ZUsammenfassung geschrieben wurde.
    */
-  private Event getEventForSummary(Long eventId) {
+  private Event getEventForSummary(final Long eventId) {
     return eventRepository.getEventById(eventId);
   }
 
@@ -96,11 +96,11 @@ public class OrgaService {
    * @param studentId Student id
    * @return gibt der Student zurueck, der die Zusammenfassung geschrieben hat.
    */
-  private Student getStudentForSummary(Long studentId) {
+  private Student getStudentForSummary(final Long studentId) {
     return studentRepository.getStudentById(studentId);
   }
 
-  public void setSummaryAcception(Long studentid, Long eventid) {
+  public void setSummaryAcception(final Long studentid, final Long eventid) {
     eventRepository.updateSummarytoaccepted(studentid, eventid);
   }
 }
