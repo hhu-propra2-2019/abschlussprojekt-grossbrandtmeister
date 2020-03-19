@@ -57,6 +57,7 @@ public class StudentController {
 //  modelService.addStudentToEvent(account.getName(), account.getEmail(), eventId);
     model.addAttribute("account", account);
     model.addAttribute("exists", modelService.studentExists(account.getName()));
+    model.addAttribute("hasEvents", modelService.studentHasEvents(account.getName()));
     model.addAttribute("studentEvents", modelService.getAllEventsPerStudent(account.getName()));
     authenticatedAccess.increment();
     return "personalView";
@@ -68,6 +69,7 @@ public class StudentController {
   @GetMapping("/creditpoints")
   public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     model.addAttribute("eventsExist", modelService.acceptedEventsExist(account.getName()));
     model.addAttribute("events", modelService.getAllEventsForCP(account.getName()));
     model.addAttribute("useForCP", modelService.useEventsIsPossible(account.getName()));
