@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
+import mops.rheinjug2.repositories.EventRepository;
+import mops.rheinjug2.repositories.StudentRepository;
 import mops.rheinjug2.services.ModelService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
@@ -23,6 +25,7 @@ public class StudentController {
   private final transient Counter authenticatedAccess;
   private final transient ModelService modelService;
 
+
   transient FileService fileService;
 
   public StudentController(final MeterRegistry registry, final FileService fileService,
@@ -38,6 +41,7 @@ public class StudentController {
   @GetMapping("/events")
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    model.addAttribute("events", modelService.getAllEvents());
     authenticatedAccess.increment();
     return "student_events_overview";
   }
