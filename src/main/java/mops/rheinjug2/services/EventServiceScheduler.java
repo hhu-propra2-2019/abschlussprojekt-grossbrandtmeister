@@ -22,7 +22,7 @@ public class EventServiceScheduler {
   }
 
   @PostConstruct
-  public static void getAllEvents() {
+  public static void schedulerInit() {
     log.info("Initialized scheduler for EventService");
   }
 
