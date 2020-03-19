@@ -21,7 +21,7 @@ public class OrgaService {
   private final FileService fileService;
 
   /**
-   * Ggit ibt alle events zurück.
+   * Gibt alle events zurück.
    *
    * @return Liste alle events
    */
