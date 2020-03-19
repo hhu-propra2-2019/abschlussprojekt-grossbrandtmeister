@@ -139,6 +139,15 @@ public class ModelService {
     return student;
   }
 
+  public boolean studentHasEvents(final String login) {
+    final Student student = loadStudentByLogin(login);
+    if (student == null) {
+      return false;
+    } else {
+      return !student.getEventsIds().isEmpty();
+    }
+  }
+
   private boolean useForEntwickelbar(final Student student, final List<Event> events) {
     for (final Event e : events) {
       if (e.getType().equalsIgnoreCase("Entwickelbar")) {
