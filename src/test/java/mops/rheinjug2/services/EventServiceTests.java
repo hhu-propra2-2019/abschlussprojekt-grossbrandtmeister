@@ -7,8 +7,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -48,18 +46,13 @@ public class EventServiceTests {
   private transient EventService eventService;
 
   @Test
-  public void refreshEventsTest() throws MalformedURLException {
+  public void refreshEventsTest() {
     // Fake data for the event we get from our meetupComService
-    when(meetupEvent.getId()).thenReturn("1234");
+    when(meetupEvent.getId()).thenReturn("1234"); // To check if repository is called with this
     when(meetupEvent.getName()).thenReturn("Test Event");
-    when(meetupEvent.getDescription()).thenReturn("Description");
     when(meetupEvent.getTime()).thenReturn(Instant.ofEpochMilli(0));
     when(meetupEvent.getUtcOffset()).thenReturn(Duration.ofMillis(0));
     when(meetupEvent.getVenue()).thenReturn(venue);
-    when(venue.getAddress1()).thenReturn("Address");
-    when(venue.getCity()).thenReturn("City");
-    when(venue.getName()).thenReturn("Venue");
-    when(meetupEvent.getLink()).thenReturn(new URL("http://test.link/"));
     when(meetupEvent.getStatus()).thenReturn(mops.rheinjug2.meetupcom.Event.Status.PAST);
 
     // Add that fake Event to a List that gets returned by out meetupComService
