@@ -14,7 +14,7 @@ public class OrgaSummary {
   private String studentName;
   private String studentEmail;
   private LocalDateTime timeOfSubmission;
-  private String url;
+  private String summary;
   private LocalDateTime submissionDeadline;
 
   /**
@@ -25,9 +25,10 @@ public class OrgaSummary {
    * @param event    eine Veranstaltung, über die, die Zusammenfassung geschrieben wurde.
    * @param eventRef die Beziehung zwischen Student->Event.
    */
-  public OrgaSummary(EventRef eventRef, Student student, Event event) {
+  public OrgaSummary(final EventRef eventRef, final Student student,
+                     final Event event, final String summary) {
     eventId = eventRef.getEvent();
-    url = eventRef.getUrl();
+    this.summary = summary;
     timeOfSubmission = eventRef.getTimeOfSubmission();
     studentId = student.getId();
     studentName = student.getName();

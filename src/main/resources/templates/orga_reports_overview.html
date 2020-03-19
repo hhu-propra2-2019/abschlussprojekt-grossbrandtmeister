@@ -89,15 +89,14 @@
                         <span>Inhalt</span>
                     </div>
                     <div class="col-12 my-1 mb-2">
-                    <textarea class="input-group" placeholder="hier steht die Zusammenfassung .... "
+                    <textarea class="input-group" th:text="${summary.getSummary()}"
                               rows="12" readonly></textarea>
                     </div>
                 </div>
                 <div class=" row mx-1 my-1 ">
                     <div class="col-12 col-sm-6 my-1">
-                        <button class="btn btn-danger btn-block" type="button">
-                            Zusammenfassung ablehnen
-                        </button>
+                        <a th:href="'mailto:' + ${summary.getStudentEmail()}" class="btn btn-danger btn-block"
+                           role="button">Ablehnungsemail senden</a>
                     </div>
                     <div class="col-12 col-sm-6 my-1 mb-2">
                         <form action="#" method="POST"
