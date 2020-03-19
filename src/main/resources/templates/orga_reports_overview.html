@@ -78,12 +78,14 @@
                 <div class="col-12 my-1">
                     <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
                             data-target="#inhalt1"
+                            th:data-target="'#inhalt_'+${summary.studentId} + '_' + ${summary.studentId}"
                             aria-expanded="true">
                         jetzt bewerten
                     </button>
                 </div>
             </div>
-            <div id="inhalt1" class="collapse">
+            <div id="inhalt1" th:id="'inhalt_'+${summary.studentId} + '_' + ${summary.studentId}"
+                 class="collapse">
                 <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
                     <div class="col-12 my-1">
                         <span>Inhalt</span>
