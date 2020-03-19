@@ -103,8 +103,8 @@
                             <img src="../../static/icons/icon-payment.png"
                                  th:src="@{/icons/icon-payment.png}"
                                  style="width: 32px;height: 28px;">
-                            <span th:if="${event.price == 0}">kostenfrei</span>
-                            <span class="text-success" th:if="${event.price != 0}" th:text="${event.price} + ' €' " > kostenfrei</span>
+                            <span class="text-success" th:if="${event.price == 0}">kostenfrei</span>
+                            <span th:if="${event.price != 0}" th:text="${event.price} + ' €' " > 5.0 €</span>
                         </div>
                     </div>
                 </div>
@@ -158,21 +158,27 @@
             <div class="row text-light justify-content-around mx-1 ">
                 <div class="col-12 col-sm-3 col-md-4 mt-2">
                     <form action="#" method="POST">
-                        <button class="btn btn-outline-secondary btn-block" type="submit">
-                            anmelden
-                        </button>
+                        <div th:switch="${event.status}">
+                            <button th:case="UPCOMING" th:value="${event.status}"
+                                    class="btn btn-outline-secondary btn-block" type="submit">
+                                anmelden
+                            </button>
+                            <button th:case="*"
+                                    class="btn btn-outline-danger btn-block"
+                                    disabled type="submit">
+                                Anmeldung nicht mehr möglich
+                            </button>
+                        </div>
                     </form>
                 </div>
                 <div class="col-12 col-sm-5 col-md-4 mt-2">
-                    </form>
-                    <form action="#" method="POST">
-                        <div>
+                    <a th:href="${event.url}" target="_blank" style="text-decoration: none !important">                        <div>
                             <button class="btn btn-outline-secondary btn-block" type="submit">
                                 mehr Informationen |
                                 <span style="color: #ed1c40">Meetup</span>
                             </button>
                         </div>
-                    </form>
+                    </a>
                 </div>
                 <div class="col-12 col-sm-3 col-md-4 mt-2">
                     <form action="#" method="POST">
