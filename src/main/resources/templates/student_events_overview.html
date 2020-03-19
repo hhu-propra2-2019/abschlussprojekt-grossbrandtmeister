@@ -141,7 +141,9 @@
                                 </p>
                             </div>
                         </div>
-                        <a role="button" class="collapsed" data-toggle="collapse" href="#description-1" th:href="'#description-' + ${event.id}"
+                        <a role="button" class="partial-collapse collapsed" data-toggle="collapse"
+                           style="text-decoration: none !important"
+                           href="#description-1" th:href="'#description-' + ${event.id}"
                            aria-expanded="false"
                            aria-controls="description-1" th:attr="aria-controls='description-' + ${event.id}"></a>
                     </div>
@@ -172,7 +174,9 @@
                     </form>
                 </div>
                 <div class="col-12 col-sm-5 col-md-4 mt-2">
-                    <a th:href="${event.url}" target="_blank" style="text-decoration: none !important">                        <div>
+                    <a href="http://meetup.com" th:href="${event.url}" target="_blank"
+                       style="text-decoration: none !important">
+                        <div>
                             <button class="btn btn-outline-secondary btn-block" type="submit">
                                 mehr Informationen |
                                 <span style="color: #ed1c40">Meetup</span>
