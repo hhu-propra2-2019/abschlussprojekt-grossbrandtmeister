@@ -24,10 +24,6 @@ public class ModelService {
     this.eventRepository = eventRepository;
   }
 
-  public enum SubmissionStatus {
-    UPCOMING, OPEN_FOR_SUBMISSION, NO_SUBMISSION, SUBMITTED_NOT_ACCEPTED, SUBMITTED_ACCEPTED
-  }
-
   /**
    * Alle Veranstaltungen zurückgeben.
    */
@@ -60,10 +56,11 @@ public class ModelService {
   public Map<Event, SubmissionStatus> getAllEventsPerStudent(final String login) {
     final Student student = loadStudentByLogin(login);
     final Map<Event, SubmissionStatus> events = new HashMap<>();
-
-    addEventsWithNoSubmission(events, student.getEventsIdsWithNoSummary());
-    addNotAcceptedEvents(events, student.getEventsIdsWithSummaryNotAccepted());
-    addAcceptedEvents(events, student.getEventsIdsWithSummaryAccepted());
+    if (student != null) {
+      addEventsWithNoSubmission(events, student.getEventsIdsWithNoSummary());
+      addNotAcceptedEvents(events, student.getEventsIdsWithSummaryNotAccepted());
+      addAcceptedEvents(events, student.getEventsIdsWithSummaryAccepted());
+    }
     return events;
   }
 
@@ -115,6 +112,15 @@ public class ModelService {
     student.setAccepted(true, event);
     studentRepository.save(student);
     return student;
+  }
+
+  public boolean studentHasEvents(final String login) {
+    final Student student = loadStudentByLogin(login);
+    if (student == null) {
+      return false;
+    } else {
+      return !student.getEventsIds().isEmpty();
+    }
   }
 
   private boolean useForEntwickelbar(final Student student, final List<Event> events) {
