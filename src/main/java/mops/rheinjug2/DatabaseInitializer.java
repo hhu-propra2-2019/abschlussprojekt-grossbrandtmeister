@@ -11,6 +11,7 @@ import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
+import mops.rheinjug2.services.ModelService;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -32,25 +33,25 @@ public class DatabaseInitializer implements ServletContextInitializer {
    * @param studentRepository student Repo
    * @param modelService      model service
    */
-  public DatabaseInitializer(EventRepository eventRepository,
-                             StudentRepository studentRepository,
-                             ModelService modelService) {
+  public DatabaseInitializer(final EventRepository eventRepository,
+                             final StudentRepository studentRepository,
+                             final ModelService modelService) {
     this.eventRepository = eventRepository;
     this.studentRepository = studentRepository;
     this.modelService = modelService;
   }
 
   @Override
-  public void onStartup(ServletContext servletContext) throws ServletException {
-    Faker faker = new Faker(Locale.GERMAN);
+  public void onStartup(final ServletContext servletContext) throws ServletException {
+    final Faker faker = new Faker(Locale.GERMAN);
     fakeEvent(faker);
     fakeStudent(faker);
     fakerEventRef(faker);
   }
 
-  private void fakerEventRef(Faker faker) {
+  private void fakerEventRef(final Faker faker) {
     studentRepository.findAll().forEach(student -> {
-      Long eventid = (long) faker.number().numberBetween(1, 30);
+      final Long eventid = (long) faker.number().numberBetween(1, 30);
       modelService.addStudentToEvent(student.getLogin(), student.getEmail(), eventid);
       if (random.nextBoolean()) {
         modelService.submitSummary(student.getLogin(), eventid, faker.internet().url());
@@ -59,18 +60,18 @@ public class DatabaseInitializer implements ServletContextInitializer {
   }
 
 
-  private void fakeStudent(Faker faker) {
+  private void fakeStudent(final Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
-      Student student = new Student(faker.name().firstName() + faker.number().digits(3),
+      final Student student = new Student(faker.name().firstName() + faker.number().digits(3),
           faker.internet().emailAddress());
       student.setName(faker.name().firstName());
       studentRepository.save(student);
     });
   }
 
-  private void fakeEvent(Faker faker) {
+  private void fakeEvent(final Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
-      Event event = new Event();
+      final Event event = new Event();
       event.setTitle(faker.job().title());
       event.setDescription(faker.yoda().quote());
       event.setPrice(faker.number().randomDigit());
