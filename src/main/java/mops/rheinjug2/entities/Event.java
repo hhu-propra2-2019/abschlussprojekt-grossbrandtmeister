@@ -36,7 +36,7 @@ public class Event {
    * werden können.
    */
   public boolean isOpenForSubmission() {
-    LocalDateTime afterOneWeek = date.plusDays(7);
+    final LocalDateTime afterOneWeek = date.plusDays(7);
     return LocalDateTime.now().isBefore(afterOneWeek);
   }
 
@@ -44,15 +44,25 @@ public class Event {
    * Gibt an, ob eine Veranstaltung ansteht.
    */
   public boolean isUpcoming() {
-    return this.getStatus().equalsIgnoreCase("Upcoming");
+    return getStatus().equalsIgnoreCase("Upcoming");
   }
 
-  public String printTime(){
+  public String printTime() {
     return date.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
   }
 
   public String printDate(){
     return date.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+  }
+
+  public String getDeadlineDate() {
+    final LocalDateTime afterOneWeek = date.plusDays(7);
+    return afterOneWeek.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+  }
+
+  public String getDeadlineTime() {
+    final LocalDateTime afterOneWeek = date.plusDays(7);
+    return afterOneWeek.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
   }
 }
 

@@ -35,12 +35,12 @@
         <table class="table table-borderless">
             <thead>
             <tr>
-                <th>Besuchte Veranstaltungen</th>
+                <th>Veranstaltungen für CP</th>
                 <th>Erworbene CP</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:remove="all-but first" th:each="event: ${events}">
+            <tbody th:remove="all-but-first">
+            <tr th:each="event: ${events}">
                 <td th:text="${event.title}">Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
                 <td th:if="${event.type == 'Abendveranstaltungen'}"><span>&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span>
                 </td>
@@ -57,7 +57,7 @@
         </div>
         <div th:unless="${useForCP}">
             <div class="alert alert-danger text-center">
-                CP Beantragung ist noch nicht möglich. sie brauchen mindestens <sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                CP Beantragung ist noch nicht möglich. Sie brauchen mindestens <sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
             </div>
         </div>
     </div>
