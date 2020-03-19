@@ -52,7 +52,7 @@ public class Event {
   }
 
   public String printDate(){
-    return date.toLocalDate().format(DateTimeFormatter.ofPattern("dd:MM:yyyy"));
+    return date.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
   }
 }
 
