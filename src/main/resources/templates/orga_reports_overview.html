@@ -95,7 +95,10 @@
                 </div>
                 <div class=" row mx-1 my-1 ">
                     <div class="col-12 col-sm-6 my-1">
-                        <a th:href="'mailto:' + ${summary.getStudentEmail()}" class="btn btn-danger btn-block"
+                        <a th:href="'mailto:' + ${summary.getStudentEmail()}
+                                  + '?subject=Zusammenfassung zu ' + ${summary.getEventTitle()}
+                                  + '&body=Es gibt Verbesserungspotential...'"
+                           class="btn btn-danger btn-block"
                            role="button">Ablehnungsemail senden</a>
                     </div>
                     <div class="col-12 col-sm-6 my-1 mb-2">
