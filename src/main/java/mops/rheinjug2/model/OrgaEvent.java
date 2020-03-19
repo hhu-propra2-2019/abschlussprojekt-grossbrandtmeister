@@ -23,7 +23,7 @@ public class OrgaEvent {
    * @param numberOfStudent   Anzahl der Stundenten, die fuer Diese Verantaltung angemeldet sind.
    * @param numberOfSubmition Anzahl der abgegebene Zusammenfassungen.
    */
-  public OrgaEvent(Event event, int numberOfStudent, int numberOfSubmition) {
+  public OrgaEvent(final Event event, final int numberOfStudent, final int numberOfSubmition) {
     id = event.getId();
     title = event.getTitle();
     date = event.getDate();

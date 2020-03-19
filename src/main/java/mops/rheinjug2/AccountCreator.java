@@ -12,9 +12,9 @@ public class AccountCreator {
    * @param token Keycloak Authentifizierungstoken
    * @return neuen Account der im Template verwendet wird
    */
-  public static Account createAccountFromPrincipal(KeycloakAuthenticationToken token) {
-    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    var accessToken = principal.getKeycloakSecurityContext().getToken();
+  public static Account createAccountFromPrincipal(final KeycloakAuthenticationToken token) {
+    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    final var accessToken = principal.getKeycloakSecurityContext().getToken();
 
     return new Account(
         principal.getName(),
