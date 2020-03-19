@@ -2,7 +2,6 @@ package mops.rheinjug2.fileupload;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import io.minio.MinioClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -20,15 +19,14 @@ class FileServiceTest {
   private static String minioServerUrl;
 
   @Container
-  private static final GenericContainer minioServer = new GenericContainer(
+  private static final GenericContainer minioServer = new GenericContainer<>(
       "minio/minio")
       .withEnv("MINIO_ACCESS_KEY", ACCESS_KEY)
-      .withEnv("MINIO_SECRET_KEY", SECRET_KEY)
-      .withExposedPorts(9001);
-
+      .withEnv("MINIO_SECRET_KEY", SECRET_KEY);
 
   @BeforeAll
-  static void setUp() throws Exception {
+  static void setUp() {
+    minioServer.addExposedPort(9000);
     minioServer.start();
     final Integer mappedPort = minioServer.getFirstMappedPort();
     Testcontainers.exposeHostPorts(mappedPort);
@@ -38,7 +36,7 @@ class FileServiceTest {
 
   @Test
   public void canCreateBucketWithUser() throws Exception {
-    final MinioClient client = new MinioClient(ACCESS_KEY, SECRET_KEY, minioServerUrl);
+    final MinioClient client = new MinioClient(minioServerUrl, ACCESS_KEY, SECRET_KEY);
     client.ignoreCertCheck();
 
     final String bucketName = "foo";
