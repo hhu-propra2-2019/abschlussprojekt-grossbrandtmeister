@@ -24,7 +24,7 @@ public class Student {
 
   private Set<EventRef> events = new HashSet<>();
 
-  public Student(String login, String email) {
+  public Student(final String login, final String email) {
     this.login = login;
     this.email = email;
   }
@@ -32,7 +32,7 @@ public class Student {
   /**
    * Event hinzufügen.
    */
-  public void addEvent(Event event) {
+  public void addEvent(final Event event) {
     events.add(new EventRef(event.getId()));
   }
 
@@ -46,8 +46,8 @@ public class Student {
   /**
    * Entfernt eine Veranstaltung.
    */
-  public void deleteEvent(Event event) {
-    EventRef ref = findEventRef(event);
+  public void deleteEvent(final Event event) {
+    final EventRef ref = findEventRef(event);
     events.remove(ref);
   }
 
@@ -55,9 +55,9 @@ public class Student {
    * Eine Zusammenfassung hinzufügen.
    */
 
-  public boolean addSummary(Event event, String url) {
+  public boolean addSummary(final Event event, final String url) {
     if (event.isOpenForSubmission()) {
-      EventRef ref = findEventRef(event);
+      final EventRef ref = findEventRef(event);
       ref.setSubmittedSummary(true);
       ref.setUrl(url);
       ref.setTimeOfSubmission(LocalDateTime.now());
@@ -68,7 +68,7 @@ public class Student {
     return false;
   }
 
-  public void useEventsForCP(List<Event> events) {
+  public void useEventsForCP(final List<Event> events) {
     events.stream().map(this::findEventRef)
         .forEach(eventRef -> eventRef.setUsedForCertificate(true));
   }
@@ -97,13 +97,13 @@ public class Student {
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
 
-  private EventRef findEventRef(Event event) {
+  private EventRef findEventRef(final Event event) {
     return events.stream().filter(x -> x.getEvent()
-        .equals(event.getId())).findAny().get();
+        .equals(event.getId())).findAny().orElse(null);
   }
 
-  public void setAccepted(boolean value, Event event) {
-    EventRef ref = findEventRef(event);
+  public void setAccepted(final boolean value, final Event event) {
+    final EventRef ref = findEventRef(event);
     ref.setAccepted(value);
   }
 }
