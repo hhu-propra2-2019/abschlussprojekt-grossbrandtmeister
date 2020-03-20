@@ -30,21 +30,21 @@ public class EventAndStudentTests {
 
   @Test
   public void testOneEventOneStudent() {
-    Event event = createAndSaveEvent("Veranstaltung");
-    Student student = createAndSaveStudent("sk100", "sk@hhu.de");
+    final Event event = createAndSaveEvent("Veranstaltung");
+    final Student student = createAndSaveStudent("sk100", "sk@hhu.de");
 
     addStudentToEvent(event, student);
-    Student savedStudent = studentRepository.findByLogin("sk100");
-    var events = eventRepository.findAllById(savedStudent.getEventsIds());
+    final Student savedStudent = studentRepository.findByLogin("sk100");
+    final var events = eventRepository.findAllById(savedStudent.getEventsIds());
 
     assertThat(events).containsExactly(event);
   }
 
   @Test
   public void testOneEventTwoStudents() {
-    Event event = createAndSaveEvent("Veranstaltung");
-    Student student1 = createAndSaveStudent("sk100", "sk@hhu.de");
-    Student student2 = createAndSaveStudent("pk100", "pk@hhu.de");
+    final Event event = createAndSaveEvent("Veranstaltung");
+    final Student student1 = createAndSaveStudent("sk100", "sk@hhu.de");
+    final Student student2 = createAndSaveStudent("pk100", "pk@hhu.de");
 
     addStudentsToEvent(event, List.of(student1, student2));
 
@@ -54,12 +54,12 @@ public class EventAndStudentTests {
 
   @Test
   public void testTwoEventsWithTwoStudentsEach() {
-    Event event1 = createAndSaveEvent("Veranstaltung A");
-    Event event2 = createAndSaveEvent("Veranstaltung B");
-    Student student1 = createAndSaveStudent("sk100", "sk@hhu.de");
-    Student student2 = createAndSaveStudent("pk100", "pk@hhu.de");
-    Student student3 = createAndSaveStudent("ak100", "ak@hhu.de");
-    Student student4 = createAndSaveStudent("lk100", "lk@hhu.de");
+    final Event event1 = createAndSaveEvent("Veranstaltung A");
+    final Event event2 = createAndSaveEvent("Veranstaltung B");
+    final Student student1 = createAndSaveStudent("sk100", "sk@hhu.de");
+    final Student student2 = createAndSaveStudent("pk100", "pk@hhu.de");
+    final Student student3 = createAndSaveStudent("ak100", "ak@hhu.de");
+    final Student student4 = createAndSaveStudent("lk100", "lk@hhu.de");
 
     addStudentsToEvent(event1, List.of(student1, student2));
     addStudentsToEvent(event2, List.of(student3, student4));
@@ -70,12 +70,12 @@ public class EventAndStudentTests {
 
   @Test
   public void testDeleteOneEventWithTwoStudents() {
-    Event event = createAndSaveEvent("Veranstaltung Java");
-    Student student1 = createAndSaveStudent("sk100", "sk@hhu.de");
-    Student student2 = createAndSaveStudent("pk100", "pk@hhu.de");
+    final Event event = createAndSaveEvent("Veranstaltung Java");
+    final Student student1 = createAndSaveStudent("sk100", "sk@hhu.de");
+    final Student student2 = createAndSaveStudent("pk100", "pk@hhu.de");
 
     addStudentsToEvent(event, List.of(student1, student2));
-    List<Long> studentIds = eventRepository.findAllStudentsIdsPerEventById(event.getId());
+    final List<Long> studentIds = eventRepository.findAllStudentsIdsPerEventById(event.getId());
     eventRepository.delete(event);
     deleteEventForAllStudents(event, studentIds);
 
@@ -85,9 +85,9 @@ public class EventAndStudentTests {
 
   @Test
   public void testTwoEventsWithTheSameStudentDeleted() {
-    Event event1 = createAndSaveEvent("Veranstaltung A");
-    Event event2 = createAndSaveEvent("Veranstaltung B");
-    Student student = createAndSaveStudent("sk100", "sk@hhu.de");
+    final Event event1 = createAndSaveEvent("Veranstaltung A");
+    final Event event2 = createAndSaveEvent("Veranstaltung B");
+    final Student student = createAndSaveStudent("sk100", "sk@hhu.de");
 
     addStudentToEvent(event1, student);
     addStudentToEvent(event2, student);
@@ -100,11 +100,11 @@ public class EventAndStudentTests {
 
   @Test
   public void testOneStudentAddsSummaryToEvent() {
-    Event event = createAndSaveEvent("Veranstaltung");
+    final Event event = createAndSaveEvent("Veranstaltung");
     event.setDate(LocalDateTime.now());
     eventRepository.save(event);
-    String url = "Test-Url 1";
-    Student student = createAndSaveStudent("ax100", "ax@hhu.de");
+    final String url = "Test-Url 1";
+    final Student student = createAndSaveStudent("ax100", "ax@hhu.de");
     student.addEvent(event);
     student.addSummary(event, url);
     studentRepository.save(student);
@@ -114,15 +114,15 @@ public class EventAndStudentTests {
 
   @Test
   public void testOneStudentAddsSummaryToTwoEvents() {
-    Event event = createAndSaveEvent("Veranstaltung A");
+    final Event event = createAndSaveEvent("Veranstaltung A");
     event.setDate(LocalDateTime.now());
     eventRepository.save(event);
-    Event event2 = createAndSaveEvent("Veranstaltung B");
+    final Event event2 = createAndSaveEvent("Veranstaltung B");
     event2.setDate(LocalDateTime.now());
     eventRepository.save(event2);
-    String url1 = "Test-Url 1";
-    String url2 = "Test-Url 2";
-    Student student = createAndSaveStudent("ax100", "ax@hhu.de");
+    final String url1 = "Test-Url 1";
+    final String url2 = "Test-Url 2";
+    final Student student = createAndSaveStudent("ax100", "ax@hhu.de");
     student.addEvent(event);
     student.addEvent(event2);
 
@@ -136,20 +136,20 @@ public class EventAndStudentTests {
 
   @Test
   public void testDeleteOneStudent() {
-    Student student = createAndSaveStudent("Sarah K", "sk@hhu.de");
+    final Student student = createAndSaveStudent("Sarah K", "sk@hhu.de");
     studentRepository.delete(student);
 
-    List<Student> students = (List<Student>) studentRepository.findAll();
+    final List<Student> students = (List<Student>) studentRepository.findAll();
 
     assertFalse(students.stream().anyMatch(item -> student.getId().equals(item.getId())));
   }
 
   @Test
   public void testDeleteOneEvent() {
-    Event event2 = createAndSaveEvent("Veranstaltung");
+    final Event event2 = createAndSaveEvent("Veranstaltung");
 
     eventRepository.delete(event2);
-    List<Event> events = (List<Event>) eventRepository.findAll();
+    final List<Event> events = (List<Event>) eventRepository.findAll();
 
     assertFalse(events.stream().anyMatch(item -> event2.getId().equals(item.getId())));
   }
@@ -160,31 +160,31 @@ public class EventAndStudentTests {
     studentRepository.deleteAll();
   }
 
-  private void addStudentToEvent(Event event, Student student) {
+  private void addStudentToEvent(final Event event, final Student student) {
     student.addEvent(event);
     studentRepository.save(student);
   }
 
-  private void addStudentsToEvent(Event event, List<Student> students) {
+  private void addStudentsToEvent(final Event event, final List<Student> students) {
     students.forEach(x -> x.addEvent(event));
     studentRepository.saveAll(students);
   }
 
-  private Student createAndSaveStudent(String login, String email) {
-    Student s = new Student(login, email);
+  private Student createAndSaveStudent(final String login, final String email) {
+    final Student s = new Student(login, email);
     studentRepository.save(s);
     return s;
   }
 
-  private Event createAndSaveEvent(String title) {
-    Event event = new Event();
+  private Event createAndSaveEvent(final String title) {
+    final Event event = new Event();
     event.setTitle(title);
     eventRepository.save(event);
     return event;
   }
 
-  private void deleteEventForAllStudents(Event event, List<Long> studentIds) {
-    var students = studentRepository.findAllById(studentIds);
+  private void deleteEventForAllStudents(final Event event, final List<Long> studentIds) {
+    final var students = studentRepository.findAllById(studentIds);
     students.forEach(student -> student.deleteEvent(event));
     studentRepository.saveAll(students);
   }

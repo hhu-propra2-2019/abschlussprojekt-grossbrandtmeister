@@ -19,19 +19,19 @@ public final class MeetupCom {
   private RestTemplate restTemplate;
 
   @Autowired
-  public MeetupCom(RestTemplate restTemplate) {
+  public MeetupCom(final RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
 
   /**
    * Holt die Liste der RheinJUG-Veranstaltungen von api.meetup.com.
    */
-  public List<Event> getRheinJugEventsSince(LocalDateTime localDateTime) {
-    String dateIso = asIso8601String(localDateTime);
+  public List<Event> getRheinJugEventsSince(final LocalDateTime localDateTime) {
+    final String dateIso = asIso8601String(localDateTime);
 
-    var url = String.format("http://api.meetup.com/rheinjug/events?no_earlier_than=%s&status=past,upcoming&desc=true", dateIso);
+    final var url = String.format("http://api.meetup.com/rheinjug/events?no_earlier_than=%s&status=past,upcoming&desc=true", dateIso);
 
-    ResponseEntity<Event[]> response = restTemplate.getForEntity(url, Event[].class);
+    final ResponseEntity<Event[]> response = restTemplate.getForEntity(url, Event[].class);
     return Arrays.asList(Objects.requireNonNull(response.getBody()));
   }
 
@@ -39,8 +39,8 @@ public final class MeetupCom {
    * Konvertiert ein Date-Objekt in ein String
    * im ISO 8601 format("2019-06-01T00:00:00.000")
    */
-  private static String asIso8601String(LocalDateTime localDateTime) {
-    var dtf = DateTimeFormatter
+  private static String asIso8601String(final LocalDateTime localDateTime) {
+    final var dtf = DateTimeFormatter
         .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
         .withLocale(Locale.ROOT)
         .withZone(ZoneId.of("UTC"));

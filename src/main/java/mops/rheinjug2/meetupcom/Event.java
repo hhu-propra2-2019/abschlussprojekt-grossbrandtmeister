@@ -21,7 +21,7 @@ public class Event {
     DRAFT;
 
     @JsonCreator
-    static Status fromValue(String value) {
+    static Status fromValue(final String value) {
       if ("cancelled".equalsIgnoreCase(value)) {
         return CANCELLED;
       } else if ("upcoming".equalsIgnoreCase(value)) {
@@ -105,6 +105,10 @@ public class Event {
 
   public Duration getUtcOffset() {
     return Duration.ofMillis(utcOffset);
+  }
+
+  public String getLink() {
+    return link.toString();
   }
 
 }

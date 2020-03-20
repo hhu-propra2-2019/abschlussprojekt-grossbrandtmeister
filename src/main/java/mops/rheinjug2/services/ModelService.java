@@ -1,4 +1,4 @@
-package mops.rheinjug2;
+package mops.rheinjug2.services;
 
 
 import java.util.HashMap;
@@ -129,7 +129,7 @@ public class ModelService {
     return false;
   }
 
-  public Event loadEventById(final Long eventId) {
+  private Event loadEventById(final Long eventId) {
     final Optional<Event> event = eventRepository.findById(eventId);
     return event.get();
   }
@@ -145,15 +145,13 @@ public class ModelService {
 
   private void addNotAcceptedEvents(final Map<Event, SubmissionStatus> events,
                                     final Set<Long> eventsIds) {
-    final List<Event> eventsWithNotAcceptedSummary =
-        (List<Event>) eventRepository.findAllById(eventsIds);
+    final var eventsWithNotAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithNotAcceptedSummary, SubmissionStatus.SUBMITTED_NOT_ACCEPTED);
   }
 
   private void addAcceptedEvents(final Map<Event, SubmissionStatus> events,
                                  final Set<Long> eventsIds) {
-    final List<Event> eventsWithAcceptedSummary =
-        (List<Event>) eventRepository.findAllById(eventsIds);
+    final var eventsWithAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithAcceptedSummary, SubmissionStatus.SUBMITTED_ACCEPTED);
   }
 
