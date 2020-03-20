@@ -50,7 +50,7 @@ public class SecurityConfigTests {
    */
   @ParameterizedTest
   @CsvSource({
-      ", /rheinjug2, 200",
+      ", /rheinjug2, 302",
       ", /rheinjug2/, 200",
 
       "monitoring, /actuator, 200",
