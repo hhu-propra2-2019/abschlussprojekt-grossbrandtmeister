@@ -47,14 +47,6 @@ public class Event {
     return getStatus().equalsIgnoreCase("Upcoming");
   }
 
-  public String printTime() {
-    return date.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-  }
-
-  public String printDate(){
-    return date.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-  }
-
   public String getDeadlineDate() {
     final LocalDateTime afterOneWeek = date.plusDays(7);
     return afterOneWeek.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));

@@ -67,7 +67,7 @@
                     <div class="row">
                         <div class="col-12">
                             <i class="icono-calendar"></i>
-                            <span th:text="${event.printDate()}">&nbsp;13.03.2020</span>
+                            <span th:text="${#temporals.format(event.date.toLocalDate(), 'dd.MM.yyyy')}">&nbsp;13.03.2020</span>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
-                            <span th:text="${event.printTime()}">&nbsp;19:30pm</span>
+                            <span th:text="${#temporals.format(event.date.toLocalTime(), 'HH:mm')}">&nbsp;19:30pm</span>
                         </div>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                                  th:src="@{/icons/icon-payment.png}"
                                  style="width: 32px;height: 28px;">
                             <span class="text-success" th:if="${event.price == 0}">kostenfrei</span>
-                            <span th:if="${event.price != 0}" th:text="${event.price} + ' €' " > 5.0 €</span>
+                            <span th:if="${event.price != 0}" th:text="${event.price} + ' €' "> 5.0 €</span>
                         </div>
                     </div>
                 </div>
@@ -141,9 +141,11 @@
                                 </p>
                             </div>
                         </div>
-                        <a role="button" class="collapsed" data-toggle="collapse" href="#description-1" th:href="'#description-' + ${event.id}"
+                        <a role="button" class="partial-collapse collapsed" data-toggle="collapse"
+                           style="text-decoration: none !important"
+                           href="#description-1" th:href="'#description-' + ${event.id}"
                            aria-expanded="false"
-                           aria-controls="description-1" th:attr="aria-controls='description-' + ${event.id}" ></a>
+                           aria-controls="description-1" th:attr="aria-controls='description-' + ${event.id}"></a>
                     </div>
                 </div>
             </div>
@@ -172,7 +174,9 @@
                     </form>
                 </div>
                 <div class="col-12 col-sm-5 col-md-4 mt-2">
-                    <a th:href="${event.url}" target="_blank" style="text-decoration: none !important">                        <div>
+                    <a href="http://meetup.com" th:href="${event.url}" target="_blank"
+                       style="text-decoration: none !important">
+                        <div>
                             <button class="btn btn-outline-secondary btn-block" type="submit">
                                 mehr Informationen |
                                 <span style="color: #ed1c40">Meetup</span>
@@ -353,7 +357,7 @@
                     </div>
                     <div class="text-secondary">
                         <div id="description-3" class="collapse partial-collapse" aria-expanded="false">
-                            <div >
+                            <div>
                                 <p>
                                     Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
                                     Server Pages (JSP)

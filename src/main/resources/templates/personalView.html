@@ -41,7 +41,7 @@
                             <div class="col-12">
                                 <i class="icono-calendar"></i>
                                 <span class="text-success"
-                                      th:text="${eventAndStatus.key.printDate()}">&nbsp;13.03.2020</span>
+                                      th:text="${#temporals.format(eventAndStatus.key.date.toLocalDate(), 'yyyy.MM.dd')}">&nbsp;13.03.2020</span>
                             </div>
                         </div>
                     </div>
