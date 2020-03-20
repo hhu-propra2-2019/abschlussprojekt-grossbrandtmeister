@@ -3,7 +3,7 @@
 //
 // ====================================
 
-= image:documentation/images/arc42-logo.png[arc42] Template
+= image:documentation/images/arc42-logo.png[arc42] Java in der Praxis: Selfservice
 // toc-title definition MUST follow document title without blank line!
 :toc-title: Inhaltsverzeichnis
 
