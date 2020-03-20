@@ -42,6 +42,7 @@ Arbeitszeit jeweils 4 Stunden pro Tag.
 Tests auch CheckStyle, PMD und SpotBugs zum Einsatz. Tests werden zeitnah zum Code implementiert.
 | Entwicklungswerkzeuge | In unserem Team wird als IDE IntelliJ verwendet. Grobe Entwürfe finden auf Papier oder an der Tafel statt.
 Die Software soll über Gradle baubar sein und mit Docker ausgeliefert werden.
+Draw.io zur Erstellung von Diagrammen.
 | Konfigurations- und Versionsverwaltung | Zur Versionsverwaltung verwenden wir Git bei GitHub.
 | Testwerkzeuge und -prozesse | JUnit 5 im Annotationsstil sowohl für inhaltliche Richtigkeit als auch für Integrationstests.
 Mockito zum Testen der Systeme ohne Abhängigkeit zu anderen Systemen.
