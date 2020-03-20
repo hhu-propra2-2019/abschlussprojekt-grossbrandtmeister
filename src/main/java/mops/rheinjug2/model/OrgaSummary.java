@@ -25,7 +25,7 @@ public class OrgaSummary {
    * @param event    eine Veranstaltung, über die, die Zusammenfassung geschrieben wurde.
    * @param eventRef die Beziehung zwischen Student->Event.
    */
-  public OrgaSummary(EventRef eventRef, Student student, Event event) {
+  public OrgaSummary(final EventRef eventRef, final Student student, final Event event) {
     eventId = eventRef.getEvent();
     url = eventRef.getUrl();
     timeOfSubmission = eventRef.getTimeOfSubmission();

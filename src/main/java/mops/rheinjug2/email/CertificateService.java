@@ -24,14 +24,16 @@ public class CertificateService {
    * @param surname      des Studenten/der Studentin
    * @param email        des Studenten/der Studentin
    */
-  public void createCertificatePdf(ByteArrayOutputStream outputStream,
-                                   String forename, String surname, String email) {
-    File pdf = new File("./DummyCertificate.pdf");
+  public void createCertificatePdf(final ByteArrayOutputStream outputStream,
+                                   final String forename,
+                                   final String surname,
+                                   final String email) {
+    final File pdf = new File("./DummyCertificate.pdf");
     try {
       pdfForm = PDDocument.load(pdf);
 
-      PDDocumentCatalog docCatalog = pdfForm.getDocumentCatalog();
-      PDAcroForm acroForm = docCatalog.getAcroForm();
+      final PDDocumentCatalog docCatalog = pdfForm.getDocumentCatalog();
+      final PDAcroForm acroForm = docCatalog.getAcroForm();
 
       setCertificateDate(acroForm);
       acroForm.getField("name2[first]").setValue(forename);
@@ -41,12 +43,12 @@ public class CertificateService {
 
       // pdfForm.save("DummyCertificate" + forename + ".pdf");
       pdfForm.save(outputStream);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       log.catching(e);
     } finally {
       try {
         pdfForm.close();
-      } catch (IOException e) {
+      } catch (final IOException e) {
         log.catching(e);
       }
     }
@@ -57,11 +59,11 @@ public class CertificateService {
    *
    * @param acroForm Schein-PDF
    */
-  private static void setCertificateDate(PDAcroForm acroForm) throws IOException {
-    LocalDate currentDate = LocalDate.now();
-    int day = currentDate.getDayOfMonth();
-    int month = currentDate.getMonthValue();
-    int year = currentDate.getYear();
+  private static void setCertificateDate(final PDAcroForm acroForm) throws IOException {
+    final LocalDate currentDate = LocalDate.now();
+    final int day = currentDate.getDayOfMonth();
+    final int month = currentDate.getMonthValue();
+    final int year = currentDate.getYear();
 
     acroForm.getField("date7[day]").setValue(Integer.toString(day));
     acroForm.getField("date7[month]").setValue(Integer.toString(month));

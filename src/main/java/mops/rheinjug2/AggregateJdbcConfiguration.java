@@ -21,7 +21,7 @@ public class AggregateJdbcConfiguration extends AbstractJdbcConfiguration {
 
       @Nullable
       @Override
-      public String convert(Clob clob) {
+      public String convert(final Clob clob) {
 
         try {
 
@@ -29,7 +29,7 @@ public class AggregateJdbcConfiguration extends AbstractJdbcConfiguration {
               ? "" //
               : clob.getSubString(1, Math.toIntExact(clob.length()));
 
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
           throw new IllegalStateException("Failed to convert CLOB to String.", e);
         }
       }
