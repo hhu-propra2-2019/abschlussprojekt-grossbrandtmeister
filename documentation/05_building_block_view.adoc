@@ -136,21 +136,20 @@ _<(optional) Offene Punkte/Probleme/Risiken>_
 
 ==== API Pumpe
 
-_Zweck/Verantwortung_
+Zweck/Verantwortung::
 
 Die API Pumpe ist dafür da, Daten von einer externen API abzurufen und für unsere eigene Datenbank anzupassen und
 auch dort zu speichern. Dieses System besteht dabei aus verschiedenen Subsystemen (siehe Ebene 2).
 
-_Schnittstellen_
+Schnittstellen::
 
 Dieses System stellt seine Funktionalität über die Klasse `mops.rheinjug2.services.EventService`
 zur Verfügung, darüber können mit `refreshRheinjugEvents(LocalDateTime)` zu einer gegebenen Zeit
 alle Events ab diesem Zeitpunkt abgerufen werden.
-
 Außerdem stellt die Klasse `updateStatusOfPastEvents()` zur Verfügung womit manuell der Status
 aller vergangenen Events auf Korrektheit geprüft werden kann, falls so gewünscht.
 
-_Offene Punkte/Probleme/Risiken_
+Offene Punkte/Probleme/Risiken::
 
 Falls von meetup.com ein Event mit fehlenden wichtigen Daten (z.B. Name) geliefert wird, kann es in diesem System
 zu Problemen kommen, dies sollte allerdings niemals der Fall sein.
@@ -180,7 +179,7 @@ Normale, einfache oder standardisierte Teile sollten Sie weglassen.
 
 ==== Whitebox API Pumpe
 
-image:api_pumpe.png["Diagramm API Pumpe"]
+image:05_api_pumpe.png["Diagramm API Pumpe"]
 
 Enthaltene Bausteine:: Die API Pumpe teilt sich wie im Diagramm zu sehen in die drei Subsysteme `MeetupCom`, `EventService` und
 `ModelConverter`.
