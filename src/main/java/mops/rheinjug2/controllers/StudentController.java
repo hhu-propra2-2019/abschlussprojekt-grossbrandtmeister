@@ -2,10 +2,11 @@ package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
+import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -40,10 +41,13 @@ public class StudentController {
 
   /**
    * Übersicht der Events für die der aktuelle Student angemeldet war/ist.
+   * Die EventId muss später durch die richtige Id aus der Datenbank ersetzt werden.
    */
   @GetMapping("/visitedevents")
   public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    final Long eventId = 123L;
+    model.addAttribute("eventId", eventId);
     authenticatedAccess.increment();
     return "personalView";
   }
@@ -60,13 +64,17 @@ public class StudentController {
 
   /**
    * Formular zur Einreichung der Zusammenfassung.
-   * Das Summary-Objekt muss noch auf die Datenbank angepasst werden.
+   * Das Summary-Objekt muss noch auf die Angaben des jeweiligen Events aus
+   * der Datenbank angepasst werden.
    */
   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
   @GetMapping("/reportsubmit")
-  public String reportsubmit(final KeycloakAuthenticationToken token, final Model model) {
-    final LocalDate today = LocalDate.now();
-    final String eventname = "das coolste Event";
+  public String reportsubmit(final KeycloakAuthenticationToken token, final Model model,
+                             final Long eventId) {
+    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    final String student = principal.getName();
+    final LocalDateTime today = LocalDateTime.now();
+    final String eventname = "cooler Event Name";
     String content;
     try {
       content = fileService.getContentOfFileAsString("VorlageZusammenfassung.md");
@@ -75,8 +83,7 @@ public class StudentController {
     } catch (final Exception e) {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
-    final String student = "Hannah Hengelbrock";
-    final Summary summary = new Summary(eventname, student, content, today);
+    final Summary summary = new Summary(eventname, student, content, today, eventId);
     model.addAttribute("summary", summary);
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
