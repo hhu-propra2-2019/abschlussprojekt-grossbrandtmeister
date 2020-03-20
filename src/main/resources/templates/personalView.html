@@ -69,7 +69,8 @@
             </div>
             <div class="row text-light justify-content-around mx-1 ">
                 <div class="col-12 mt-2">
-                    <a class="btn btn-outline-success btn-block" href="/rheinjug2/student/reportsubmit" role="button">
+                    <a class="btn btn-outline-success btn-block"
+                       th:href="@{/rheinjug2/student/reportsubmit(eventId=${eventId})}" href="#" role="button">
                         Zusammenfassung abgeben
                     </a>
                 </div>
