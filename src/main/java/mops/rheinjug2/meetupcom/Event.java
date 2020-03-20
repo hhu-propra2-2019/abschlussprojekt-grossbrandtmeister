@@ -107,4 +107,8 @@ public class Event {
     return Duration.ofMillis(utcOffset);
   }
 
+  public String getLink() {
+    return link.toString();
+  }
+
 }
