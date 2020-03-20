@@ -28,6 +28,7 @@ public class StudentController {
 
   transient FileService fileService;
 
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public StudentController(final MeterRegistry registry, final FileService fileService,
                            final ModelService modelService) {
     this.fileService = fileService;
@@ -52,8 +53,6 @@ public class StudentController {
   @GetMapping("/visitedevents")
   public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
-//  final long eventId = 1;
-//  modelService.addStudentToEvent(account.getName(), account.getEmail(), eventId);
     model.addAttribute("account", account);
     model.addAttribute("exists", modelService.studentExists(account.getName()));
     model.addAttribute("studentEvents", modelService.getAllEventsPerStudent(account.getName()));

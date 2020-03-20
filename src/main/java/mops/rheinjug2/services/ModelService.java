@@ -192,17 +192,22 @@ public class ModelService {
     return treeMap;
   }
 
-  private void addNotAcceptedEvents(final Map<Event, SubmissionStatus> events, final Set<Long> eventsIds) {
-    final List<Event> eventsWithNotAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
+  private void addNotAcceptedEvents(final Map<Event, SubmissionStatus> events,
+                                    final Set<Long> eventsIds) {
+    final List<Event> eventsWithNotAcceptedSummary =
+        (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithNotAcceptedSummary, SubmissionStatus.SUBMITTED_NOT_ACCEPTED);
   }
 
-  private void addAcceptedEvents(final Map<Event, SubmissionStatus> events, final Set<Long> eventsIds) {
-    final List<Event> eventsWithAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
+  private void addAcceptedEvents(final Map<Event, SubmissionStatus> events,
+                                 final Set<Long> eventsIds) {
+    final List<Event> eventsWithAcceptedSummary =
+        (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithAcceptedSummary, SubmissionStatus.SUBMITTED_ACCEPTED);
   }
 
-  private void addEventsWithNoSubmission(final Map<Event, SubmissionStatus> events, final Set<Long> eventsIds) {
+  private void addEventsWithNoSubmission(final Map<Event, SubmissionStatus> events,
+                                         final Set<Long> eventsIds) {
     final List<Event> eventsWithNoSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     for (final Event e : eventsWithNoSummary) {
       if (e.isUpcoming()) {
