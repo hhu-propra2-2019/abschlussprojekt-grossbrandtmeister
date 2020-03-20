@@ -38,9 +38,26 @@ Alternativ oder ergänzend können Sie eine Tabelle verwenden.
 Der Titel gibt den Namen Ihres Systems wieder; die drei Spalten sind: Kommunikationsbeziehung, Eingabe, Ausgabe.
 ****
 
-**<Diagramm und/oder Tabelle>**
+image:03_fachlicher_kontext.png["Fachlicher Kontext"]
 
-**<optional: Erläuterung der externen fachlichen Schnittstellen>**
+==== Student (Benutzer)
+
+Der Benutzer in der Rolle des Studenten nutzt das System, um einen Überblick über die Veranstaltungen zu bekommen, sowie seine Dokumente
+hochzuladen und Credit Points zu beantragen.
+
+==== Organisator (Benutzer)
+
+Der Benutzer in der Rolle des Organisators nutzt das System, um Abgaben seiner Studenten zu verwalten und Credit Points für diese zu vergeben.
+Der Organisator kann außerdem die Abgaben extern veröffentlichen, sollte dies von Studenten erlaubt sein.
+
+==== MOPS (Obersystem)
+
+MOPS ist das höhergestellte System zu dem unseren. Es stellt unserem System verschiedene MOPS Komponenten wie den Styleguide zur Verfügung.
+
+==== meetup.com (Fremdsystem)
+
+Die Events die in unserem System angezeigt werden, werden von meetup.com abgerufen. Dort werden diese Events von Organisatoren unabhängig
+von unserem System erstellt. Diese Organisatoren können die gleichen wie in unserem System sein, müssen es aber nicht.
 
 === Technischer Kontext
 
