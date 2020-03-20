@@ -18,16 +18,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/rheinjug2/student")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class StudentController {
-  
+
   private final transient Counter authenticatedAccess;
-  
+
   transient FileService fileService;
-  
+
   public StudentController(MeterRegistry registry, FileService fileService) {
     this.fileService = fileService;
     authenticatedAccess = registry.counter("access.authenticated");
   }
-  
+
   /**
    * Event Übersicht für Studenten.
    */
@@ -37,7 +37,7 @@ public class StudentController {
     authenticatedAccess.increment();
     return "student_events_overview";
   }
-  
+
   /**
    * Übersicht der Events für die der aktuelle Student angemeldet war/ist.
    */
@@ -48,16 +48,6 @@ public class StudentController {
     return "personalView";
   }
 
-//  /**
-//   * Formular zum Beantragen von Credit-Points.
-//   */
-//  @GetMapping("/creditpoints")
-//  public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
-//    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
-//    authenticatedAccess.increment();
-//    return "credit_points_apply";
-//  }
-  
   /**
    * Formular zur Einreichung der Zusammenfassung.
    * Das Summary-Objekt muss noch auf die Datenbank angepasst werden.
