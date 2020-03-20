@@ -6,10 +6,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
+import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
 import mops.rheinjug2.services.ModelService;
+import okhttp3.Response;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @Secured({"ROLE_studentin"})
@@ -89,7 +93,11 @@ public class StudentController {
                              @PathVariable("eventId") final long eventId) {
     final LocalDateTime today = LocalDateTime.now();
     final Account account = AccountCreator.createAccountFromPrincipal(token);
-    final String eventname = modelService.loadEventById(eventId).getTitle();
+    Event event = modelService.loadEventById(eventId);
+    if(event == null){
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event ID not found!");
+    }
+    final String eventname = event.getTitle();
     String content;
     try {
       content = fileService.getContentOfFileAsString("VorlageZusammenfassung.md");
