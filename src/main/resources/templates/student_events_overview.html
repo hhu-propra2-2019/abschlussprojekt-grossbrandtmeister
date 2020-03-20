@@ -161,10 +161,15 @@
                 <div class="col-12 col-sm-3 col-md-4 mt-2">
                     <form action="#" method="POST">
                         <div th:switch="${event.status}">
-                            <button th:case="UPCOMING" th:value="${event.status}"
-                                    class="btn btn-outline-secondary btn-block" type="submit">
-                                anmelden
-                            </button>
+                            <form action="#" method="POST" th:action="'/personalView'">
+                                <button th:case="UPCOMING" th:value="${event.status}"
+                                        class="btn btn-outline-secondary btn-block" type="submit">
+                                    <input type="hidden" name="name" th:value="${account.getName()}">
+                                    <input type="hidden" name="email" th:value="${account.getEmail()}">
+                                    <input type="hidden" name="eventId" th:value="${event.getId()}">
+                                    anmelden
+                                </button>
+                            </form>
                             <button th:case="*"
                                     class="btn btn-outline-danger btn-block"
                                     disabled type="submit">
