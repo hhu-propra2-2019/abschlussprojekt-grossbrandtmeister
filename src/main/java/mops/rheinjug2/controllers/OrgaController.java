@@ -4,9 +4,12 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
+import mops.rheinjug2.orgamodels.OrgaSummary;
 import mops.rheinjug2.services.EventService;
 import mops.rheinjug2.services.OrgaService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -16,11 +19,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Log4j2
 @Controller
 @Secured({"ROLE_orga"})
 @RequestMapping("/rheinjug2/orga")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OrgaController {
 
   private final transient Counter authenticatedAccess;
@@ -50,13 +55,32 @@ public class OrgaController {
   }
 
   /**
-   * Übersicht der Anträge für Credit Points.
+   * Gibt liste aller von Studenten angemeldte Veranstaltungen,
+   * die ihre Zusammenfassung noch nicht abgegeben worde.
+   *
+   * @param token token
+   * @param model model
+   * @return liste der Veranstaltungen.
    */
-  @GetMapping("/creditpoints")
-  public String getCreditpoins(final KeycloakAuthenticationToken token, final Model model) {
+  @GetMapping("/delayedSubmission")
+  public String getDelayedSubmission(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
-    return "orga_creditpoints";
+    model.addAttribute("delayedsubmissions", orgaService.getDelayedSubmission());
+    return "orga_delayed_submission";
+  }
+
+  /**
+   * Mapping der Annahme von Zussamenfassungen.
+   */
+  @PostMapping("/summaryaccepting")
+  public String summaryAccepting(@RequestParam final Long eventid,
+                                 @RequestParam final Long studentid,
+                                 final Model model, final KeycloakAuthenticationToken token) {
+    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    authenticatedAccess.increment();
+    orgaService.setSummaryAcception(studentid, eventid);
+    return "redirect:/rheinjug2/orga/reports";
   }
 
   /**
@@ -66,7 +90,11 @@ public class OrgaController {
   public String getReports(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
-    model.addAttribute("summaries", orgaService.getSummaries());
+    model.addAttribute("summaries", orgaService.getSummaries()
+        .stream()
+        .sorted(Comparator.comparing(OrgaSummary::getTimeOfSubmission).reversed()
+            .thenComparing(OrgaSummary::getSubmissionDeadline))
+        .collect(Collectors.toList()));
     return "orga_reports_overview";
   }
 
