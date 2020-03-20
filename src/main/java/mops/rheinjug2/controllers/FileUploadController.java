@@ -162,7 +162,7 @@ public class FileUploadController {
         log.catching(e);
       }
     } else {
-      response.sendError(403);
+      response.sendError(404);
     }
 
     authenticatedAccess.increment();
@@ -173,18 +173,18 @@ public class FileUploadController {
    */
   @RequestMapping("/download/presentation")
   @ResponseBody
-  public void downloadPResentationforSummary(final KeycloakAuthenticationToken token,
+  public void downloadPresentationforSummary(final KeycloakAuthenticationToken token,
                                              final HttpServletResponse response)
       throws IOException {
 
     final String filename = "VorlageZusammenfassung.md";
     try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
       response.addHeader("Content-disposition", "attachment;filename=" + filename);
-      response.setContentType(URLConnection.guessContentTypeFromName(filename));
+      response.setContentType("text/plain");
       IOUtils.copy(inputStream, response.getOutputStream());
       response.flushBuffer();
     } catch (final Exception e) {
-      response.sendError(404, "File not found");
+      response.sendError(402, "File not found");
     }
     authenticatedAccess.increment();
   }
