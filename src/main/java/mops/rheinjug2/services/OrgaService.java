@@ -12,7 +12,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
@@ -42,7 +44,9 @@ public class OrgaService {
         getNumberOfStudent(event.getId()),
         getnumberOfSubmition(event.getId())
     )));
-    return result;
+    return result.stream()
+        .sorted(Comparator.comparing(OrgaEvent::getDate).reversed())
+        .collect(Collectors.toList());
   }
 
   /**
@@ -80,7 +84,7 @@ public class OrgaService {
               getSummaryStudent(unacceptedSummary.getStudent()),
               getSummaryEvent(unacceptedSummary.getEvent()),
               "Hier ist eim Zusammenfassung muster "
-                  + "<br> Es muss noch mit MinIO verknüpft werden"
+                  + "\n Es muss noch mit MinIO verknüpft werden"
           ));
       //getSummayContentFromFileservise(unacceptedSummary.getStudent(),
       // unacceptedSummary.getEvent())

@@ -49,11 +49,7 @@ public class OrgaController {
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
-    model.addAttribute("events", orgaService.getEvents()
-        .stream()
-        .sorted(Comparator.comparing(OrgaEvent::getDate)
-            .reversed())
-        .collect(Collectors.toList()));
+    model.addAttribute("events", orgaService.getEvents());
     model.addAttribute("datenow", LocalDateTime.now());
     return "orga_events_overview";
   }
