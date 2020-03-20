@@ -138,6 +138,14 @@ public class ModelService {
     }
   }
   
+  
+  public void useEventsForCertificate(String login, List<Event> usableEvents) {
+    Student student = loadStudentByLogin(login);
+    student.useEventsForCP(usableEvents);
+    studentRepository.save(student);
+  }
+  
+  
   /**
    * Eine Zusammenfassung wird akzeptiert.
    */
