@@ -37,6 +37,11 @@ public class OrgaController {
     this.orgaService = orgaService;
   }
 
+  @GetMapping("/")
+  public String orgaBase() {
+    return "redirect:/rheinjug2/orga/events";
+  }
+
   /**
    * Event Übersicht für Orga Mitarbeiter.
    */

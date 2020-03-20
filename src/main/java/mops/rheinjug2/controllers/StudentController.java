@@ -28,6 +28,11 @@ public class StudentController {
     authenticatedAccess = registry.counter("access.authenticated");
   }
 
+  @GetMapping("/")
+  public String studentBase() {
+    return "redirect:/rheinjug2/student/events/";
+  }
+
   /**
    * Event Übersicht für Studenten.
    */
