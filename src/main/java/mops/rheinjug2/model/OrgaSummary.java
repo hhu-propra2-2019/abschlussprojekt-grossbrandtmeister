@@ -3,7 +3,6 @@ package mops.rheinjug2.model;
 import java.time.LocalDateTime;
 import lombok.Value;
 import mops.rheinjug2.entities.Event;
-import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
 
 @Value
@@ -21,15 +20,16 @@ public class OrgaSummary {
    * OrgaSummary ist ein Objekt, das die Zussammenfassungen, die noch zubewerten sind
    * fuer Orga-UI präsentiert.
    *
-   * @param student  ein Student, der ein zusammenfassung abgegeben hat aber noch nicht bewertet.
-   * @param event    eine Veranstaltung, über die, die Zusammenfassung geschrieben wurde.
-   * @param eventRef die Beziehung zwischen Student->Event.
+   * @param student          ein Student, der ein zusammenfassung abgegeben hat
+   *                         aber noch nicht bewertet.
+   * @param event            eine Veranstaltung, über die, die Zusammenfassung geschrieben wurde.
+   * @param timeOfSubmission abgabezeit.
    */
-  public OrgaSummary(final EventRef eventRef, final Student student,
+  public OrgaSummary(final LocalDateTime timeOfSubmission, final Student student,
                      final Event event, final String summary) {
-    eventId = eventRef.getEvent();
+    eventId = event.getId();
     this.summary = summary;
-    timeOfSubmission = eventRef.getTimeOfSubmission();
+    this.timeOfSubmission = timeOfSubmission;
     studentId = student.getId();
     studentName = student.getName();
     studentEmail = student.getEmail();

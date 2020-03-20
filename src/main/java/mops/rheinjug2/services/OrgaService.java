@@ -1,10 +1,20 @@
 package mops.rheinjug2.services;
 
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidArgumentException;
+import io.minio.errors.InvalidBucketNameException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.NoResponseException;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import mops.rheinjug2.entities.Event;
-import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.model.OrgaEvent;
@@ -12,6 +22,7 @@ import mops.rheinjug2.model.OrgaSummary;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
+import org.xmlpull.v1.XmlPullParserException;
 
 @Service
 @AllArgsConstructor
@@ -62,42 +73,28 @@ public class OrgaService {
   public List<OrgaSummary> getSummaries() {
     final List<OrgaSummary> result = new ArrayList<>();
     eventRepository.getSubmittedAndUnacceptedSummaries().forEach(unacceptedSummary -> {
-      //try {
       result.add(
           new OrgaSummary(
-              getEventRef(unacceptedSummary.getStudent(), unacceptedSummary.getEvent()),
-              getStudentForSummary(unacceptedSummary.getStudent()),
-              getEventForSummary(unacceptedSummary.getEvent()),
-              "Hier ist eim Zusammenfassung muster"
+              getSummarySubmissionDate(unacceptedSummary.getStudent(),
+                  unacceptedSummary.getEvent()),
+              getSummaryStudent(unacceptedSummary.getStudent()),
+              getSummaryEvent(unacceptedSummary.getEvent()),
+              "Hier ist eim Zusammenfassung muster "
+                  + "<br> Es muss noch mit MinIO verknüpft werden"
           ));
-      //fileService.getContentOfFileAsString(
-      // getStudentForSummary(unacceptedSummary.getStudent()).getName()+
-      // "_" + unacceptedSummary.getEvent())
-      //} catch (final IOException e) {
-      //  e.printStackTrace();
-      //} catch (final XmlPullParserException e) {
-      //  e.printStackTrace();
-      //} catch (final NoSuchAlgorithmException e) {
-      //  e.printStackTrace();
-      //} catch (final InvalidKeyException e) {
-      //  e.printStackTrace();
-      //} catch (final InvalidArgumentException e) {
-      //  e.printStackTrace();
-      //} catch (final InvalidResponseException e) {
-      //  e.printStackTrace();
-      //} catch (final ErrorResponseException e) {
-      //  e.printStackTrace();
-      //} catch (final NoResponseException e) {
-      //  e.printStackTrace();
-      //} catch (final InvalidBucketNameException e) {
-      //  e.printStackTrace();
-      //} catch (final InsufficientDataException e) {
-      //  e.printStackTrace();
-      //} catch (final InternalException e) {
-      //  e.printStackTrace();
-      //}
+      //getSummayContentFromFileservise(unacceptedSummary.getStudent(),
+      // unacceptedSummary.getEvent())
     });
     return result;
+  }
+
+  private String getSummaryContentFromFileservise(final Long studentid, final Long eventid)
+      throws IOException, InvalidKeyException, NoSuchAlgorithmException,
+      XmlPullParserException, InvalidArgumentException, InvalidResponseException,
+      InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException,
+      ErrorResponseException {
+    final String fileName = getSummaryStudent(studentid).getName() + "_" + eventid;
+    return fileService.getContentOfFileAsString(fileName);
   }
 
   /**
@@ -107,8 +104,10 @@ public class OrgaService {
    * @param eventId   id einer Veranstaltung.
    * @return Beziehungobjekt Zwischen Student und Event
    */
-  private EventRef getEventRef(final Long studentId, final Long eventId) {
-    return eventRepository.getEventRefByStudentIdAndEventId(studentId, eventId);
+  private LocalDateTime getSummarySubmissionDate(final Long studentId,
+                                                 final Long eventId) {
+    return eventRepository.getEventRefByStudentIdAndEventId(studentId,
+        eventId).getTimeOfSubmission();
   }
 
   /**
@@ -117,7 +116,7 @@ public class OrgaService {
    * @param eventId Veranstaltung id.
    * @return gibt Die Veranstaltung zurueck, über die, die ZUsammenfassung geschrieben wurde.
    */
-  private Event getEventForSummary(final Long eventId) {
+  private Event getSummaryEvent(final Long eventId) {
     return eventRepository.getEventById(eventId);
   }
 
@@ -127,7 +126,7 @@ public class OrgaService {
    * @param studentId Student id
    * @return gibt der Student zurueck, der die Zusammenfassung geschrieben hat.
    */
-  private Student getStudentForSummary(final Long studentId) {
+  private Student getSummaryStudent(final Long studentId) {
     return studentRepository.getStudentById(studentId);
   }
 

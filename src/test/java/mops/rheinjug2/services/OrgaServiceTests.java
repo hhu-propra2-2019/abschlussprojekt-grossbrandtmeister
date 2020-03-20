@@ -1,59 +1,64 @@
 package mops.rheinjug2.services;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import mops.rheinjug2.entities.Event;
+import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
+import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.model.OrgaEvent;
 import mops.rheinjug2.model.OrgaSummary;
+import mops.rheinjug2.model.UnacceptedSummaryId;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-//import mops.rheinjug2.ModelService;
-
-@Disabled
-@DataJdbcTest
-@RunWith(SpringRunner.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 public class OrgaServiceTests {
 
-  @Autowired
+  @Mock
   private transient EventRepository eventRepository;
-  @Autowired
+  @Mock
   private transient StudentRepository studentRepository;
+  @Mock
+  private transient FileService fileService;
 
   private transient OrgaService orgaService;
-  private transient ModelService modelService;
-
-  private Student student1;
-  private Student student2;
-  private Student student3;
-  private Event event1;
-  private Event event2;
-
+  private transient Event event1;
+  private transient Event event2;
+  private transient Student student1;
+  private transient Student student2;
+  private transient Student student3;
 
   /**
-   * Services initialisieren.
-   */
-  @BeforeEach
-  public void servicesInit() {
-    orgaService = new OrgaService(eventRepository, studentRepository);
-    modelService = new ModelService(studentRepository, eventRepository);
-  }
-
-  /**
-   * Data zum Befüllen der DB initialisieren.
+   * Data für Testing Initialsieren.
    */
   @BeforeAll
-  public void dataInit() {
+  public void setUp() {
+    event1 = new Event();
+    event1.setId((long) 1);
+    event1.setDate(LocalDateTime.now().minusDays(3));
+    event1.setTitle("Event1");
+
+    event2 = new Event();
+    event2.setId((long) 2);
+    event2.setDate(LocalDateTime.now().minusDays(3));
+    event1.setTitle("Event2");
+
     student1 = new Student("student1login", "student1@email");
     student1.setName("student1");
 
@@ -62,27 +67,22 @@ public class OrgaServiceTests {
 
     student3 = new Student("student3login", "student3@email");
     student3.setName("student3");
-
-    event1 = new Event();
-    event1.setDate(LocalDateTime.now().minusDays(3));
-    event1.setTitle("Event1");
-    event1.setStatus("Status1");
-
-    event2 = new Event();
-    event2.setDate(LocalDateTime.now().minusDays(3));
-    event2.setTitle("Event2");
   }
 
   /**
-   * das Abholen der Event Objekts Testen.
+   * Events Aufruf Test.
    */
   @Test
-  public void getEventsTest() {
-    eventRepository.saveAll(List.of(event1, event2));
-    System.out.println(eventRepository);
-    System.out.println(eventRepository.findAll());
-    final List<OrgaEvent> orgaevents = orgaService.getEvents();
-    Assertions.assertThat(orgaevents).hasSize(2);
+  public void eventsLoadingTest() {
+    when(eventRepository.findAll()).thenReturn(List.of(event1, event2));
+
+    orgaService = new OrgaService(eventRepository, studentRepository, fileService);
+    final List<OrgaEvent> orgaEvents = orgaService.getEvents();
+
+    Assertions.assertThat(orgaEvents).hasSize(2);
+    verify(eventRepository, times(1)).countStudentsPerEventById(event1.getId());
+    verify(eventRepository, times(1)).countStudentsPerEventById(event2.getId());
+    verify(eventRepository, times(1)).countSubmittedSummaryPerEventById(event1.getId());
   }
 
   /**
@@ -91,52 +91,73 @@ public class OrgaServiceTests {
    */
   @Test
   public void creatingOrgaEventObjectTest() {
-    eventRepository.saveAll(List.of(event1, event2));
-    studentRepository.saveAll(List.of(student1, student2, student3));
-    modelService.addStudentToEvent(student1.getLogin(), student1.getEmail(), event1.getId());
-    modelService.addStudentToEvent(student2.getLogin(), student2.getEmail(), event1.getId());
-    modelService.submitSummary(student1.getLogin(), event1.getId(), "1->1");
-    modelService.submitSummary(student2.getLogin(), event1.getId(), "2->1");
+    when(eventRepository.findAll()).thenReturn(List.of(event1));
+    when(eventRepository.countStudentsPerEventById((long) 1)).thenReturn(10);
+    when(eventRepository.countSubmittedSummaryPerEventById((long) 1)).thenReturn(5);
 
-    modelService.addStudentToEvent(student1.getLogin(), student1.getEmail(), event2.getId());
-    modelService.addStudentToEvent(student2.getLogin(), student2.getEmail(), event2.getId());
+    orgaService = new OrgaService(eventRepository, studentRepository, fileService);
+    final List<OrgaEvent> orgaEvents = orgaService.getEvents();
 
-    final List<OrgaEvent> orgaevents = orgaService.getEvents();
-
-    Assertions.assertThat(orgaevents).hasSize(2);
-    Assertions.assertThat(orgaevents.get(0).getId()).isEqualTo(event1.getId());
-    Assertions.assertThat(orgaevents.get(0).getDate().withNano(0)
+    Assertions.assertThat(orgaEvents.get(0).getId()).isEqualTo(event1.getId());
+    Assertions.assertThat(orgaEvents.get(0).getDate().withNano(0)
         .equals(event1.getDate().withNano(0))).isTrue();
-    Assertions.assertThat(orgaevents.get(0).getTitle()).isEqualTo(event1.getTitle());
-    Assertions.assertThat(orgaevents.get(0).getStatus()).isEqualTo("Status1");
-    Assertions.assertThat(orgaevents.get(0).getNumberOfStudent()).isEqualTo(2);
-    Assertions.assertThat(orgaevents.get(0).getNumberOfSubmition()).isEqualTo(2);
+    Assertions.assertThat(orgaEvents.get(0).getTitle()).isEqualTo(event1.getTitle());
+    Assertions.assertThat(orgaEvents.get(0).getNumberOfStudent()).isEqualTo(10);
+    Assertions.assertThat(orgaEvents.get(0).getNumberOfSubmition()).isEqualTo(5);
+  }
 
-    Assertions.assertThat(orgaevents.get(1).getNumberOfStudent()).isEqualTo(2);
-    Assertions.assertThat(orgaevents.get(1).getNumberOfSubmition()).isEqualTo(0);
+
+  /**
+   * Hier wird Der Process der Abholung von noch nicht bewertete Zusammenfassungen
+   * gestestet. Dafür wird das Abgeben drei Studenten verschiedene Zusammenfaungen
+   * wie folgt simuliert;
+   * 1->1 , 2->1 , 3->2
+   */
+  @Test
+  public void getSummariesTest() {
+    final UnacceptedSummaryId student1_event1 = new UnacceptedSummaryId((long) 1, (long) 1);
+    final UnacceptedSummaryId student2_event1 = new UnacceptedSummaryId((long) 2, (long) 1);
+    final UnacceptedSummaryId student3_event2 = new UnacceptedSummaryId((long) 3, (long) 2);
+    when(eventRepository.getSubmittedAndUnacceptedSummaries()).thenReturn(List.of(
+        student1_event1, student2_event1, student3_event2));
+    when(studentRepository.getStudentById(1)).thenReturn(student1);
+    when(studentRepository.getStudentById(2)).thenReturn(student2);
+    when(studentRepository.getStudentById(3)).thenReturn(student3);
+    when(eventRepository.getEventById((long) 1)).thenReturn(event1);
+    when(eventRepository.getEventById((long) 2)).thenReturn(event2);
+    final EventRef ref = mock(EventRef.class);
+    when(ref.getTimeOfSubmission()).thenReturn(LocalDateTime.now());
+    when(eventRepository.getEventRefByStudentIdAndEventId(anyLong(), anyLong())).thenReturn(ref);
+
+    orgaService = new OrgaService(eventRepository, studentRepository, fileService);
+    final List<OrgaSummary> orgaSummaries = orgaService.getSummaries();
+
+    verify(studentRepository, times(1)).getStudentById(1);
+    verify(studentRepository, times(1)).getStudentById(2);
+    verify(studentRepository, times(1)).getStudentById(3);
+    verify(eventRepository, times(1)).getEventById((long) 2);
+    verify(eventRepository, times(2)).getEventById((long) 1);
+
+    Assertions.assertThat(orgaSummaries).hasSize(3);
+    //1->1
+    Assertions.assertThat(orgaSummaries.get(0).getStudentName()).isEqualTo(student1.getName());
+    Assertions.assertThat(orgaSummaries.get(0).getStudentEmail()).isEqualTo(student1.getEmail());
+    Assertions.assertThat(orgaSummaries.get(0).getStudentId()).isEqualTo(student1.getId());
+    Assertions.assertThat(orgaSummaries.get(0).getEventTitle()).isEqualTo(event1.getTitle());
+    Assertions.assertThat(orgaSummaries.get(0).getEventId()).isEqualTo(event1.getId());
+    //2->1
+    Assertions.assertThat(orgaSummaries.get(1).getStudentId()).isEqualTo(student2.getId());
+    Assertions.assertThat(orgaSummaries.get(1).getEventId()).isEqualTo(event1.getId());
+    //3->2
+    Assertions.assertThat(orgaSummaries.get(2).getStudentId()).isEqualTo(student3.getId());
+    Assertions.assertThat(orgaSummaries.get(2).getEventId()).isEqualTo(event2.getId());
+
   }
 
   @Test
-  public void getSummariesTest() {
-    eventRepository.saveAll(List.of(event1, event2));
-    studentRepository.saveAll(List.of(student1, student2, student3));
-    modelService.addStudentToEvent(student1.getLogin(), student1.getEmail(), event1.getId());
-    modelService.addStudentToEvent(student2.getLogin(), student2.getEmail(), event1.getId());
-    modelService.submitSummary(student2.getLogin(), event1.getId(), "2->1");
+  @Disabled("bis die verknüpfung mit MinIO richtig konfiguriert ist.")
+  public void getTheRightSummaryContentFromFileServiceTest() {
 
-    modelService.addStudentToEvent(student1.getLogin(), student1.getEmail(), event2.getId());
-    modelService.addStudentToEvent(student2.getLogin(), student2.getEmail(), event2.getId());
-    modelService.submitSummary(student1.getLogin(), event2.getId(), "1->2");
-
-    final List<OrgaSummary> orgaSummaries = orgaService.getSummaries();
-
-    Assertions.assertThat(orgaSummaries).hasSize(2);
-    Assertions.assertThat(orgaSummaries.get(0).getEventId()).isEqualTo(event1.getId());
-    Assertions.assertThat(orgaSummaries.get(0).getEventTitle()).isEqualTo(event1.getTitle());
-    Assertions.assertThat(orgaSummaries.get(0).getStudentId()).isEqualTo(student2.getId());
-    Assertions.assertThat(orgaSummaries.get(0).getStudentEmail()).isEqualTo(student2.getEmail());
-    Assertions.assertThat(orgaSummaries.get(0).getStudentName()).isEqualTo(student2.getName());
-    //Assertions.assertThat(orgaSummaries.get(0).getUrl()).isEqualTo("2->1");
   }
 
 }
