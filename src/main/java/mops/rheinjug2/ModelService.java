@@ -1,6 +1,7 @@
 package mops.rheinjug2;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +105,23 @@ public class ModelService {
   }
   
   /**
+   * Gibt die Veranstaltung(en) zurück die für CPs eingelöst werden.
+   */
+  public List<Event> getEventsForCertificate(String login) {
+    List<Event> usableEvents = new ArrayList<>();
+    List<Event> events = getAllEventsForCP(login);
+    if (checkForEntwickelbar(events)) {
+      usableEvents.addAll(getEntwickelbarForCP(events));
+      return usableEvents;
+    } else if (events.size() < MAX_AMOUNT_EVENTS) {
+      return usableEvents;
+    } else {
+      usableEvents.addAll(events.subList(0, 3));
+      return usableEvents;
+    }
+  }
+  
+  /**
    * Veranstaltungen werden für CPs verbraucht, wenn möglich.
    */
   public boolean useEventsForCertificate(String login) {
@@ -139,6 +157,18 @@ public class ModelService {
     }
     return false;
   }
+  
+  private static List<Event> getEntwickelbarForCP(List<Event> events) {
+    List<Event> entwickelBar = new ArrayList<>();
+    for (Event e : events) {
+      if (e.getType().equalsIgnoreCase("Entwickelbar")) {
+        entwickelBar.add(e);
+        return entwickelBar;
+      }
+    }
+    return entwickelBar;
+  }
+  
   
   private boolean useForEntwickelbar(Student student, List<Event> events) {
     for (Event e : events) {
