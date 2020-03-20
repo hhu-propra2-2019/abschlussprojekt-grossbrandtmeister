@@ -3,6 +3,7 @@ package mops.rheinjug2.controllers;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileService;
@@ -50,6 +51,7 @@ public class StudentController {
 
   /**
    * Übersicht der Events für die der aktuelle Student angemeldet war/ist.
+   * Die EventId muss später durch die richtige Id aus der Datenbank ersetzt werden.
    */
   @GetMapping("/visitedevents")
   public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
@@ -78,13 +80,14 @@ public class StudentController {
 
   /**
    * Formular zur Einreichung der Zusammenfassung.
-   * Das Summary-Objekt muss noch auf die Datenbank angepasst werden.
+   * Das Summary-Objekt muss noch auf die Angaben des jeweiligen Events aus
+   * der Datenbank angepasst werden.
    */
   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
   @GetMapping("/reportsubmit/{eventId}")
   public String reportSubmit(final KeycloakAuthenticationToken token, final Model model,
                              @PathVariable("eventId") final long eventId) {
-    final LocalDate today = LocalDate.now();
+    final LocalDateTime today = LocalDateTime.now();
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final String eventname = modelService.loadEventById(eventId).getTitle();
     String content;
@@ -95,8 +98,8 @@ public class StudentController {
     } catch (final Exception e) {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
-    final String student = account.getGivenName() + account.getFamilyName();
-    final Summary summary = new Summary(eventname, student, content, today);
+    final String student = account.getGivenName() + " " + account.getFamilyName();
+    final Summary summary = new Summary(eventname, student, content, today, eventId);
     model.addAttribute("summary", summary);
     model.addAttribute("account", account);
     authenticatedAccess.increment();

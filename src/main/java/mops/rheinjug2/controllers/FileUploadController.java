@@ -44,7 +44,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class FileUploadController {
 
   transient FileService fileService;
-
   transient FileCheckService fileCheckService;
 
   private final transient Counter authenticatedAccess;
@@ -52,7 +51,8 @@ public class FileUploadController {
   static final String Veranstaltung = "Veranstaltung";
 
   @Autowired
-  public FileUploadController(final FileService fileService, final MeterRegistry registry) {
+  public FileUploadController(final FileService fileService,
+                              final MeterRegistry registry) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
   }
@@ -63,13 +63,14 @@ public class FileUploadController {
   @PostMapping(path = "/student/reportsubmit")
   public String uploadFile(final KeycloakAuthenticationToken token,
                            final RedirectAttributes attributes,
-                           @RequestParam(value = "file") final MultipartFile file) {
+                           @RequestParam(value = "file") final MultipartFile file,
+                           final Long eventId) {
     if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
         final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
         final String username = principal.getName();
         if (!username.isEmpty()) {
-          final String filename = username + "_" + Veranstaltung;
+          final String filename = username + "_" + eventId;
           fileService.uploadFile(file, filename);
           attributes.addFlashAttribute("message",
               "You successfully uploaded " + filename + '!');
@@ -84,7 +85,7 @@ public class FileUploadController {
           "Your file has the wrong format. It needs to be a markdown file!");
     }
     authenticatedAccess.increment();
-    return "redirect:/rheinjug2/student/reportsubmit";
+    return "redirect:/rheinjug2/student/reportsubmit?eventId=" + eventId;
   }
 
   /**
@@ -93,12 +94,13 @@ public class FileUploadController {
    */
   @PostMapping(path = "/student/summarysubmit")
   public String useForm(final KeycloakAuthenticationToken token,
-                        final RedirectAttributes attributes, final Summary summary) {
+                        final RedirectAttributes attributes, final Summary summary,
+                        final Long eventId) {
     try {
       final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
       final String username = principal.getName();
       if (!username.isEmpty()) {
-        final String filename = username + "_" + Veranstaltung;
+        final String filename = username + "_" + eventId;
         fileService.uploadContentConvertToMd(summary.getContent(), filename);
         attributes.addFlashAttribute("message",
             "You successfully uploaded the form !");
@@ -110,7 +112,7 @@ public class FileUploadController {
           "Your file was not able to be uploaded ");
     }
     authenticatedAccess.increment();
-    return "redirect:/rheinjug2/student/reportsubmit";
+    return "redirect:/rheinjug2/student/reportsubmit?eventId=" + eventId;
   }
 
   /**
@@ -145,14 +147,14 @@ public class FileUploadController {
   @RequestMapping("/download/file")
   @ResponseBody
   public void downloadFilebyToken(final KeycloakAuthenticationToken token,
-                                  final HttpServletResponse response)
+                                  final HttpServletResponse response, final Long eventId)
       throws IOException {
 
 
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     final String username = principal.getName();
     if (!username.isEmpty()) {
-      final String filename = username + "_" + Veranstaltung;
+      final String filename = username + "_" + eventId;
       try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
         response.addHeader("Content-disposition", "attachment;filename=" + filename + ".md");
         response.setContentType(URLConnection.guessContentTypeFromName(filename));
@@ -162,7 +164,7 @@ public class FileUploadController {
         log.catching(e);
       }
     } else {
-      response.sendError(403);
+      response.sendError(404);
     }
 
     authenticatedAccess.increment();

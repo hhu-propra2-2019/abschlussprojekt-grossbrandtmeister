@@ -16,7 +16,7 @@ public class EventRef {
   private boolean accepted;
   private boolean usedForCertificate;
 
-  EventRef(Long event) {
+  EventRef(final Long event) {
     this.event = event;
   }
 

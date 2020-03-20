@@ -55,13 +55,13 @@ public class CodingRulesTests {
         = useFieldInjection().as("use field injection");
 
     private static ArchCondition<JavaField> useFieldInjection() {
-      ArchCondition<JavaField> annotatedWithAutowired
+      final ArchCondition<JavaField> annotatedWithAutowired
           = beAnnotatedWith("org.springframework.beans.factory.annotation.Autowired");
-      ArchCondition<JavaField> annotatedWithValue
+      final ArchCondition<JavaField> annotatedWithValue
           = beAnnotatedWith("org.springframework.beans.factory.annotation.Value");
-      ArchCondition<JavaField> annotatedWithInject
+      final ArchCondition<JavaField> annotatedWithInject
           = beAnnotatedWith("javax.inject.Inject");
-      ArchCondition<JavaField> annotatedWithResource
+      final ArchCondition<JavaField> annotatedWithResource
           = beAnnotatedWith("javax.annotation.Resource");
       return annotatedWithAutowired
           .or(annotatedWithValue)

@@ -191,18 +191,15 @@ public class ModelService {
     treeMap.putAll(map);
     return treeMap;
   }
-
   private void addNotAcceptedEvents(final Map<Event, SubmissionStatus> events,
                                     final Set<Long> eventsIds) {
-    final List<Event> eventsWithNotAcceptedSummary =
-        (List<Event>) eventRepository.findAllById(eventsIds);
+    final var eventsWithNotAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithNotAcceptedSummary, SubmissionStatus.SUBMITTED_NOT_ACCEPTED);
   }
 
   private void addAcceptedEvents(final Map<Event, SubmissionStatus> events,
                                  final Set<Long> eventsIds) {
-    final List<Event> eventsWithAcceptedSummary =
-        (List<Event>) eventRepository.findAllById(eventsIds);
+    final var eventsWithAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithAcceptedSummary, SubmissionStatus.SUBMITTED_ACCEPTED);
   }
 
