@@ -13,6 +13,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -101,4 +102,14 @@ public class StudentController {
     authenticatedAccess.increment();
     return "report_submit";
   }
+
+  /**
+   * Fügt einen Studenten einem Event hinzu.
+   */
+  @PostMapping("/events")
+  public String addStudentToEvent(String name, String email, Long eventId) {
+    modelService.addStudentToEvent(name, email, eventId);
+    return "personalView";
+  }
+
 }
