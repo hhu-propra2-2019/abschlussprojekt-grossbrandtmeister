@@ -31,6 +31,23 @@ Sofern vorhanden, sollte die Aufgabenstellung Verweise auf die entsprechenden An
 
 Halten Sie diese Auszüge so knapp wie möglich und wägen Sie Lesbarkeit und Redundanzfreiheit gegeneinander ab.
 ****
+==== Problemstatement
+
+Die manuelle Korrektur der Abgaben und die Scheinvergabe ist zu umständlich.
+Durch nicht fachgerechte Überprüfung kann nicht gewährleistet werden, dass eine Abgabe doppelt eingelöst wird.
+
+==== Wesentliche Ziele
+
+- Belegen der Veranstaltungen und Abgabe der Zusammenfassungen an einer Stelle für die Studenten
+- Automatisierte Scheinvergabe +++<u>ohne</u>+++ doppeltes Einlösen der gleichen Veranstaltung
+- Übersicht über Abgaben und deren zugehörigen Veranstaltungen für Organisatoren
+- Bestätigung der Abgaben durch Organisatoren
+
+==== Wesentliche Features
+
+- Abrufen der Events über meetup.com
+- Übersicht über belegte Veranstaltungen
+- Inline-Kommentare und Bestätigung der Abgaben per Knopfdruck
 
 === Qualitätsziele
 
@@ -72,5 +89,5 @@ Tabelle mit Rollen- oder Personennamen, sowie deren Erwartungshaltung bezüglich
 |===
 |Rolle |Kontakt |Erwartungshaltung
 | _<Rolle-1>_ | _<Kontakt-1>_ | _<Erwartung-1>_
-| _<Rolle-2>_ | _<Kontakt-2>_ | _<Erwartung-2>_ 
+| _<Rolle-2>_ | _<Kontakt-2>_ | _<Erwartung-2>_
 |===
