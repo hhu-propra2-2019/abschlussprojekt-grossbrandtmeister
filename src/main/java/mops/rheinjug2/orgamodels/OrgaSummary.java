@@ -1,4 +1,4 @@
-package mops.rheinjug2.model;
+package mops.rheinjug2.orgamodels;
 
 import java.time.LocalDateTime;
 import lombok.Value;

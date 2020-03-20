@@ -19,8 +19,9 @@ import lombok.AllArgsConstructor;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.fileupload.FileService;
-import mops.rheinjug2.model.OrgaEvent;
-import mops.rheinjug2.model.OrgaSummary;
+import mops.rheinjug2.orgamodels.DelayedSubmission;
+import mops.rheinjug2.orgamodels.OrgaEvent;
+import mops.rheinjug2.orgamodels.OrgaSummary;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -84,7 +85,7 @@ public class OrgaService {
               getSummaryStudent(unacceptedSummary.getStudent()),
               getSummaryEvent(unacceptedSummary.getEvent()),
               "Hier ist eim Zusammenfassung muster "
-                  + "\n Es muss noch mit MinIO verknüpft werden"
+                  + "\nEs muss noch mit MinIO verknüpft werden"
           ));
       //getSummayContentFromFileservise(unacceptedSummary.getStudent(),
       // unacceptedSummary.getEvent())
@@ -99,6 +100,39 @@ public class OrgaService {
       ErrorResponseException {
     final String fileName = getSummaryStudent(studentid).getName() + "_" + eventid;
     return fileService.getContentOfFileAsString(fileName);
+  }
+
+  /**
+   * Die Methode gibt eine Liste alle angemeldte veranstaltungen
+   * deren Zusammenfassung noch nicht abgegeben worde.
+   *
+   * @return liste der Veranstaltungen.
+   */
+  public List<DelayedSubmission> getDelayedSubmission() {
+    final List<DelayedSubmission> result = new ArrayList<>();
+    eventRepository.getUnSubmittedSummaries().forEach(summariesIDs -> {
+      if (summaryIsDelayd(summariesIDs.getEvent())) {
+        result.add(new DelayedSubmission(
+                summariesIDs.getStudent(),
+                summariesIDs.getEvent(),
+                getSummaryStudent(summariesIDs.getStudent()).getName(),
+                getSummaryEvent(summariesIDs.getEvent()).getTitle()
+            )
+        );
+      }
+    });
+    return result;
+  }
+
+  /**
+   * Oberprüfen, ob die Abgabe zeit überschritten wurde.
+   *
+   * @param eventId id einer Veranstaltung
+   * @return boolean
+   */
+  private boolean summaryIsDelayd(final Long eventId) {
+    final LocalDateTime submissionDeadline = getSummaryEvent(eventId).getDate().plusDays(7);
+    return submissionDeadline.isAfter(LocalDateTime.now());
   }
 
   /**

@@ -9,8 +9,7 @@ import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
-import mops.rheinjug2.model.OrgaEvent;
-import mops.rheinjug2.model.OrgaSummary;
+import mops.rheinjug2.orgamodels.OrgaSummary;
 import mops.rheinjug2.services.EventService;
 import mops.rheinjug2.services.OrgaService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -52,6 +51,22 @@ public class OrgaController {
     model.addAttribute("events", orgaService.getEvents());
     model.addAttribute("datenow", LocalDateTime.now());
     return "orga_events_overview";
+  }
+
+  /**
+   * Gibt liste aller von Studenten angemeldte Veranstaltungen,
+   * die ihre Zusammenfassung noch nicht abgegeben worde.
+   *
+   * @param token token
+   * @param model model
+   * @return liste der Veranstaltungen.
+   */
+  @GetMapping("/delayedSubmission")
+  public String getDelayedSubmission(final KeycloakAuthenticationToken token, final Model model) {
+    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    authenticatedAccess.increment();
+    model.addAttribute("delayedsubmissions", orgaService.getDelayedSubmission());
+    return "orga_delayed_submission";
   }
 
   /**

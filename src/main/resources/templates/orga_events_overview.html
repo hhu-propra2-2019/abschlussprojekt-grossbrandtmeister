@@ -14,10 +14,13 @@
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li class="active">
-                <a th:href="@{/rheinjug2/orga/events}"> Veranstaltugen Übersicht </a>
+                <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungen Übersicht </a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen </a>
+            </li>
+            <li>
+                <a th:href="@{/rheinjug2/orga/delayedSubmission}"> Verspätete Abgabe hochladen </a>
             </li>
         </ul>
     </nav>
@@ -44,7 +47,7 @@
                     <div class="row">
                         <div class="col-12">
                             <i class="icono-calendar"></i>
-                            <span th:text="${#temporals.format(event.getDate(), 'yyyy.MM.dd')}"
+                            <span th:text="${#temporals.format(event.getDate(), 'dd.MM.yyyy')}"
                                   th:classappend="${event.getStatus() == 'PAST'} ? text-danger "
                             >&nbsp;13.03.2020 </span>
                             <small class="text-danger" th:if="${event.getStatus() == 'PAST'}">vergangene
@@ -57,7 +60,7 @@
                         <div class="col-12">
                             <img src="/icons/icon-time-clock.png" style="width: 32px;height: 28px;">
                             <span>&nbsp;Abgabefrist</span>
-                            <span th:text="${#temporals.format(event.getSubmissionDeadline(), 'yyyy.MM.dd hh:mm')}"
+                            <span th:text="${#temporals.format(event.getSubmissionDeadline(), 'dd.MM.yyyy HH:mm')}"
                                   th:classappend="${event.getSubmissionDeadline().isAfter(datenow) and event.getStatus() == 'PAST'} ? text-success : text-danger">&nbsp;05.03.2020</span>
                         </div>
                     </div>

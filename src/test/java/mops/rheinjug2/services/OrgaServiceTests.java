@@ -12,9 +12,9 @@ import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.fileupload.FileService;
-import mops.rheinjug2.model.OrgaEvent;
-import mops.rheinjug2.model.OrgaSummary;
-import mops.rheinjug2.model.UnacceptedSummaryId;
+import mops.rheinjug2.orgamodels.OrgaEvent;
+import mops.rheinjug2.orgamodels.OrgaSummary;
+import mops.rheinjug2.orgamodels.SummariesIDs;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.assertj.core.api.Assertions;
@@ -115,9 +115,9 @@ public class OrgaServiceTests {
    */
   @Test
   public void getSummariesTest() {
-    final UnacceptedSummaryId student1_event1 = new UnacceptedSummaryId((long) 1, (long) 1);
-    final UnacceptedSummaryId student2_event1 = new UnacceptedSummaryId((long) 2, (long) 1);
-    final UnacceptedSummaryId student3_event2 = new UnacceptedSummaryId((long) 3, (long) 2);
+    final SummariesIDs student1_event1 = new SummariesIDs((long) 1, (long) 1);
+    final SummariesIDs student2_event1 = new SummariesIDs((long) 2, (long) 1);
+    final SummariesIDs student3_event2 = new SummariesIDs((long) 3, (long) 2);
     when(eventRepository.getSubmittedAndUnacceptedSummaries()).thenReturn(List.of(
         student1_event1, student2_event1, student3_event2));
     when(studentRepository.getStudentById(1)).thenReturn(student1);
