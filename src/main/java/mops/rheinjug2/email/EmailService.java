@@ -32,13 +32,11 @@ public class EmailService {
    * Die Parameter beziehen sich auf die Angaben des/der Studenten/Studentin.
    */
   public void sendMail(String name, String gender, String matNr) throws MessagingException {
-    final String subject = "Java in der Praxis: Scheinbeantragung von " + name;
-    final String text = setGender(gender) + name + " (Matr: " + matNr + ") beantragt folgende "
+    String subject = "Java in der Praxis: Scheinbeantragung von " + name;
+    String text = setGender(gender) + name + " (Matr: " + matNr + ") beantragt folgende "
         + "Veranstaltung(en) gegen 0.5 CP einzutauschen:";
     
-    // Write certificate to outputStream
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    // Dummy Values for testing purposes
     certificateService.createCertificatePdf(outputStream, name, gender, matNr);
     byte[] bytes = outputStream.toByteArray();
     
@@ -63,7 +61,7 @@ public class EmailService {
     emailSender.send(mimeMessage);
   }
   
-  private String setGender(String gender) {
+  private static String setGender(String gender) {
     switch (gender) {
       case "male":
         return "Der Student ";
