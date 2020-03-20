@@ -2,12 +2,14 @@ package mops.rheinjug2.email;
 
 import com.sun.istack.ByteArrayDataSource;
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 import javax.activation.DataHandler;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import lombok.extern.log4j.Log4j2;
+import mops.rheinjug2.entities.Event;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -30,14 +32,20 @@ public class EmailService {
    * Dummy Methode die beim aufrufen von /sendEmail eine
    * Test Email an eine angegebene Email sendet.
    * Die Parameter beziehen sich auf die Angaben des/der Studenten/Studentin.
+   *
+   * @return
    */
-  public void sendMail(String name, String gender, String matNr) throws MessagingException {
+  public void sendMail(String name, String gender, String matNr, List<Event> usedEvents)
+      throws MessagingException {
     String subject = "Java in der Praxis: Scheinbeantragung von " + name;
     String text = setGender(gender) + name + " (Matr: " + matNr + ") beantragt folgende "
         + "Veranstaltung(en) gegen 0.5 CP einzutauschen:";
+    //TODO Veranstaltungen hinzufügen
     
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    certificateService.createCertificatePdf(outputStream, name, gender, matNr);
+    if (!certificateService.createCertificatePdf(outputStream, name, gender, matNr, usedEvents)) {
+      return;
+    }
     byte[] bytes = outputStream.toByteArray();
     
     ByteArrayDataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");

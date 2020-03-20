@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.extern.log4j.Log4j2;
+import mops.rheinjug2.entities.Event;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
@@ -23,9 +25,10 @@ public class CertificateService {
    * @param name         des Studenten/der Studentin
    * @param gender       Geschlecht des Studenten/der Studentin
    * @param matnr        Matrikelnummer des Studenten/der Studentin
+   * @param usedEvents
    */
-  public void createCertificatePdf(ByteArrayOutputStream outputStream,
-                                   String name, String gender, String matnr) {
+  public boolean createCertificatePdf(ByteArrayOutputStream outputStream,
+                                      String name, String gender, String matnr, List<Event> usedEvents) {
     File pdf = new File("./rheinjug_schein.pdf");
     try {
       pdfForm = PDDocument.load(pdf);
@@ -38,9 +41,18 @@ public class CertificateService {
           .setValue(setGenderFormOfAddress(gender) + " " + name);
       acroForm.getField("Matrikelnummer").setValue(matnr);
       acroForm.getField("er,sie").setValue(setGenderPronoun(gender));
-      acroForm.getField("Veranstaltung 1").setValue("foo");
-      acroForm.getField("Veranstaltung 2").setValue("bär");
-      acroForm.getField("Veranstaltung 3").setValue("baz");
+      
+      if (usedEvents.size() == 3) {
+        acroForm.getField("Veranstaltung 1").setValue(usedEvents.get(0).getTitle());
+        acroForm.getField("Veranstaltung 2").setValue(usedEvents.get(1).getTitle());
+        acroForm.getField("Veranstaltung 3").setValue(usedEvents.get(2).getTitle());
+      } else if (usedEvents.size() == 1) {
+        acroForm.getField("Veranstaltung 1").setValue(usedEvents.get(0).getTitle());
+        acroForm.getField("Veranstaltung 2").setValue("");
+        acroForm.getField("Veranstaltung 3").setValue("");
+      } else {
+        return false;
+      }
       
       acroForm.getField("Datum 1").setValue(setCertificateDate());
       acroForm.getField("Datum 2").setValue(setCertificateDate());
@@ -56,6 +68,7 @@ public class CertificateService {
         log.catching(e);
       }
     }
+    return true;
   }
   
   /**
@@ -69,7 +82,7 @@ public class CertificateService {
     return day + "." + month + "." + year;
   }
   
-  private String setGenderFormOfAddress(String gender) {
+  private static String setGenderFormOfAddress(String gender) {
     switch (gender) {
       case "male":
         return "Herr";
@@ -80,7 +93,7 @@ public class CertificateService {
     }
   }
   
-  private String setGenderPronoun(String gender) {
+  private static String setGenderPronoun(String gender) {
     switch (gender) {
       case "male":
         return "er";

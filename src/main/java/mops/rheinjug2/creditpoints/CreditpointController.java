@@ -3,6 +3,7 @@ package mops.rheinjug2.creditpoints;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.util.List;
+import javax.mail.MessagingException;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.ModelService;
@@ -28,19 +29,16 @@ public class CreditpointController {
   private final transient Counter authenticatedAccess;
   private final transient ModelService modelService;
   private final transient EmailService emailService;
-  private final transient CreditpointsService creditpointsService;
   private transient CertificateForm certificateForm = new CertificateForm();
   
   
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public CreditpointController(MeterRegistry registry,
                                ModelService modelService,
-                               EmailService emailService,
-                               CreditpointsService creditpointsService) {
+                               EmailService emailService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.modelService = modelService;
     this.emailService = emailService;
-    this.creditpointsService = creditpointsService;
   }
   
   
@@ -80,7 +78,7 @@ public class CreditpointController {
   @PostMapping("/certificateform")
   public String formular(@ModelAttribute("certificateForm") CertificateForm certificateForm,
                          KeycloakAuthenticationToken token,
-                         Model model) {
+                         Model model) throws MessagingException {
     Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     this.certificateForm = certificateForm;
@@ -90,10 +88,21 @@ public class CreditpointController {
     KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     String login = principal.getKeycloakSecurityContext().getIdToken().getName();
     Student student = modelService.loadStudentByLogin(login);
-
-//    if (modelService.checkEventsForCertificate(login)) {
-//      creditpointsService.sendMailWithPdf(token, certificateForm.getGender(), certificateForm.getMatNr());
-//    }
+    
+    String forename = principal.getKeycloakSecurityContext().getIdToken().getGivenName();
+    String surname = principal.getKeycloakSecurityContext().getIdToken().getFamilyName();
+    String name = forename + " " + surname;
+    
+    
+    if (modelService.loadStudentByLogin(login) != null && modelService.checkEventsForCertificate(login)) {
+      List<Event> usableEvents = modelService.getEventsForCertificate(login);
+      modelService.useEventsForCertificate(login, usableEvents);
+      emailService.sendMail(name,
+          certificateForm.getGender(),
+          certificateForm.getMatNr(),
+          usableEvents
+      );
+    }
     
     System.out.println(certificateForm.getGender() + certificateForm.getMatNr());
     return "credit_points_form";
