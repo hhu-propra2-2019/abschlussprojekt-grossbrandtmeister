@@ -15,3 +15,45 @@ Sie können Randbedingungen vielleicht noch verhandeln, zunächst sind sie aber 
 Einfache Tabellen der Randbedingungen mit Erläuterungen.
 Bei Bedarf unterscheiden Sie technische, organisatorische und politische Randbedingungen oder übergreifende Konventionen (beispielsweise Programmier- oder Versionierungsrichtlinien, Dokumentations- oder Namenskonvention).
 ****
+
+=== Technisch
+
+[cols="1,2" options="header"]
+|===
+| **Randbedingung** | **Erläuterungen, Hintergrund**
+| Betrieb in Docker-Container | Damit unser System problemlos auf den gewünschten Web-Servern deployed werden kann,
+muss es in einem Docker-Container ausgeliefert werden. Durch das Einbinden aller Abhängigkeiten in diesem, sparen wir
+uns so Probleme mit Kompatibilität auf verschiedenen Systemen.
+| Implementierung in Java | Da unser System in das MOPS System integriert werden soll, sollte unser System ebenfalls
+mit Spring Boot Java laufen.
+| Fremdsoftware | Bestimmte Fremdsoftware wird uns vom MOPS System vorgegeben. Dazu zählt unter anderem der MOPS
+Styleguide, Keycloak und MinIO.
+|===
+
+=== Organisatorisch
+
+[cols="1,2" options="header"]
+|===
+| **Randbedingung** | **Erläuterungen, Hintergrund**
+| Team | Team Großbrandtmeister für ProPra2 Abschlussprojekt.
+| Zeitplan | Beginn der Entwicklung 02.03.2020, vorzeigbare Version bis 23.03.2020. Abgabe am 27.03.2020.
+Arbeitszeit jeweils 4 Stunden pro Tag.
+| Vorgehensmodell | Feature branches werden erst in den master aufgenommen wenn diese fehlerfrei sind. Dabei kommen neben
+Tests auch CheckStyle, PMD und SpotBugs zum Einsatz. Tests werden zeitnah zum Code implementiert.
+| Entwicklungswerkzeuge | In unserem Team wird als IDE IntelliJ verwendet. Grobe Entwürfe finden auf Papier oder an der Tafel statt.
+Die Software soll über Gradle baubar sein und mit Docker ausgeliefert werden.
+| Konfigurations- und Versionsverwaltung | Zur Versionsverwaltung verwenden wir Git bei GitHub.
+| Testwerkzeuge und -prozesse | JUnit 5 im Annotationsstil sowohl für inhaltliche Richtigkeit als auch für Integrationstests.
+Mockito zum Testen der Systeme ohne Abhängigkeit zu anderen Systemen.
+|===
+
+=== Konventionen
+
+[cols="1,2" options="header"]
+|===
+| **Randbedingung** | **Erläuterungen, Hintergrund**
+| Architekturdokumentation | Terminologie und Gliederung nach dem deutschen arc42-Template in der Version 7.0.
+| Kodierrichtlinien für Java | Java Coding Conventions von Google, geprüft mit Hilfe von CheckStyle.
+| Sprache (Deutsch vs. Englisch) | Verwendung englischer Bezeichner für Klassen, Methoden etc. im Java-Quelltext.
+Javadoc Kommentare allerdings auf deutsch, da dies für die meisten leichter ist.
+|===
