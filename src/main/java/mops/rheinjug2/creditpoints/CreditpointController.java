@@ -28,16 +28,19 @@ public class CreditpointController {
   private final transient Counter authenticatedAccess;
   private final transient ModelService modelService;
   private final transient EmailService emailService;
+  private final transient CreditpointsService creditpointsService;
   private transient CertificateForm certificateForm = new CertificateForm();
   
   
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public CreditpointController(MeterRegistry registry,
                                ModelService modelService,
-                               EmailService emailService) {
+                               EmailService emailService,
+                               CreditpointsService creditpointsService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.modelService = modelService;
     this.emailService = emailService;
+    this.creditpointsService = creditpointsService;
   }
   
   
@@ -72,21 +75,9 @@ public class CreditpointController {
   }
   
   /**
-   * Get-Formular für die Scheinabgabe.
-   */
-  @RequestMapping("/certificateform")
-  public String formular(KeycloakAuthenticationToken token,
-                         Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
-    authenticatedAccess.increment();
-    model.addAttribute("certificateForm", certificateForm);
-    return "credit_points_form";
-  }
-  
-  /**
    * Post-Formular für die Scheinabgabe.
    */
-  @PostMapping("certificateform")
+  @PostMapping("/certificateform")
   public String formular(@ModelAttribute("certificateForm") CertificateForm certificateForm,
                          KeycloakAuthenticationToken token,
                          Model model) {
@@ -99,7 +90,10 @@ public class CreditpointController {
     KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     String login = principal.getKeycloakSecurityContext().getIdToken().getName();
     Student student = modelService.loadStudentByLogin(login);
-    
+
+//    if (modelService.checkEventsForCertificate(login)) {
+//      creditpointsService.sendMailWithPdf(token, certificateForm.getGender(), certificateForm.getMatNr());
+//    }
     
     System.out.println(certificateForm.getGender() + certificateForm.getMatNr());
     return "credit_points_form";
