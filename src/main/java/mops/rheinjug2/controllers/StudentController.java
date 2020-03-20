@@ -3,11 +3,8 @@ package mops.rheinjug2.controllers;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.stream.Collectors;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
-import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
 import mops.rheinjug2.services.ModelService;
@@ -44,7 +41,7 @@ public class StudentController {
   @GetMapping("/events")
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
-    model.addAttribute("events", modelService.getAllEvents().stream().sorted(Comparator.comparing(Event::getDate).reversed()).collect(Collectors.toList()));
+    model.addAttribute("events", modelService.getAllEvents());
     authenticatedAccess.increment();
     return "student_events_overview";
   }

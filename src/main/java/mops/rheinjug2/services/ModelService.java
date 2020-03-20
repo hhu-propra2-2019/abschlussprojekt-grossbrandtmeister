@@ -2,11 +2,14 @@ package mops.rheinjug2.services;
 
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
@@ -20,7 +23,8 @@ public class ModelService {
   private final transient StudentRepository studentRepository;
   private final transient EventRepository eventRepository;
 
-  public ModelService(final StudentRepository studentRepository, final EventRepository eventRepository) {
+  public ModelService(final StudentRepository studentRepository,
+                      final EventRepository eventRepository) {
     this.studentRepository = studentRepository;
     this.eventRepository = eventRepository;
   }
@@ -29,7 +33,9 @@ public class ModelService {
    * Alle Veranstaltungen zurückgeben.
    */
   public List<Event> getAllEvents() {
-    return (List<Event>) eventRepository.findAll();
+    final List<Event> events = (List<Event>) eventRepository.findAll();
+    return events.stream().sorted(Comparator.comparing(Event::getDate)
+        .reversed()).collect(Collectors.toList());
   }
 
   /**
@@ -62,7 +68,7 @@ public class ModelService {
       addNotAcceptedEvents(events, student.getEventsIdsWithSummaryNotAccepted());
       addAcceptedEvents(events, student.getEventsIdsWithSummaryAccepted());
     }
-    return events;
+    return sortMap(events);
   }
 
 
@@ -108,6 +114,9 @@ public class ModelService {
     }
   }
 
+  /**
+   * Gibt an, ob ein Student Events gegen CP einlösen darf.
+   */
   public boolean useEventsIsPossible(final String login) {
     final List<Event> events = getAllEventsForCP(login);
     for (final Event e : events) {
@@ -119,11 +128,19 @@ public class ModelService {
     return false;
   }
 
+  /**
+   * Gibt an, ob ein Student schon akzeptierte Zusammenfassungen für
+   * Events hat.
+   */
   public boolean acceptedEventsExist(final String login) {
     final List<Event> events = getAllEventsForCP(login);
     return !events.isEmpty();
   }
 
+  /**
+   * Gibt an, ob sich ein Student für Events angemeldet hat
+   * und dementsprechend in der DB gespeichert wurde.
+   */
   public boolean studentExists(final String login) {
     return loadStudentByLogin(login) != null;
   }
@@ -139,6 +156,14 @@ public class ModelService {
     return student;
   }
 
+  /**
+   * Ein Event von der DB holen.
+   */
+  public Event loadEventById(final Long eventId) {
+    final Optional<Event> event = eventRepository.findById(eventId);
+    return event.orElse(null);
+  }
+
   private boolean useForEntwickelbar(final Student student, final List<Event> events) {
     for (final Event e : events) {
       if (e.getType().equalsIgnoreCase("Entwickelbar")) {
@@ -150,11 +175,6 @@ public class ModelService {
     return false;
   }
 
-  public Event loadEventById(final Long eventId) {
-    final Optional<Event> event = eventRepository.findById(eventId);
-    return event.get();
-  }
-
   private Student loadStudentByLogin(final String login) {
     return studentRepository.findByLogin(login);
   }
@@ -162,6 +182,14 @@ public class ModelService {
   private static void addToMap(final Map<Event, SubmissionStatus> map,
                                final List<Event> events, final SubmissionStatus staus) {
     events.forEach(event -> map.put(event, staus));
+  }
+
+  private static Map<Event, SubmissionStatus> sortMap(final Map<Event, SubmissionStatus> map) {
+    final Map<Event, SubmissionStatus> treeMap = new TreeMap<>(
+        Comparator.comparing(Event::getDate).reversed()
+    );
+    treeMap.putAll(map);
+    return treeMap;
   }
 
   private void addNotAcceptedEvents(final Map<Event, SubmissionStatus> events, final Set<Long> eventsIds) {

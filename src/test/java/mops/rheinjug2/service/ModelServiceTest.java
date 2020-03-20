@@ -41,7 +41,10 @@ public class ModelServiceTest {
   @Test
   public void testGetAllEvents() {
     final Event event1 = createAndSaveEvent("Event 1.0");
+    event1.setDate(LocalDateTime.now());
     final Event event2 = createAndSaveEvent("Event 2.0");
+    event2.setDate(LocalDateTime.now());
+    eventRepository.saveAll(List.of(event1, event2));
     final List<Event> allEvents = modelService.getAllEvents();
     assertThat(allEvents).containsExactlyInAnyOrder(event2, event1);
   }
