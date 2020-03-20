@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @Secured({"ROLE_orga"})
 @RequestMapping("/rheinjug2/orga")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OrgaController {
 
   private final transient Counter authenticatedAccess;
