@@ -24,7 +24,7 @@
                     Übersicht</a>
             </li>
             <li>
-                <a th:href="@{/rheinjug2/student/events}"> Veranstaltugen Übersicht </a>
+                <a th:href="@{/rheinjug2/student/events}"> Veranstaltungen Übersicht </a>
             </li>
             <li class="active">
                 <a th:href="@{/rheinjug2/student/visitedevents}"> belegte Veranstaltungen</a>
@@ -44,7 +44,7 @@
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li class="active">
-                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltugen Übersicht </a>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungen Übersicht </a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal">
@@ -59,14 +59,15 @@
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
     <h1 class="text-center text-secondary"> Rheinjug Veranstaltungen </h1>
-    <div id="partial-collapse">
-        <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+    <div id="partial-collapse" th:remove="all-but-first">
+
+        <div class="container bg-light rounded shadow-lg " th:each="event : ${events}" style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
             <div class="row border-bottom mx-1 my-1">
                 <div class="col-6 col-sm-3 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
                             <i class="icono-calendar"></i>
-                            <span>&nbsp;13.03.2020</span>
+                            <span th:text="${#temporals.format(event.date.toLocalDate(), 'dd.MM.yyyy')}">&nbsp;13.03.2020</span>
                         </div>
                     </div>
                 </div>
@@ -74,7 +75,7 @@
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
-                            <span>&nbsp;19:30pm</span>
+                            <span th:text="${#temporals.format(event.date.toLocalTime(), 'HH:mm')}">&nbsp;19:30pm</span>
                         </div>
                     </div>
                 </div>
@@ -84,7 +85,15 @@
                             <img src="../../static/icons/icon-credit-points.png"
                                  th:src="@{/icons/icon-credit-points.png}"
                                  style="width: 32px;height: 28px;">
-                            <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                            <span class="text-secondary">
+                                <span th:if="${event.type == 'Abendveranstaltungen'}">
+                                    <sup>1</sup>/<sub>6</sub> CP
+                                </span>
+                                <span th:if="${event.type == 'Entwickelbar'}">
+                                    <sup>1</sup>/<sub>2</sub> CP
+                                </span>
+                                <span th:if="${event.type != 'Abendveranstaltungen' and event.type != 'Entwickelbar'}"> <sup>1</sup>/<sub>2</sub> CP </span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -94,14 +103,15 @@
                             <img src="../../static/icons/icon-payment.png"
                                  th:src="@{/icons/icon-payment.png}"
                                  style="width: 32px;height: 28px;">
-                            <span class="text-success">&nbsp;kostenfrei</span>
+                            <span class="text-success" th:if="${event.price == 0}">kostenfrei</span>
+                            <span th:if="${event.price != 0}" th:text="${event.price} + ' €' "> 5.0 €</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row border-bottom mx-1 my-1 align-content-center">
                 <div class="col-12 text-secondary text-center my-1">
-                    <h2 class="font-weight-bold">
+                    <h2 class="font-weight-bold" th:text="${event.title}">
                         Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                     </h2>
                 </div>
@@ -114,23 +124,28 @@
                         </h3>
                     </div>
                     <div class="text-secondary">
-                        <div id="description-1" class="collapse partial-collapse" aria-expanded="false">
-                            <p>
-                                Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
-                                Server
-                                Pages
-                                (JSP)
-                                und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
-                                Anforderungen
-                                an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API
-                                1.0
-                                soll
-                                dieses Problem gelöst werden.
-                            </p>
+                        <div id="description-1" th:id="'description-' + ${event.id}" class="collapse partial-collapse" aria-expanded="false">
+                            <!-- Jens allowed us to use utext explicitly -->
+                            <div class="text-secondary" th:utext="${event.description}">
+                                <p>
+                                    Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
+                                    Server
+                                    Pages
+                                    (JSP)
+                                    und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
+                                    Anforderungen
+                                    an moderne und verteilte Systeme kaum erfüllen könn´en. Mit der actionbasierten MVC API
+                                    1.0
+                                    soll
+                                    dieses Problem gelöst werden.
+                                </p>
+                            </div>
                         </div>
-                        <a role="button" class="collapsed" data-toggle="collapse" href="#description-1"
+                        <a role="button" class="partial-collapse collapsed" data-toggle="collapse"
+                           style="text-decoration: none !important"
+                           href="#description-1" th:href="'#description-' + ${event.id}"
                            aria-expanded="false"
-                           aria-controls="description-1"></a>
+                           aria-controls="description-1" th:attr="aria-controls='description-' + ${event.id}"></a>
                     </div>
                 </div>
             </div>
@@ -139,27 +154,40 @@
                     <img src="../../static/icons/icon-location.png"
                          th:src="@{/icons/icon-location.png}"
                          style="width: 32px;height: 28px;">
-                    <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
+                    <small th:text="${event.venue}">&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
                 </div>
             </div>
             <div class="row text-light justify-content-around mx-1 ">
                 <div class="col-12 col-sm-3 col-md-4 mt-2">
                     <form action="#" method="POST">
-                        <button class="btn btn-outline-secondary btn-block" type="submit">
-                            anmelden
-                        </button>
+                        <div th:switch="${event.status}">
+                            <form action="#" method="POST" th:action="'/personalView'">
+                                <button th:case="UPCOMING" th:value="${event.status}"
+                                        class="btn btn-outline-secondary btn-block" type="submit">
+                                    <input type="hidden" name="name" th:value="${account.getName()}">
+                                    <input type="hidden" name="email" th:value="${account.getEmail()}">
+                                    <input type="hidden" name="eventId" th:value="${event.getId()}">
+                                    anmelden
+                                </button>
+                            </form>
+                            <button th:case="*"
+                                    class="btn btn-outline-danger btn-block"
+                                    disabled type="submit">
+                                Anmeldung nicht mehr möglich
+                            </button>
+                        </div>
                     </form>
                 </div>
                 <div class="col-12 col-sm-5 col-md-4 mt-2">
-                    </form>
-                    <form action="#" method="POST">
+                    <a href="http://meetup.com" th:href="${event.url}" target="_blank"
+                       style="text-decoration: none !important">
                         <div>
                             <button class="btn btn-outline-secondary btn-block" type="submit">
                                 mehr Informationen |
                                 <span style="color: #ed1c40">Meetup</span>
                             </button>
                         </div>
-                    </form>
+                    </a>
                 </div>
                 <div class="col-12 col-sm-3 col-md-4 mt-2">
                     <form action="#" method="POST">
@@ -226,7 +254,7 @@
                         </h3>
                     </div>
                     <div class="text-secondary">
-                        <div id="description-2" class="collapse partial-collapse" aria-expanded="false">
+                        <div id="description-3" class="collapse partial-collapse" aria-expanded="false">
                             <p>
                                 Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
                                 Server Pages (JSP)
@@ -334,14 +362,16 @@
                     </div>
                     <div class="text-secondary">
                         <div id="description-3" class="collapse partial-collapse" aria-expanded="false">
-                            <p>
-                                Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
-                                Server Pages (JSP)
-                                und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
-                                Anforderungen
-                                an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API
-                                1.0 soll dieses Problem gelöst werden.
-                            </p>
+                            <div>
+                                <p>
+                                    Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
+                                    Server Pages (JSP)
+                                    und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
+                                    Anforderungen
+                                    an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API
+                                    1.0 soll dieses Problem gelöst werden.
+                                </p>
+                            </div>
                         </div>
                         <a role="button" class="collapsed" data-toggle="collapse" href="#description-3"
                            aria-expanded="false"

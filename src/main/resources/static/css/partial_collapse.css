@@ -2,11 +2,11 @@
 from https://stackoverflow.com/questions/52332952/can-we-use-partial-collapse-concept-in-bootstrap-4
 */
 
-#partial-collapse a.collapsed:after {
+#partial-collapse a.partial-collapse.collapsed:after {
     content: '(mehr)';
 }
 
-#partial-collapse a:not(.collapsed):after {
+#partial-collapse a.partial-collapse:not(.collapsed):after {
     content: '(weniger)';
 }
 

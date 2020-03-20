@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @Secured({"ROLE_studentin"})
-@RequestMapping("/rheinjug2/student/creditpoints")
+@RequestMapping("/rheinjug2/student")
 public class CreditpointController {
 
 
@@ -45,7 +45,7 @@ public class CreditpointController {
    * Methode die überprüft ob der/die Student/in Zusammenfassungen bei einer EntwickelBar
    * abgegeben hat um CreditPoints zu beantragen.
    */
-  @GetMapping("")
+  @GetMapping("/creditpoints2")
   public String getCreditPoints(KeycloakAuthenticationToken token, Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
@@ -96,7 +96,7 @@ public class CreditpointController {
 
       List<Event> usableEvents = modelService.getEventsForCertificate(login);
 
-      modelService.useEventsForCertificate(login, usableEvents);
+      modelService.useEventsForCertificate(login);
 
       emailService.sendMail(name, certificateForm.getGender(),
           certificateForm.getMatNr(), usableEvents);

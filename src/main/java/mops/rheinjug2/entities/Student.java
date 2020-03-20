@@ -99,7 +99,7 @@ public class Student {
 
   private EventRef findEventRef(final Event event) {
     return events.stream().filter(x -> x.getEvent()
-        .equals(event.getId())).findAny().get();
+        .equals(event.getId())).findAny().orElse(null);
   }
 
   public void setAccepted(final boolean value, final Event event) {

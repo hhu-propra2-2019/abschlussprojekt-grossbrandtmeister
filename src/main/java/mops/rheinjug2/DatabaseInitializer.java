@@ -82,7 +82,8 @@ public class DatabaseInitializer implements ServletContextInitializer {
           faker.number().numberBetween(1, 60)));
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
-      if (event.getDate().isBefore(dateNow)) {
+      event.setVenue("Universität Düsseldorf, Gebäude 25.22 U1");
+      if (event.getDate().isAfter(dateNow)) {
         event.setStatus("UPCOMING");
       } else {
         event.setStatus("PAST");

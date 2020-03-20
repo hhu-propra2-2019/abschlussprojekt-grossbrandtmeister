@@ -29,18 +29,22 @@
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
     <h1 class="text-center text-secondary"> CP beantragen</h1>
-    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+
+    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px"
+         th:if="${eventsExist}">
         <table class="table table-borderless">
             <thead>
             <tr>
-                <th>Besuchte Veranstaltungen</th>
+                <th>Veranstaltungen für CP</th>
                 <th>Erworbene CP</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
-                <td><span>&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span></td>
+            <tbody th:remove="all-but-first">
+            <tr th:each="event: ${events}">
+                <td th:text="${event.title}">Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
+                <td th:if="${event.type == 'Abendveranstaltungen'}"><span>&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span>
+                </td>
+                <td th:if="${event.type == 'Entwickelbar'}"><span>&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span></td>
             </tr>
             <tr>
                 <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter (2)</td>
@@ -48,12 +52,20 @@
             </tr>
             </tbody>
         </table>
-        <form action="/rheinjug2/student/creditpoints/certificateform" method="POST" id="something">
-            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
-            <button type="submit" class="btn col-12 btn-outline-success" name="second"
-                    th:disabled="${disabled}">CP Beantragen
-            </button>
-        </form>
+        <div th:if="${useForCP}">
+            <button type="submit" class="btn col-12 btn-outline-success"> 0.5 CP Bentagen</button>
+        </div>
+        <div th:unless="${useForCP}">
+            <div class="alert alert-danger text-center">
+                CP Beantragung ist noch nicht möglich. Sie brauchen mindestens <sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+            </div>
+        </div>
+    </div>
+    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px"
+         th:if="${!exists  || !eventsExist}">
+        <div class="row border-bottom  mx-1 my-md-5 justify-content-center">
+            <p class="font-weight-bold text-dark"> Es gibt keine Veranstaltungen zur Beantragung von CPs </p>
+        </div>
     </div>
     <!--    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">-->
     <!--        <table class="table table-borderless">-->

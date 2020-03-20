@@ -3,16 +3,22 @@ package mops.rheinjug2.controllers;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDateTime;
+import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
+import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
-import org.keycloak.KeycloakPrincipal;
+import mops.rheinjug2.services.ModelService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @Secured({"ROLE_studentin"})
@@ -21,11 +27,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class StudentController {
 
   private final transient Counter authenticatedAccess;
+  private final transient ModelService modelService;
+
 
   transient FileService fileService;
 
-  public StudentController(MeterRegistry registry, FileService fileService) {
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  public StudentController(final MeterRegistry registry, final FileService fileService,
+                           final ModelService modelService) {
     this.fileService = fileService;
+    this.modelService = modelService;
     authenticatedAccess = registry.counter("access.authenticated");
   }
 
@@ -40,6 +51,7 @@ public class StudentController {
   @GetMapping("/events")
   public String getEvents(KeycloakAuthenticationToken token, Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    model.addAttribute("events", modelService.getAllEvents());
     authenticatedAccess.increment();
     return "student_events_overview";
   }
@@ -49,12 +61,28 @@ public class StudentController {
    * Die EventId muss später durch die richtige Id aus der Datenbank ersetzt werden.
    */
   @GetMapping("/visitedevents")
-  public String getPersonal(KeycloakAuthenticationToken token, Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
-    final Long eventId = 123L;
-    model.addAttribute("eventId", eventId);
+  public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    model.addAttribute("exists", modelService.studentExists(account.getName()));
+    model.addAttribute("studentEvents", modelService.getAllEventsPerStudent(account.getName()));
     authenticatedAccess.increment();
     return "personalView";
+  }
+
+  /**
+   * Formular zum Beantragen von Credit-Points.
+   */
+  @GetMapping("/creditpoints")
+  public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    model.addAttribute("eventsExist", modelService.acceptedEventsExist(account.getName()));
+    model.addAttribute("events", modelService.getAllEventsForCP(account.getName()));
+    model.addAttribute("useForCP", modelService.useEventsIsPossible(account.getName()));
+    model.addAttribute("exists", modelService.studentExists(account.getName()));
+    authenticatedAccess.increment();
+    return "credit_points_apply";
   }
 
   /**
@@ -63,14 +91,16 @@ public class StudentController {
    * der Datenbank angepasst werden.
    */
   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-  @GetMapping("/reportsubmit")
-  public String reportsubmit(KeycloakAuthenticationToken token, Model model,
-                             Long eventId) {
-    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    String student = principal.getName();
-    LocalDateTime today = LocalDateTime.now();
-    final String eventname = "cooler Event Name";
-
+  @GetMapping("/reportsubmit/{eventId}")
+  public String reportSubmit(final KeycloakAuthenticationToken token, final Model model,
+                             @PathVariable("eventId") final long eventId) {
+    final LocalDateTime today = LocalDateTime.now();
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    final Event event = modelService.loadEventById(eventId);
+    if (event == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event ID not found!");
+    }
+    final String eventname = event.getTitle();
     String content;
     try {
       content = fileService.getContentOfFileAsString("VorlageZusammenfassung.md");
@@ -79,10 +109,21 @@ public class StudentController {
     } catch (Exception e) {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
-    Summary summary = new Summary(eventname, student, content, today, eventId);
+    final String student = account.getGivenName() + " " + account.getFamilyName();
+    final Summary summary = new Summary(eventname, student, content, today, eventId);
     model.addAttribute("summary", summary);
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    model.addAttribute("account", account);
     authenticatedAccess.increment();
     return "report_submit";
   }
+
+  /**
+   * Fügt einen Studenten einem Event hinzu.
+   */
+  @PostMapping("/events")
+  public String addStudentToEvent(final String name, final String email, final Long eventId) {
+    modelService.addStudentToEvent(name, email, eventId);
+    return "redirect:/rheinjug2/student/visitedevents";
+  }
+
 }
