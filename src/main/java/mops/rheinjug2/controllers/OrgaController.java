@@ -4,9 +4,13 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
+import mops.rheinjug2.model.OrgaEvent;
+import mops.rheinjug2.model.OrgaSummary;
 import mops.rheinjug2.services.EventService;
 import mops.rheinjug2.services.OrgaService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -45,7 +49,11 @@ public class OrgaController {
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
-    model.addAttribute("events", orgaService.getEvents());
+    model.addAttribute("events", orgaService.getEvents()
+        .stream()
+        .sorted(Comparator.comparing(OrgaEvent::getDate)
+            .reversed())
+        .collect(Collectors.toList()));
     model.addAttribute("datenow", LocalDateTime.now());
     return "orga_events_overview";
   }
@@ -70,7 +78,11 @@ public class OrgaController {
   public String getReports(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
-    model.addAttribute("summaries", orgaService.getSummaries());
+    model.addAttribute("summaries", orgaService.getSummaries()
+        .stream()
+        .sorted(Comparator.comparing(OrgaSummary::getTimeOfSubmission).reversed()
+            .thenComparing(OrgaSummary::getSubmissionDeadline))
+        .collect(Collectors.toList()));
     return "orga_reports_overview";
   }
 

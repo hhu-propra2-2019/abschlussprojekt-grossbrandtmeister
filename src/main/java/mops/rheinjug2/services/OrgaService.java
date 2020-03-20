@@ -32,7 +32,7 @@ public class OrgaService {
   private final FileService fileService;
 
   /**
-   * Ggit ibt alle events zurück.
+   * Gibt alle events zurück.
    *
    * @return Liste alle events
    */
@@ -131,6 +131,6 @@ public class OrgaService {
   }
 
   public void setSummaryAcception(final Long studentid, final Long eventid) {
-    eventRepository.updateSummarytoaccepted(studentid, eventid);
+    eventRepository.updateSummaryToAccepted(studentid, eventid);
   }
 }

@@ -62,12 +62,12 @@
             <div class="row border-bottom  mx-1 my-1">
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <span>Abgabe Frist:</span>
-                    <span th:text="${#temporals.format(summary.getSubmissionDeadline(), 'yyyy.MM.dd hh:mm')}">&nbsp;15.03.2020</span>
+                    <span th:text="${#temporals.format(summary.getSubmissionDeadline(), 'yyyy.MM.dd HH:mm')}">&nbsp;15.03.2020</span>
                 </div>
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <span>hochgeladen am:</span>
-                    <span th:text="${#temporals.format(summary.getTimeOfSubmission(), 'yyyy.MM.dd hh:mm')}"
-                          th:classappend="${summary.getTimeOfSubmission().isAfter(summary.getSubmissionDeadline())} ? text-danger : text-success">
+                    <span th:text="${#temporals.format(summary.getTimeOfSubmission(), 'yyyy.MM.dd HH:mm')}"
+                          th:classappend="${summary.getTimeOfSubmission().isAfter(summary.getSubmissionDeadline())} ? 'text-danger' : 'text-success'">
                         &nbsp;12.03.2020</span>
                     <small class="text-danger"
                            th:if="${summary.getTimeOfSubmission().isAfter(summary.getSubmissionDeadline())}">
@@ -78,12 +78,14 @@
                 <div class="col-12 my-1">
                     <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
                             data-target="#inhalt1"
+                            th:data-target="'#inhalt_'+${summary.studentId} + '_' + ${summary.studentId}"
                             aria-expanded="true">
                         jetzt bewerten
                     </button>
                 </div>
             </div>
-            <div id="inhalt1" class="collapse">
+            <div id="inhalt1" th:id="'inhalt_'+${summary.studentId} + '_' + ${summary.studentId}"
+                 class="collapse">
                 <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
                     <div class="col-12 my-1">
                         <span>Inhalt</span>
@@ -95,7 +97,10 @@
                 </div>
                 <div class=" row mx-1 my-1 ">
                     <div class="col-12 col-sm-6 my-1">
-                        <a th:href="'mailto:' + ${summary.getStudentEmail()}" class="btn btn-danger btn-block"
+                        <a th:href="'mailto:' + ${summary.getStudentEmail()}
+                                  + '?subject=Zusammenfassung zu ' + ${summary.getEventTitle()}
+                                  + '&body=Es gibt Verbesserungspotential...'"
+                           class="btn btn-danger btn-block"
                            role="button">Ablehnungsemail senden</a>
                     </div>
                     <div class="col-12 col-sm-6 my-1 mb-2">
