@@ -51,6 +51,8 @@ Durch nicht fachgerechte Überprüfung kann nicht gewährleistet werden, dass ei
 
 === Qualitätsziele
 
+_<todo>_
+
 [role="arc42help"]
 ****
 .Inhalt
@@ -84,6 +86,8 @@ Diese Stakeholder bestimmen unter anderem Umfang und Detaillierungsgrad der von 
 .Form
 Tabelle mit Rollen- oder Personennamen, sowie deren Erwartungshaltung bezüglich der Architektur und deren Dokumentation.
 ****
+
+_<todo>_
 
 [cols="1,1,2" options="header"]
 |===
