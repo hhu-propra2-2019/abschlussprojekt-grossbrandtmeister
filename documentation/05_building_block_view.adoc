@@ -180,7 +180,7 @@ Normale, einfache oder standardisierte Teile sollten Sie weglassen.
 
 ==== Whitebox API Pumpe
 
-_**<Übersichtsdiagramm>**_
+image:api_pumpe.png["Diagramm API Pumpe"]
 
 Enthaltene Bausteine:: Die API Pumpe teilt sich wie im Diagramm zu sehen in die drei Subsysteme `MeetupCom`, `EventService` und
 `ModelConverter`.
@@ -196,8 +196,6 @@ genannten Funktionen.
 | `EventService` | Interne Schnittstelle zwischen `MeetupCom` und `ModelConverter`, prüft ob Events bereits in unserer Datenbank vorhanden sind und schreibt diese an die richtige Stelle.
 | `ModelConverter` | Wandelt die Antwort von `MeetupCom` in ein Datenbank geeignetes Format um.
 |===
-
-_<Whitebox-Template>_
 
 ==== Whitebox _<Baustein 2>_
 
