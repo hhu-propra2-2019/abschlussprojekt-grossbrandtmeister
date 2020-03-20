@@ -18,7 +18,6 @@ import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.AccountCreator;
-import mops.rheinjug2.ModelService;
 import mops.rheinjug2.fileupload.FileCheckService;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
@@ -46,15 +45,14 @@ public class FileUploadController {
 
   transient FileService fileService;
   transient FileCheckService fileCheckService;
-  transient ModelService modelService;
 
   private final transient Counter authenticatedAccess;
 
   static final String Veranstaltung = "Veranstaltung";
 
   @Autowired
-  public FileUploadController(final FileService fileService, final ModelService modelService, final MeterRegistry registry) {
-    this.modelService = modelService;
+  public FileUploadController(final FileService fileService,
+                              final MeterRegistry registry) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
   }
@@ -166,7 +164,7 @@ public class FileUploadController {
         log.catching(e);
       }
     } else {
-      response.sendError(403);
+      response.sendError(404);
     }
 
     authenticatedAccess.increment();

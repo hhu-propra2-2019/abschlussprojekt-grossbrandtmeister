@@ -19,7 +19,8 @@ public class ModelService {
   private final transient StudentRepository studentRepository;
   private final transient EventRepository eventRepository;
 
-  public ModelService(final StudentRepository studentRepository, final EventRepository eventRepository) {
+  public ModelService(final StudentRepository studentRepository,
+                      final EventRepository eventRepository) {
     this.studentRepository = studentRepository;
     this.eventRepository = eventRepository;
   }
@@ -142,17 +143,22 @@ public class ModelService {
     events.forEach(event -> map.put(event, staus));
   }
 
-  private void addNotAcceptedEvents(final Map<Event, SubmissionStatus> events, final Set<Long> eventsIds) {
-    final List<Event> eventsWithNotAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
+  private void addNotAcceptedEvents(final Map<Event, SubmissionStatus> events,
+                                    final Set<Long> eventsIds) {
+    final List<Event> eventsWithNotAcceptedSummary =
+        (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithNotAcceptedSummary, SubmissionStatus.SUBMITTED_NOT_ACCEPTED);
   }
 
-  private void addAcceptedEvents(final Map<Event, SubmissionStatus> events, final Set<Long> eventsIds) {
-    final List<Event> eventsWithAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
+  private void addAcceptedEvents(final Map<Event, SubmissionStatus> events,
+                                 final Set<Long> eventsIds) {
+    final List<Event> eventsWithAcceptedSummary =
+        (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithAcceptedSummary, SubmissionStatus.SUBMITTED_ACCEPTED);
   }
 
-  private void addEventsWithNoSubmission(final Map<Event, SubmissionStatus> events, final Set<Long> eventsIds) {
+  private void addEventsWithNoSubmission(final Map<Event, SubmissionStatus> events,
+                                         final Set<Long> eventsIds) {
     final List<Event> eventsWithNoSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     for (final Event e : eventsWithNoSummary) {
       if (e.isUpcoming()) {

@@ -69,7 +69,8 @@ public class StudentController {
    */
   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
   @GetMapping("/reportsubmit")
-  public String reportsubmit(final KeycloakAuthenticationToken token, final Model model, final Long eventId) {
+  public String reportsubmit(final KeycloakAuthenticationToken token, final Model model,
+                             final Long eventId) {
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     final String student = principal.getName();
     final LocalDateTime today = LocalDateTime.now();
