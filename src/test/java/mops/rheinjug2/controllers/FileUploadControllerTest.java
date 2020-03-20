@@ -116,7 +116,7 @@ class FileUploadControllerTest {
     setupTokenMock(account);
 
     mvc.perform(get("/download/presentation"))
-        .andExpect(status().isFound();
+        .andExpect(status().isFound());
   }
 
   @Test
