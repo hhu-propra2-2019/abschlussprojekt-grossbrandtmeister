@@ -15,7 +15,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,7 +48,7 @@ public class StudentController {
    * Event Übersicht für Studenten.
    */
   @GetMapping("/events")
-  public String getEvents(KeycloakAuthenticationToken token, Model model) {
+  public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     model.addAttribute("events", modelService.getAllEvents());
     authenticatedAccess.increment();
@@ -91,9 +90,9 @@ public class StudentController {
    * der Datenbank angepasst werden.
    */
   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-  @GetMapping("/reportsubmit/{eventId}")
+  @GetMapping("/reportsubmit")
   public String reportSubmit(final KeycloakAuthenticationToken token, final Model model,
-                             @PathVariable("eventId") final long eventId) {
+                             final Long eventId) {
     final LocalDateTime today = LocalDateTime.now();
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final Event event = modelService.loadEventById(eventId);
