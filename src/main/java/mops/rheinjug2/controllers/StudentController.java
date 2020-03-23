@@ -49,7 +49,11 @@ public class StudentController {
    */
   @GetMapping("/events")
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 1);
+    modelService.submitSummary(account.getName(), (long) 1, "jkifks");
+    modelService.acceptSummary((long) 1, account.getName());
+    model.addAttribute("account", account);
     model.addAttribute("events", modelService.getAllEvents());
     authenticatedAccess.increment();
     return "student_events_overview";
@@ -62,7 +66,6 @@ public class StudentController {
   @GetMapping("/visitedevents")
   public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
-    modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 1);
     model.addAttribute("account", account);
     model.addAttribute("exists", modelService.studentExists(account.getName()));
     model.addAttribute("studentEvents", modelService.getAllEventsPerStudent(account.getName()));
