@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 @Service
 @Log4j2
 public class CertificateService {
-
+  
   private final transient int entwickelbarEventsAnzahl = 1;
   private final transient int normalEventsAnzahl = 3;
-
+  
   transient PDDocument pdfForm;
-
+  
   /**
    * Füllt den Schein mit den Informationen des/der Studenten/Studentin.
    *
@@ -30,22 +30,22 @@ public class CertificateService {
    * @param matnr        Matrikelnummer des Studenten/der Studentin
    * @param usedEvents   Liste der Events die für das PDF verbraucht werden.
    */
-  public boolean createCertificatePdf(ByteArrayOutputStream outputStream,
-                                      String name, String gender,
-                                      String matnr, List<Event> usedEvents) {
+  public void createCertificatePdf(ByteArrayOutputStream outputStream,
+                                   String name, String gender,
+                                   String matnr, List<Event> usedEvents) {
     File pdf = new File("./rheinjug_schein.pdf");
     try {
       pdfForm = PDDocument.load(pdf);
-
+      
       PDDocumentCatalog docCatalog = pdfForm.getDocumentCatalog();
       PDAcroForm acroForm = docCatalog.getAcroForm();
-
+      
       acroForm.getField("Vorname, Name").setValue(name);
       acroForm.getField("Anrede, Vorname, Name")
           .setValue(setGenderFormOfAddress(gender) + " " + name);
       acroForm.getField("Matrikelnummer").setValue(matnr);
       acroForm.getField("er,sie").setValue(setGenderPronoun(gender));
-
+      
       if (usedEvents.size() == normalEventsAnzahl) {
         acroForm.getField("Veranstaltung 1").setValue(usedEvents.get(0).getTitle());
         acroForm.getField("Veranstaltung 2").setValue(usedEvents.get(1).getTitle());
@@ -55,12 +55,12 @@ public class CertificateService {
         acroForm.getField("Veranstaltung 2").setValue("");
         acroForm.getField("Veranstaltung 3").setValue("");
       } else {
-        return false;
+        return;
       }
-
+      
       acroForm.getField("Datum 1").setValue(setCertificateDate());
       acroForm.getField("Datum 2").setValue(setCertificateDate());
-
+      
       // pdfForm.save("DummyCertificate" + forename + ".pdf");
       pdfForm.save(outputStream);
     } catch (IOException e) {
@@ -72,9 +72,8 @@ public class CertificateService {
         log.catching(e);
       }
     }
-    return true;
   }
-
+  
   /**
    * Setzt beim Schein das aktuelle Datum.
    */
@@ -85,7 +84,7 @@ public class CertificateService {
     int year = currentDate.getYear();
     return day + "." + month + "." + year;
   }
-
+  
   private static String setGenderFormOfAddress(String gender) {
     switch (gender) {
       case "male":
@@ -96,7 +95,7 @@ public class CertificateService {
         return "";
     }
   }
-
+  
   private static String setGenderPronoun(String gender) {
     switch (gender) {
       case "male":
