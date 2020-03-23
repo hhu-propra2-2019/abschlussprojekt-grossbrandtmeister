@@ -11,7 +11,6 @@ public class EventRef {
   private Long event;
 
   private boolean submittedSummary;
-  private String url;
   private LocalDateTime timeOfSubmission;
   private boolean accepted;
   private boolean usedForCertificate;

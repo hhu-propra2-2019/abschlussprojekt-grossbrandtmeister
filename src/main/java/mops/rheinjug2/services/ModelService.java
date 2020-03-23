@@ -24,8 +24,8 @@ public class ModelService {
   private final transient StudentRepository studentRepository;
   private final transient EventRepository eventRepository;
 
-  public ModelService(StudentRepository studentRepository,
-                      EventRepository eventRepository) {
+  public ModelService(final StudentRepository studentRepository,
+                      final EventRepository eventRepository) {
     this.studentRepository = studentRepository;
     this.eventRepository = eventRepository;
   }
@@ -42,11 +42,11 @@ public class ModelService {
   /**
    * Ein Student zu einer Veranstaltung hinzufügen.
    */
-  public Student addStudentToEvent(String login, String email, Long eventId) {
-    Event event = loadEventById(eventId);
-    Student student = loadStudentByLogin(login);
+  public Student addStudentToEvent(final String login, final String email, final Long eventId) {
+    final Event event = loadEventById(eventId);
+    final Student student = loadStudentByLogin(login);
     if (student == null) {
-      Student newStudent = new Student(login, email);
+      final Student newStudent = new Student(login, email);
       newStudent.addEvent(event);
       studentRepository.save(newStudent);
       return newStudent;
@@ -76,10 +76,10 @@ public class ModelService {
   /**
    * Ein Student gibt eine Zusammenfassung ab.
    */
-  public Student submitSummary(String login, Long eventId, String url) {
-    Student student = loadStudentByLogin(login);
-    Event event = loadEventById(eventId);
-    student.addSummary(event, url);
+  public Student submitSummary(final String login, final Long eventId) {
+    final Student student = loadStudentByLogin(login);
+    final Event event = loadEventById(eventId);
+    student.addSummary(event);
     studentRepository.save(student);
     return student;
   }
@@ -101,8 +101,8 @@ public class ModelService {
   /**
    * Es wird geprüft ob Veranstaltungen für CP eingereicht werden können.
    */
-  public boolean checkEventsForCertificate(String login) {
-    List<Event> events = getAllEventsForCP(login);
+  public boolean checkEventsForCertificate(final String login) {
+    final List<Event> events = getAllEventsForCP(login);
     if (checkForEntwickelbar(events)) {
       return true;
     } else if (events.size() < MAX_AMOUNT_EVENTS) {
@@ -115,9 +115,9 @@ public class ModelService {
   /**
    * Gibt die Veranstaltung(en) zurück die für CPs eingelöst werden.
    */
-  public List<Event> getEventsForCertificate(String login) {
-    List<Event> usableEvents = new ArrayList<>();
-    List<Event> events = getAllEventsForCP(login);
+  public List<Event> getEventsForCertificate(final String login) {
+    final List<Event> usableEvents = new ArrayList<>();
+    final List<Event> events = getAllEventsForCP(login);
     if (checkForEntwickelbar(events)) {
       usableEvents.addAll(getEntwickelbarForCP(events));
       return usableEvents;
@@ -129,8 +129,8 @@ public class ModelService {
     }
   }
 
-  private static boolean checkForEntwickelbar(List<Event> events) {
-    for (Event e : events) {
+  private static boolean checkForEntwickelbar(final List<Event> events) {
+    for (final Event e : events) {
       if (e.getType().equalsIgnoreCase("Entwickelbar")) {
         return true;
       }
@@ -141,9 +141,9 @@ public class ModelService {
   /**
    * Veranstaltungen werden für CPs verbraucht, wenn möglich.
    */
-  public boolean useEventsForCertificate(String login) {
-    Student student = loadStudentByLogin(login);
-    List<Event> events = getAllEventsForCP(login);
+  public boolean useEventsForCertificate(final String login) {
+    final Student student = loadStudentByLogin(login);
+    final List<Event> events = getAllEventsForCP(login);
     if (useForEntwickelbar(student, events)) {
       return true;
     } else if (events.size() < MAX_AMOUNT_EVENTS) {
@@ -189,9 +189,9 @@ public class ModelService {
   /**
    * Eine Zusammenfassung wird akzeptiert.
    */
-  public Student acceptSummary(Long eventId, String login) {
-    Event event = loadEventById(eventId);
-    Student student = loadStudentByLogin(login);
+  public Student acceptSummary(final Long eventId, final String login) {
+    final Event event = loadEventById(eventId);
+    final Student student = loadStudentByLogin(login);
     student.setAccepted(true, event);
     studentRepository.save(student);
     return student;
@@ -206,9 +206,9 @@ public class ModelService {
   }
 
 
-  private static List<Event> getEntwickelbarForCP(List<Event> events) {
-    List<Event> entwickelBar = new ArrayList<>();
-    for (Event e : events) {
+  private static List<Event> getEntwickelbarForCP(final List<Event> events) {
+    final List<Event> entwickelBar = new ArrayList<>();
+    for (final Event e : events) {
       if (e.getType().equalsIgnoreCase("Entwickelbar")) {
         entwickelBar.add(e);
         return entwickelBar;
@@ -229,12 +229,12 @@ public class ModelService {
     return false;
   }
 
-  public Student loadStudentByLogin(String login) {
+  public Student loadStudentByLogin(final String login) {
     return studentRepository.findByLogin(login);
   }
 
-  private static void addToMap(Map<Event, SubmissionStatus> map,
-                               List<Event> events, SubmissionStatus staus) {
+  private static void addToMap(final Map<Event, SubmissionStatus> map,
+                               final List<Event> events, final SubmissionStatus staus) {
     events.forEach(event -> map.put(event, staus));
   }
 
@@ -245,22 +245,23 @@ public class ModelService {
     treeMap.putAll(map);
     return treeMap;
   }
+
   private void addNotAcceptedEvents(final Map<Event, SubmissionStatus> events,
                                     final Set<Long> eventsIds) {
     final var eventsWithNotAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithNotAcceptedSummary, SubmissionStatus.SUBMITTED_NOT_ACCEPTED);
   }
 
-  private void addAcceptedEvents(Map<Event, SubmissionStatus> events,
-                                 Set<Long> eventsIds) {
-    var eventsWithAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
+  private void addAcceptedEvents(final Map<Event, SubmissionStatus> events,
+                                 final Set<Long> eventsIds) {
+    final var eventsWithAcceptedSummary = (List<Event>) eventRepository.findAllById(eventsIds);
     addToMap(events, eventsWithAcceptedSummary, SubmissionStatus.SUBMITTED_ACCEPTED);
   }
 
-  private void addEventsWithNoSubmission(Map<Event, SubmissionStatus> events,
-                                         Set<Long> eventsIds) {
-    List<Event> eventsWithNoSummary = (List<Event>) eventRepository.findAllById(eventsIds);
-    for (Event e : eventsWithNoSummary) {
+  private void addEventsWithNoSubmission(final Map<Event, SubmissionStatus> events,
+                                         final Set<Long> eventsIds) {
+    final List<Event> eventsWithNoSummary = (List<Event>) eventRepository.findAllById(eventsIds);
+    for (final Event e : eventsWithNoSummary) {
       if (e.isUpcoming()) {
         addToMap(events, List.of(e), SubmissionStatus.UPCOMING);
       } else if (e.isOpenForSubmission()) {
