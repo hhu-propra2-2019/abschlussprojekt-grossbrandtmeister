@@ -201,4 +201,8 @@ public class OrgaService {
     }
     return false;
   }
+
+  public int getnumberOfEvaluationRequests() {
+    return eventRepository.getNumberOfSubmittedAndUnacceptedSummaries();
+  }
 }

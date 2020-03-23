@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface EventRepository extends CrudRepository<Event, Long> {
 
   @Query(value = "SELECT COUNT(*) FROM student_event WHERE student_event.event = :id")
@@ -62,4 +63,8 @@ public interface EventRepository extends CrudRepository<Event, Long> {
       + "WHERE student_event.student = :studentid AND student_event.event = :eventid")
   Optional<SummariesIDs> checkSummary(@Param("studentid") Long studentid,
                                       @Param("eventid") Long eventid);
+
+  @Query(value = "SELECT COUNT(*) FROM student_event WHERE"
+      + " submitted_summary = TRUE AND accepted = FALSE")
+  int getNumberOfSubmittedAndUnacceptedSummaries();
 }

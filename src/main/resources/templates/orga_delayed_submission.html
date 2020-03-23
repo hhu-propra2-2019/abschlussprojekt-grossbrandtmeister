@@ -39,8 +39,9 @@
                 <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungen Übersicht </a>
             </li>
             <li>
-                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen &emsp; &emsp; <span
-                        class=" badge badge-primary badge-pill">14</span></a>
+                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen &emsp; &emsp;
+                    <span class=" badge badge-primary badge-pill" th:text="${numberOfEvaluationRequests}">14</span>
+                </a>
             </li>
             <li class="active">
                 <a th:href="@{/rheinjug2/orga/delayedSubmission}"> Verspätete Abgabe hochladen </a>
