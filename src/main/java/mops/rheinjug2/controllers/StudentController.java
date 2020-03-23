@@ -3,12 +3,16 @@ package mops.rheinjug2.controllers;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
 import mops.rheinjug2.services.ModelService;
+import mops.rheinjug2.services.SubmissionStatus;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -56,6 +60,7 @@ public class StudentController {
     modelService.acceptSummary((long) 1, account.getName());
     model.addAttribute("account", account);
     model.addAttribute("events", modelService.getAllEvents());
+    model.addAttribute("studentRegisteredForEvent", modelService.getAllEventIdsPerStudent(account));
     authenticatedAccess.increment();
     return "student_events_overview";
   }
@@ -65,8 +70,9 @@ public class StudentController {
    * Die EventId muss später durch die richtige Id aus der Datenbank ersetzt werden.
    */
   @GetMapping("/visitedevents")
-  public String getPersonal(KeycloakAuthenticationToken token, Model model) {
-    Account account = AccountCreator.createAccountFromPrincipal(token);
+  public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 1);
     model.addAttribute("account", account);
     model.addAttribute("exists", modelService.studentExists(account.getName()));
     model.addAttribute("studentEvents", modelService.getAllEventsPerStudent(account.getName()));

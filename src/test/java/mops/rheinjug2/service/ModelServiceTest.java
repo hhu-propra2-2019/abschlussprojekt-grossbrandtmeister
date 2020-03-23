@@ -3,6 +3,7 @@ package mops.rheinjug2.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -100,11 +101,8 @@ public class ModelServiceTest {
     student.addEvent(event1);
     student.addEvent(event2);
     studentRepository.save(student);
-    final String url1 = "Test-Url 3";
-    final String url2 = "Test-Url 4";
-    modelService.submitSummary("testLogin5", event1.getId(), url1);
-    final Student savedStudent =
-        modelService.submitSummary("testLogin5", event2.getId(), url2);
+    modelService.submitSummary("testLogin5", event1.getId());
+    final Student savedStudent = modelService.submitSummary("testLogin5", event2.getId());
     assertThat(savedStudent.getEventsIdsWithSummaryNotAccepted())
         .containsExactly(event1.getId(), event2.getId());
   }
