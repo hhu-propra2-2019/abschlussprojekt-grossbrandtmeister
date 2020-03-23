@@ -86,13 +86,13 @@
                                  th:src="@{/icons/icon-credit-points.png}"
                                  style="width: 32px;height: 28px;">
                             <span class="text-secondary">
-                                <span th:if="${event.type == 'Abendveranstaltungen'}">
+                                <span th:if="${event.type == 'Abendveranstaltung'}">
                                     <sup>1</sup>/<sub>6</sub> CP
                                 </span>
-                                <span th:if="${event.type == 'Entwickelbar'}">
+                                <span th:if="${event.type == 'EntwickelBar'}">
                                     <sup>1</sup>/<sub>2</sub> CP
                                 </span>
-                                <span th:if="${event.type != 'Abendveranstaltungen' and event.type != 'Entwickelbar'}"> <sup>1</sup>/<sub>2</sub> CP </span>
+                                <span th:if="${event.type != 'Abendveranstaltung' and event.type != 'EntwickelBar'}"> <sup>1</sup>/<sub>2</sub> CP </span>
                             </span>
                         </div>
                     </div>

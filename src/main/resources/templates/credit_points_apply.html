@@ -47,9 +47,9 @@
             <tbody th:remove="all-but-first">
             <tr th:each="event: ${events}">
                 <td th:text="${event.title}">Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
-                <td th:if="${event.type == 'Abendveranstaltungen'}"><span>&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span>
+                <td th:if="${event.type == 'Abendveranstaltung'}"><span>&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span>
                 </td>
-                <td th:if="${event.type == 'Entwickelbar'}"><span>&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span></td>
+                <td th:if="${event.type == 'EntwickelBar'}"><span>&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span></td>
             </tr>
             <tr>
                 <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter (2)</td>
