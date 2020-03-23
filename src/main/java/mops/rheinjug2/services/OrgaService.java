@@ -8,12 +8,14 @@ import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import mops.rheinjug2.entities.Event;
@@ -22,6 +24,7 @@ import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.orgamodels.DelayedSubmission;
 import mops.rheinjug2.orgamodels.OrgaEvent;
 import mops.rheinjug2.orgamodels.OrgaSummary;
+import mops.rheinjug2.orgamodels.SummariesIDs;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -78,28 +81,39 @@ public class OrgaService {
   public List<OrgaSummary> getSummaries() {
     final List<OrgaSummary> result = new ArrayList<>();
     eventRepository.getSubmittedAndUnacceptedSummaries().forEach(unacceptedSummary -> {
-      result.add(
-          new OrgaSummary(
-              getSummarySubmissionDate(unacceptedSummary.getStudent(),
-                  unacceptedSummary.getEvent()),
-              getSummaryStudent(unacceptedSummary.getStudent()),
-              getSummaryEvent(unacceptedSummary.getEvent()),
-              "Hier ist eim Zusammenfassung muster "
-                  + "\nEs muss noch mit MinIO verknüpft werden"
-          ));
-      //getSummayContentFromFileservise(unacceptedSummary.getStudent(),
-      // unacceptedSummary.getEvent())
+      try {
+        result.add(
+            new OrgaSummary(
+                getSummarySubmissionDate(unacceptedSummary.getStudent(),
+                    unacceptedSummary.getEvent()),
+                getSummaryStudent(unacceptedSummary.getStudent()),
+                getSummaryEvent(unacceptedSummary.getEvent()),
+                getSummaryContentFromFileservice(unacceptedSummary.getStudent(),
+                    unacceptedSummary.getEvent())
+            ));
+      } catch (final Exception e) {
+        e.printStackTrace();
+      }
     });
-    return result;
+    return result.stream()
+        .sorted(Comparator.comparing(OrgaSummary::getTimeOfSubmission).reversed()
+            .thenComparing(OrgaSummary::getSubmissionDeadline))
+        .collect(Collectors.toList());
   }
 
-  private String getSummaryContentFromFileservise(final Long studentid, final Long eventid)
+  private String getSummaryContentFromFileservice(final Long studentid, final Long eventid)
       throws IOException, InvalidKeyException, NoSuchAlgorithmException,
       XmlPullParserException, InvalidArgumentException, InvalidResponseException,
       InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException,
       ErrorResponseException {
     final String fileName = getSummaryStudent(studentid).getName() + "_" + eventid;
-    return fileService.getContentOfFileAsString(fileName);
+    final String summary;
+    try {
+      summary = fileService.getContentOfFileAsString(fileName);
+    } catch (final ConnectException e) {
+      return "MinIO " + e.getMessage();
+    }
+    return summary;
   }
 
   /**
@@ -170,5 +184,21 @@ public class OrgaService {
 
   public void setSummaryAcception(final Long studentid, final Long eventid) {
     eventRepository.updateSummaryToAccepted(studentid, eventid);
+  }
+
+  /**
+   * Oberprügen, ob der Student an der Veranstaltung angemeldet ist.
+   *
+   * @param studentid studentid
+   * @param eventid   eventid
+   * @return true, wenn ein der student an der Veranstaltung angemeldet ist.
+   */
+  public boolean summaryExist(final Long studentid, final Long eventid) {
+    final Optional<SummariesIDs> summariesIDsOption =
+        eventRepository.checkSummary(studentid, eventid);
+    if (summariesIDsOption.isPresent()) {
+      return true;
+    }
+    return false;
   }
 }
