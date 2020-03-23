@@ -75,7 +75,8 @@ public class SecurityConfigTests {
       "invalid, /rheinjug2/student/creditpoints, 403",
       "invalid, /rheinjug2/student/reportsubmit, 403",
       "invalid, /rheinjug2/orga/events, 403",
-      "invalid, /rheinjug2/orga/reports, 403"
+      "invalid, /rheinjug2/orga/reports, 403",
+
   })
   public void userRolesProvideCorrectAccess(
       final String role, final String mapping, final int status) throws Exception {

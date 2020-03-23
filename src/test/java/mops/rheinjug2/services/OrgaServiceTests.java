@@ -6,6 +6,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidArgumentException;
+import io.minio.errors.InvalidBucketNameException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.NoResponseException;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
 import mops.rheinjug2.entities.Event;
@@ -19,12 +29,12 @@ import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.xmlpull.v1.XmlPullParserException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +61,7 @@ public class OrgaServiceTests {
   public void setUp() {
     event1 = new Event();
     event1.setId((long) 1);
-    event1.setDate(LocalDateTime.now().minusDays(3));
+    event1.setDate(LocalDateTime.now().minusDays(4));
     event1.setTitle("Event1");
 
     event2 = new Event();
@@ -132,9 +142,9 @@ public class OrgaServiceTests {
     orgaService = new OrgaService(eventRepository, studentRepository, fileService);
     final List<OrgaSummary> orgaSummaries = orgaService.getSummaries();
 
-    verify(studentRepository, times(1)).getStudentById(1);
-    verify(studentRepository, times(1)).getStudentById(2);
-    verify(studentRepository, times(1)).getStudentById(3);
+    verify(studentRepository, times(2)).getStudentById(1);
+    verify(studentRepository, times(2)).getStudentById(2);
+    verify(studentRepository, times(2)).getStudentById(3);
     verify(eventRepository, times(1)).getEventById((long) 2);
     verify(eventRepository, times(2)).getEventById((long) 1);
 
@@ -154,9 +164,39 @@ public class OrgaServiceTests {
 
   }
 
+  /**Hier wird getestet, ob fileservice mit dem richtigen FileName auf gerufenwird.
+   * @throws IOException .
+   * @throws InvalidKeyException .
+   * @throws NoSuchAlgorithmException .
+   * @throws XmlPullParserException .
+   * @throws InvalidArgumentException .
+   * @throws InvalidResponseException .
+   * @throws InternalException .
+   * @throws NoResponseException .
+   * @throws InvalidBucketNameException .
+   * @throws InsufficientDataException .
+   * @throws ErrorResponseException .
+   */
   @Test
-  @Disabled("bis die verknüpfung mit MinIO richtig konfiguriert ist.")
-  public void getTheRightSummaryContentFromFileServiceTest() {
+  public void callTheRightSummaryContentNameFromFileServiceTest() throws
+      IOException, InvalidKeyException,
+      NoSuchAlgorithmException, XmlPullParserException, InvalidArgumentException,
+      InvalidResponseException, InternalException, NoResponseException, InvalidBucketNameException,
+      InsufficientDataException, ErrorResponseException {
+    final SummariesIDs student1_event1 = new SummariesIDs((long) 1, (long) 1);
+    when(eventRepository.getSubmittedAndUnacceptedSummaries()).thenReturn(List.of(student1_event1));
+    when(studentRepository.getStudentById(1)).thenReturn(student1);
+    when(eventRepository.getEventById((long) 1)).thenReturn(event1);
+    final EventRef ref = mock(EventRef.class);
+    when(ref.getTimeOfSubmission()).thenReturn(LocalDateTime.now());
+    when(eventRepository.getEventRefByStudentIdAndEventId(anyLong(), anyLong())).thenReturn(ref);
+
+    orgaService = new OrgaService(eventRepository, studentRepository, fileService);
+    final List<OrgaSummary> orgaSummaries = orgaService.getSummaries();
+
+    Assertions.assertThat(orgaSummaries).hasSize(1);
+    verify(fileService, times(1))
+        .getContentOfFileAsString(student1.getName() + "_" + event1.getId());
 
   }
 
