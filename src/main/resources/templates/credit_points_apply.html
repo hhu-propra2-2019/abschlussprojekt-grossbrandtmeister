@@ -14,7 +14,7 @@
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltugen Übersicht </a>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungen Übersicht </a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal">
@@ -52,9 +52,12 @@
             </tr>
             </tbody>
         </table>
-        <div th:if="${useForCP}">
-            <button type="submit" class="btn col-12 btn-outline-success"> 0.5 CP Bentagen</button>
-        </div>
+        <form action="/rheinjug2/student/creditpoints/certificateform" method="POST" id="something">
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+            <button type="submit" class="btn col-12 btn-outline-success" name="second"
+                    th:disabled="${disabled}">CP Beantragen
+            </button>
+        </form>
         <div th:unless="${useForCP}">
             <div class="alert alert-danger text-center">
                 CP Beantragung ist noch nicht möglich. Sie brauchen mindestens <sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
