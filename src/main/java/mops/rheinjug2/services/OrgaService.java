@@ -200,6 +200,11 @@ public class OrgaService {
     return false;
   }
 
+  /**
+   * Gibt der Anzahl alle Bewertungsanfragen.
+   *
+   * @return Anzahl der Anfragen
+   */
   public int getnumberOfEvaluationRequests() {
     return eventRepository.getNumberOfSubmittedAndUnacceptedSummaries();
   }

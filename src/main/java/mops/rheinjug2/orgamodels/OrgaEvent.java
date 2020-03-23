@@ -30,6 +30,6 @@ public class OrgaEvent {
     status = event.getStatus();
     this.numberOfStudent = numberOfStudent;
     this.numberOfSubmition = numberOfSubmition;
-    submissionDeadline = event.getDate().plusDays(7);
+    submissionDeadline = event.getDeadline();
   }
 }

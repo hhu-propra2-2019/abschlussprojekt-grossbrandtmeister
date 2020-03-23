@@ -63,11 +63,14 @@ public class OrgaServiceTests {
     event1.setId((long) 1);
     event1.setDate(LocalDateTime.now().minusDays(4));
     event1.setTitle("Event1");
+    event1.setDeadline(LocalDateTime.now().plusDays(3));
 
     event2 = new Event();
     event2.setId((long) 2);
     event2.setDate(LocalDateTime.now().minusDays(3));
-    event1.setTitle("Event2");
+    event2.setTitle("Event2");
+    event2.setDeadline(LocalDateTime.now().plusDays(3));
+
 
     student1 = new Student("student1login", "student1@email");
     student1.setName("student1");
@@ -164,18 +167,20 @@ public class OrgaServiceTests {
 
   }
 
-  /**Hier wird getestet, ob fileservice mit dem richtigen FileName auf gerufenwird.
-   * @throws IOException .
-   * @throws InvalidKeyException .
-   * @throws NoSuchAlgorithmException .
-   * @throws XmlPullParserException .
-   * @throws InvalidArgumentException .
-   * @throws InvalidResponseException .
-   * @throws InternalException .
-   * @throws NoResponseException .
+  /**
+   * Hier wird getestet, ob fileservice mit dem richtigen FileName auf gerufenwird.
+   *
+   * @throws IOException                .
+   * @throws InvalidKeyException        .
+   * @throws NoSuchAlgorithmException   .
+   * @throws XmlPullParserException     .
+   * @throws InvalidArgumentException   .
+   * @throws InvalidResponseException   .
+   * @throws InternalException          .
+   * @throws NoResponseException        .
    * @throws InvalidBucketNameException .
-   * @throws InsufficientDataException .
-   * @throws ErrorResponseException .
+   * @throws InsufficientDataException  .
+   * @throws ErrorResponseException     .
    */
   @Test
   public void callTheRightSummaryContentNameFromFileServiceTest() throws
