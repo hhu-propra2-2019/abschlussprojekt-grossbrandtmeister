@@ -1,5 +1,6 @@
-package mops.rheinjug2.model;
+package mops.rheinjug2.orgamodels;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -7,7 +8,8 @@ import lombok.Data;
  * nicht bewertete Zusammenfassungen.
  */
 @Data
-public class UnacceptedSummaryId {
+@AllArgsConstructor
+public class SummariesIDs {
   private Long student;
   private Long event;
 }

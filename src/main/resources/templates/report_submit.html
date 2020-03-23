@@ -70,6 +70,7 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button>
             </div>
+            <input type="hidden" name="eventId" th:value="${summary.getEventId()}">
         </form>
         <div>
             <a th:href="@{/rheinjug2/download/presentation}">
@@ -87,13 +88,14 @@
                     <form action="reportsubmit" method="post" enctype="multipart/form-data">
                         <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
                         <input type="file" name="file" multiple>
+                        <input type="hidden" name="eventId" th:value="${summary.getEventId()}">
                         <p></p>
                         <input type="submit" class="btn btn-outline-success" value="Zusammenfassung hochladen">
                         <!-- <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button> -->
                     </form>
                 </div>
                 <div class="col-12 col-sm-6">
-                    <a th:href="@{/rheinjug2/download/file}">
+                    <a th:href="@{/rheinjug2/download/file(eventId=${summary.getEventId()})}">
                         <button class="btn btn-outline-success">Downloade deine momentane Zusammenfassung</button>
                     </a>
                 </div>

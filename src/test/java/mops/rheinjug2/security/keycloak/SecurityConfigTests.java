@@ -121,5 +121,4 @@ public class SecurityConfigTests {
             .withEmail(role + "@non.existent")
             .build());
   }
-
 }
