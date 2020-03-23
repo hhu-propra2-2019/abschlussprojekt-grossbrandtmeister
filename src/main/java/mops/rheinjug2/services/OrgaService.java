@@ -107,13 +107,11 @@ public class OrgaService {
       InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException,
       ErrorResponseException {
     final String fileName = getSummaryStudent(studentid).getName() + "_" + eventid;
-    final String summary;
     try {
-      summary = fileService.getContentOfFileAsString(fileName);
+      return fileService.getContentOfFileAsString(fileName);
     } catch (final ConnectException e) {
       return "MinIO " + e.getMessage();
     }
-    return summary;
   }
 
   /**

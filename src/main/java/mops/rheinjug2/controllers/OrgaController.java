@@ -12,7 +12,6 @@ import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.services.EventService;
 import mops.rheinjug2.services.OrgaService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +32,7 @@ public class OrgaController {
   private final transient Counter authenticatedAccess;
   private final transient EventService eventService;
   private final transient OrgaService orgaService;
-  private transient String successMessage;
+  private transient String successMessage = "";
   private transient String errorMessage;
   private transient int numberOfEvaluationRequests;
 
@@ -57,7 +56,7 @@ public class OrgaController {
     authenticatedAccess.increment();
     model.addAttribute("events", orgaService.getEvents());
     model.addAttribute("datenow", LocalDateTime.now());
-    model.addAttribute("numberOfEvaluationRequests",numberOfEvaluationRequests);
+    model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     return "orga_events_overview";
   }
 
@@ -74,7 +73,7 @@ public class OrgaController {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     model.addAttribute("delayedsubmissions", orgaService.getDelayedSubmission());
-    model.addAttribute("numberOfEvaluationRequests",numberOfEvaluationRequests);
+    model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     return "orga_delayed_submission";
   }
 
@@ -105,8 +104,8 @@ public class OrgaController {
     authenticatedAccess.increment();
     model.addAttribute("summaries", orgaService.getSummaries());
     model.addAttribute("successmessage", successMessage);
-    model.addAttribute("numberOfEvaluationRequests",numberOfEvaluationRequests);
-    successMessage = null;
+    model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
+    successMessage = "";
     return "orga_reports_overview";
   }
 
@@ -121,8 +120,8 @@ public class OrgaController {
     return "redirect:/rheinjug2/orga/events";
   }
 
-  @Scheduled(fixedDelayString = "${application.api-pump.delay}")
-  private void setnumberOfEvaluationRequests() {
+  //@Scheduled(fixedDelayString = "${application.api-pump.delay}")
+  public void refreshNumberOfEvaluationRequests() {
     numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
   }
 }
