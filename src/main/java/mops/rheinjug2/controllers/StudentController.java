@@ -62,6 +62,7 @@ public class StudentController {
   @GetMapping("/visitedevents")
   public String getPersonal(final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
+    modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 1);
     model.addAttribute("account", account);
     model.addAttribute("exists", modelService.studentExists(account.getName()));
     model.addAttribute("studentEvents", modelService.getAllEventsPerStudent(account.getName()));
@@ -105,7 +106,7 @@ public class StudentController {
       content = fileService.getContentOfFileAsString("VorlageZusammenfassung.md");
       content = content.isEmpty()
           ? "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein." : content;
-    } catch (Exception e) {
+    } catch (final Exception e) {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
     final String student = account.getGivenName() + " " + account.getFamilyName();

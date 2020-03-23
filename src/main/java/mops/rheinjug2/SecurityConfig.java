@@ -76,7 +76,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     if (env.acceptsProfiles(Profiles.of("dev"))) {
       //h2-console needs following
-      //http.csrf().disable();
+      http.csrf().disable();
       http.headers().frameOptions().disable();
     }
   }
