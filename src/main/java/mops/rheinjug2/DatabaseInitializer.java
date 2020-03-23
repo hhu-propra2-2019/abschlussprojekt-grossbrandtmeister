@@ -1,7 +1,9 @@
 package mops.rheinjug2;
 
 import com.github.javafaker.Faker;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -80,6 +82,9 @@ public class DatabaseInitializer implements ServletContextInitializer {
           faker.number().numberBetween(1, 28),
           faker.number().numberBetween(16, 20),
           faker.number().numberBetween(1, 60)));
+      if(event.getId() == 1){
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 03,22), LocalTime.of(17, 30)));
+      }
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
       event.setVenue("Universität Düsseldorf, Gebäude 25.22 U1");
@@ -93,6 +98,9 @@ public class DatabaseInitializer implements ServletContextInitializer {
         event.setType("Entwickelbar");
       } else {
         event.setType("Abendveranstaltungen");
+      }
+      if(event.getId() == 1){
+        event.setType("Entwickelbar");
       }
       eventRepository.save(event);
     });
