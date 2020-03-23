@@ -51,7 +51,8 @@ public class EventServiceTests {
     when(meetupEvent.getId()).thenReturn("1234"); // To check if repository is called with this
     when(meetupEvent.getName()).thenReturn("Test Event");
     when(meetupEvent.getTime()).thenReturn(Instant.ofEpochMilli(0));
-    when(meetupEvent.getUtcOffset()).thenReturn(Duration.ofMillis(0));
+    when(meetupEvent.getDuration()).thenReturn(Duration.ZERO);
+    when(meetupEvent.getUtcOffset()).thenReturn(Duration.ZERO);
     when(meetupEvent.getVenue()).thenReturn(venue);
     when(meetupEvent.getStatus()).thenReturn(mops.rheinjug2.meetupcom.Event.Status.PAST);
 
@@ -61,6 +62,7 @@ public class EventServiceTests {
     when(meetupComService.getRheinJugEventsSince(any(LocalDateTime.class))).thenReturn(eventList);
 
     eventService.refreshRheinjugEvents(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
+
     verify(meetupComService, times(1))
         .getRheinJugEventsSince(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
     verify(eventRepository, times(1)).findEventByMeetupId("1234");

@@ -1,8 +1,9 @@
-package mops.rheinjug2.service;
+package mops.rheinjug2.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,6 @@ import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
-import mops.rheinjug2.services.ModelService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,8 +88,6 @@ public class ModelServiceTest {
   public void testSubmitSummary() {
     final Event event1 = createAndSaveEvent("Event 5");
     final Event event2 = createAndSaveEvent("Event 6");
-    event1.setDate(LocalDateTime.now());
-    event2.setDate(LocalDateTime.now());
     eventRepository.saveAll(List.of(event1, event2));
 
     final Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
@@ -117,6 +115,7 @@ public class ModelServiceTest {
 
     final Event eventPassed = createAndSaveEvent("Veranstaltung Java 3");
     eventPassed.setDate(LocalDateTime.of(2020, 1, 2, 12, 20));
+    eventPassed.setDeadline(eventPassed.getDate().plusDays(7));
     eventPassed.setStatus("Past");
 
     final Event eventWithSubmissionNotAccepted = createAndSaveEvent("Veranstaltung Java 4");
@@ -157,9 +156,7 @@ public class ModelServiceTest {
   public void testGetCertificateEntwickelbar() {
     final Event event1 = createAndSaveEvent("Event 5");
     final Event event2 = createAndSaveEvent("Event 6");
-    event1.setDate(LocalDateTime.now());
     event1.setType("Entwickelbar");
-    event2.setDate(LocalDateTime.now());
     event2.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2));
     final String url1 = "Test-Url 1";
@@ -179,13 +176,10 @@ public class ModelServiceTest {
   @Test
   public void testGetCertificateThreeNormalEvents() {
     final Event event1 = createAndSaveEvent("Event 5");
-    event1.setDate(LocalDateTime.now());
     event1.setType("Normal");
     final Event event2 = createAndSaveEvent("Event 6");
-    event2.setDate(LocalDateTime.now());
     event2.setType("Normal");
     final Event event3 = createAndSaveEvent("Event 7");
-    event3.setDate(LocalDateTime.now());
     event3.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2, event3));
 
@@ -209,9 +203,7 @@ public class ModelServiceTest {
   public void testGetCertificateNotEnoughEvents() {
     final Event event1 = createAndSaveEvent("Event 5");
     final Event event2 = createAndSaveEvent("Event 6");
-    event1.setDate(LocalDateTime.now());
     event1.setType("Normal");
-    event2.setDate(LocalDateTime.now());
     event2.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2));
     final String url1 = "Test-Url 1";
@@ -242,6 +234,9 @@ public class ModelServiceTest {
   private Event createAndSaveEvent(final String title) {
     final Event event = new Event();
     event.setTitle(title);
+    event.setDate(LocalDateTime.now());
+    event.setDuration(Duration.ZERO);
+    event.setDeadline(LocalDateTime.now().plusDays(7));
     eventRepository.save(event);
     return event;
   }

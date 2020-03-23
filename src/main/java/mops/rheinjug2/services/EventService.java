@@ -48,6 +48,7 @@ public class EventService {
       updateStatusOfPastEvents();
     } catch (final Exception e) {
       log.error("Could not fetch events from meetup.com. " + e.getMessage());
+      log.catching(e);
     }
   }
 

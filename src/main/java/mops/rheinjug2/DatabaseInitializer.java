@@ -1,6 +1,7 @@
 package mops.rheinjug2;
 
 import com.github.javafaker.Faker;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Random;
@@ -80,6 +81,8 @@ public class DatabaseInitializer implements ServletContextInitializer {
           faker.number().numberBetween(1, 28),
           faker.number().numberBetween(16, 20),
           faker.number().numberBetween(1, 60)));
+      event.setDuration(Duration.ofHours(faker.number().numberBetween(1, 8)));
+      event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
       if (event.getDate().isBefore(dateNow)) {

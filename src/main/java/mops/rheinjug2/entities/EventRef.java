@@ -13,11 +13,21 @@ public class EventRef {
   private boolean submittedSummary;
   private String url;
   private LocalDateTime timeOfSubmission;
+  private LocalDateTime deadline;
   private boolean accepted;
   private boolean usedForCertificate;
 
-  EventRef(final Long event) {
+  EventRef(final Long event, final LocalDateTime deadline) {
     this.event = event;
+    this.deadline = deadline;
+  }
+
+  /**
+   * Gibt an, ob für eine Veranstaltung eine Zusammenfassung abgegeben
+   * werden kann.
+   */
+  public boolean isOpenForSubmission() {
+    return LocalDateTime.now().isBefore(deadline);
   }
 
   boolean isSubmittedAndAcceptedButNotUsed() {

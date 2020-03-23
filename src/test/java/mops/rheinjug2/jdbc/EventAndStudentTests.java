@@ -101,7 +101,6 @@ public class EventAndStudentTests {
   @Test
   public void testOneStudentAddsSummaryToEvent() {
     final Event event = createAndSaveEvent("Veranstaltung");
-    event.setDate(LocalDateTime.now());
     eventRepository.save(event);
     final String url = "Test-Url 1";
     final Student student = createAndSaveStudent("ax100", "ax@hhu.de");
@@ -115,10 +114,8 @@ public class EventAndStudentTests {
   @Test
   public void testOneStudentAddsSummaryToTwoEvents() {
     final Event event = createAndSaveEvent("Veranstaltung A");
-    event.setDate(LocalDateTime.now());
     eventRepository.save(event);
     final Event event2 = createAndSaveEvent("Veranstaltung B");
-    event2.setDate(LocalDateTime.now());
     eventRepository.save(event2);
     final String url1 = "Test-Url 1";
     final String url2 = "Test-Url 2";
@@ -179,6 +176,8 @@ public class EventAndStudentTests {
   private Event createAndSaveEvent(final String title) {
     final Event event = new Event();
     event.setTitle(title);
+    event.setDate(LocalDateTime.now());
+    event.setDeadline(LocalDateTime.now().plusDays(7));
     eventRepository.save(event);
     return event;
   }
