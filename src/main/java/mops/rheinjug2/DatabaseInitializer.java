@@ -98,8 +98,9 @@ public class DatabaseInitializer implements ServletContextInitializer {
       }
 
       eventRepository.save(event);
-      if(event.getId() == 1){
-         event.setDate(LocalDateTime.of(LocalDate.of(2020, 03,24), LocalTime.of(17, 30)));
+      if (event.getId() == 1) {
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 03, 22), LocalTime.of(17, 30)));
+        event.setStatus("PAST");
         event.setType("Entwickelbar");
       }
       eventRepository.save(event);
