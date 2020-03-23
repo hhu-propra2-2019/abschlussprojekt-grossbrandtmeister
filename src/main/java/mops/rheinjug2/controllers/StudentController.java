@@ -2,7 +2,6 @@ package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -85,9 +83,8 @@ public class StudentController {
    * der Datenbank angepasst werden.
    */
   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-  @GetMapping("/reportsubmit/{eventId}")
   public String reportSubmit(final KeycloakAuthenticationToken token, final Model model,
-                             @PathVariable("eventId") final long eventId) {
+                             final Long eventId) {
     final LocalDateTime today = LocalDateTime.now();
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final String eventname = modelService.loadEventById(eventId).getTitle();
@@ -111,7 +108,7 @@ public class StudentController {
    * Fügt einen Studenten einem Event hinzu.
    */
   @PostMapping("/events")
-  public String addStudentToEvent(String name, String email, Long eventId) {
+  public String addStudentToEvent(final String name, final String email, final Long eventId) {
     modelService.addStudentToEvent(name, email, eventId);
     return "personalView";
   }

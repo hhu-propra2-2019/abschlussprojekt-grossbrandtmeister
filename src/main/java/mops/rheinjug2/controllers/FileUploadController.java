@@ -65,6 +65,12 @@ public class FileUploadController {
                            final RedirectAttributes attributes,
                            @RequestParam(value = "file") final MultipartFile file,
                            final Long eventId) {
+    if (eventId == null) {
+      attributes.addFlashAttribute("message", "You did not choose an event."
+          + "Go to your personal event side and choose for which event "
+          + "you want to handle your summary in");
+      return "redirect:/rheinjug2/student/reportsubmit";
+    }
     if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
         final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
@@ -96,6 +102,12 @@ public class FileUploadController {
   public String useForm(final KeycloakAuthenticationToken token,
                         final RedirectAttributes attributes, final Summary summary,
                         final Long eventId) {
+    if (eventId == null) {
+      attributes.addFlashAttribute("message", "You did not choose an event."
+          + "Go to your personal event side and choose for which event "
+          + "you want to handle your summary in");
+      return "redirect:/rheinjug2/student/reportsubmit";
+    }
     try {
       final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
       final String username = principal.getName();

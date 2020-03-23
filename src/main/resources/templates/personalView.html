@@ -83,7 +83,7 @@
                             <div class="col-12 mt-2">
                                 <a class="btn btn-outline-success btn-block" href="/rheinjug2/student/reportsubmit"
                                    role="button"
-                                   th:href="@{'/rheinjug2/student/reportsubmit/' + ${eventAndStatus.key.id}}">
+                                   th:href="@{/rheinjug2/student/reportsubmit(eventId=${eventAndStatus.key.id})}">>
                                     Zusammenfassung abgeben
                                 </a>
                             </div>
