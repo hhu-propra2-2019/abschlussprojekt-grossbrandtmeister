@@ -8,9 +8,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 import mops.rheinjug2.meetupcom.Event;
@@ -133,9 +132,11 @@ public class ModelConverterTests {
     assertEquals("EntwickelBar 6.0", eventEntity.getTitle());
     assertEquals("<p>EntwickelBar ist eine Unconference...<a href=\"https://entwickelbar.github.io\" class=\"linkified\">https://entwickelbar.github.io</a></p> ", eventEntity.getDescription());
     assertEquals(5.0, eventEntity.getPrice());
-    assertEquals(
-        LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
+    assertEquals(LocalDateTime.of(2020, 9, 12, 9, 30),
         eventEntity.getDate());
+    assertEquals(Duration.parse("PT7H30M"), eventEntity.getDuration()); //ISO-8601 format
+    assertEquals(LocalDateTime.of(2020, 9, 19, 17, 0),
+        eventEntity.getDeadline());
     assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
     assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenue());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());
@@ -163,9 +164,11 @@ public class ModelConverterTests {
     assertEquals("EntwickelBar 6.0", eventEntity.getTitle());
     assertEquals("<p>EntwickelBar ist eine Unconference...<a href=\"https://entwickelbar.github.io\" class=\"linkified\">https://entwickelbar.github.io</a></p> ", eventEntity.getDescription());
     assertEquals(5.0, eventEntity.getPrice());
-    assertEquals(
-        LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
+    assertEquals(LocalDateTime.of(2020, 9, 12, 9, 30),
         eventEntity.getDate());
+    assertEquals(Duration.parse("PT7H30M"), eventEntity.getDuration()); //ISO-8601 format
+    assertEquals(LocalDateTime.of(2020, 9, 19, 17, 0),
+        eventEntity.getDeadline());
     assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
     assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenue());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());
