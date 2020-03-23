@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import mops.rheinjug2.Account;
+import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
@@ -72,6 +74,19 @@ public class ModelService {
     return sortMap(events);
   }
 
+  /**
+   * Alle Ids der Veranstaltungen, für die sich ein Student angemeldet hat,
+   * werden zurückgegeben.
+   */
+  public List<Long> getAllEventIdsPerStudent(Account account) {
+    Map<Event, SubmissionStatus> getAllEventsPerStudent = getAllEventsPerStudent(account.getName());
+    List<Long> eventsFromStudent = new ArrayList<>();
+
+    for(Event s : getAllEventsPerStudent.keySet()) {
+      eventsFromStudent.add(s.getId());
+    }
+    return eventsFromStudent;
+  }
 
   /**
    * Ein Student gibt eine Zusammenfassung ab.
@@ -270,5 +285,4 @@ public class ModelService {
       }
     }
   }
-
 }

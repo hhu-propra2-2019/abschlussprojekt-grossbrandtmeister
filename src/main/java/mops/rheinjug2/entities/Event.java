@@ -56,6 +56,7 @@ public class Event {
     final LocalDateTime afterOneWeek = date.plusDays(7);
     return afterOneWeek.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
   }
+
 }
 
 

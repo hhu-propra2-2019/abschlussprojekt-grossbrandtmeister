@@ -3,12 +3,16 @@ package mops.rheinjug2.controllers;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
 import mops.rheinjug2.services.ModelService;
+import mops.rheinjug2.services.SubmissionStatus;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -49,8 +53,10 @@ public class StudentController {
    */
   @GetMapping("/events")
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     model.addAttribute("events", modelService.getAllEvents());
+    model.addAttribute("studentRegisteredForEvent", modelService.getAllEventIdsPerStudent(account));
     authenticatedAccess.increment();
     return "student_events_overview";
   }
