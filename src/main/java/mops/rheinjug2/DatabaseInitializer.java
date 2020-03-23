@@ -82,9 +82,6 @@ public class DatabaseInitializer implements ServletContextInitializer {
           faker.number().numberBetween(1, 28),
           faker.number().numberBetween(16, 20),
           faker.number().numberBetween(1, 60)));
-      if(event.getId() == 1){
-        event.setDate(LocalDateTime.of(LocalDate.of(2020, 03,22), LocalTime.of(17, 30)));
-      }
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
       event.setVenue("Universität Düsseldorf, Gebäude 25.22 U1");
@@ -99,7 +96,10 @@ public class DatabaseInitializer implements ServletContextInitializer {
       } else {
         event.setType("Abendveranstaltungen");
       }
+
+      eventRepository.save(event);
       if(event.getId() == 1){
+         event.setDate(LocalDateTime.of(LocalDate.of(2020, 03,24), LocalTime.of(17, 30)));
         event.setType("Entwickelbar");
       }
       eventRepository.save(event);
