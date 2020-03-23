@@ -50,7 +50,7 @@
             </tr>
             </tbody>
         </table>
-        <form action="/rheinjug2/student/creditpoints/certificateform" method="POST" id="getForm">
+        <form action="/rheinjug2/student/creditpoints/certificateform" method="GET" id="getForm">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <button type="submit" class="btn col-12 btn-outline-success" name="second"
                     th:disabled="${disabled}">CP Beantragen

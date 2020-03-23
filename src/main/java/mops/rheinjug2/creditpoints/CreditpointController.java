@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Secured({"ROLE_studentin"})
 @RequestMapping("/rheinjug2/student/creditpoints")
 public class CreditpointController {
-  
-  
+
+
   private final transient Counter authenticatedAccess;
   private final transient ModelService modelService;
   private final transient EmailService emailService;
   private transient CertificateForm certificateForm = new CertificateForm();
-  
-  
+
+
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public CreditpointController(MeterRegistry registry,
                                ModelService modelService,
@@ -38,8 +38,8 @@ public class CreditpointController {
     this.modelService = modelService;
     this.emailService = emailService;
   }
-  
-  
+
+
   /**
    * Methode die überprüft ob der/die Student/in Zusammenfassungen bei einer EntwickelBar
    * abgegeben hat um CreditPoints zu beantragen.
@@ -49,15 +49,15 @@ public class CreditpointController {
     Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     authenticatedAccess.increment();
-    
+
     String login = account.getName();
     model.addAttribute("eventsExist", modelService.acceptedEventsExist(login));
     model.addAttribute("events", modelService.getAllEventsForCP(login));
     model.addAttribute("useForCP", modelService.useEventsIsPossible(login));
     model.addAttribute("exists", modelService.studentExists(login));
-    
+
     boolean eventsAreUsable;
-    
+
     if (modelService.loadStudentByLogin(login) != null) {
       List<Event> allEventsForCP = modelService.getAllEventsForCP(login);
       model.addAttribute("events", allEventsForCP);
@@ -67,14 +67,14 @@ public class CreditpointController {
     }
     boolean disabled = !eventsAreUsable;
     model.addAttribute("disabled", disabled);
-    
+
     return "credit_points_apply";
   }
-  
+
   /**
    * Post-Formular für die Scheinabgabe.
    */
-  @PostMapping("/certificateform")
+  @GetMapping("/certificateform")
   public String formular(@ModelAttribute("certificateForm") CertificateForm certificateForm,
                          KeycloakAuthenticationToken token,
                          Model model) throws MessagingException {
@@ -83,26 +83,38 @@ public class CreditpointController {
     this.certificateForm = certificateForm;
     model.addAttribute("certificateForm", certificateForm);
     authenticatedAccess.increment();
-    
+
+    return "credit_points_form";
+  }
+
+  @PostMapping("/certificateform")
+  public String formular2(@ModelAttribute("certificateForm") CertificateForm certificateForm,
+                          KeycloakAuthenticationToken token,
+                          Model model) throws MessagingException {
+    Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    this.certificateForm = certificateForm;
+    model.addAttribute("certificateForm", certificateForm);
+    authenticatedAccess.increment();
+
     String login = account.getName();
-    
+
     if (modelService.loadStudentByLogin(login) != null
         && modelService.checkEventsForCertificate(login)) {
       String forename = account.getGivenName();
       String surname = account.getFamilyName();
       String name = forename + " " + surname;
-      
+
       List<Event> usableEvents = modelService.getEventsForCertificate(login);
-      
+
       modelService.useEventsForCertificate(login);
-      
+
       emailService.sendMail(name, certificateForm.getGender(),
           certificateForm.getMatNr(), usableEvents);
     }
-    
+
     System.out.println(certificateForm.getGender() + certificateForm.getMatNr());
-    return "credit_points_form";
+    return "redirect:/rheinjug2/student/creditpoints/";
   }
-  
-  
+
 }
