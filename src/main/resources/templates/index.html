@@ -11,6 +11,13 @@
               crossorigin="anonymous"
               th:remove="all">
         <link rel="stylesheet" href="https://icono-49d6.kxcdn.com/icono.min.css" th:remove="all">
+        <script src="../../static/js/jquery.min.js"
+                th:src="@{/js/jquery.min.js}"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+                th:src="@{/js/bootstrap.min.js}"></script>
+        <link rel="stylesheet" type="text/css"
+              href="../../static/css/partial_collapse.css"
+              th:href="@{/css/partial_collapse.css}">
     </th:block>
 </head>
 <body>
@@ -23,211 +30,280 @@
     <!-- Restlichen Inhalt hier einfügen! -->
     <h1 class="text-center text-secondary"> Rheinjug Veranstaltungen </h1>
 
+    <div id="partial-collapse" th:remove="all-but-first">
+        <div class="container bg-light rounded shadow-lg" th:each="event : ${events}"
+             style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+            <div class="row border-bottom  mx-1 my-1">
+                <div class="col-6 col-sm-3  border-right text-secondary my-1">
+                    <div class="row">
+                        <div class="col-12">
+                            <i class="icono-calendar"></i>
+                            <span th:text="${#temporals.format(event.date.toLocalDate(), 'dd.MM.yyyy')}">13.03.2020</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3  border-right  text-secondary my-1">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="icono-clock"></span>
+                            <span th:text="${#temporals.format(event.date.toLocalTime(), 'HH:mm')}">19:30pm</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3  border-right my-1">
+                    <div class="row ">
+                        <div class="col-12">
+                            <img src="../../static/icons/icon-credit-points.png"
+                                 th:src="@{/icons/icon-credit-points.png}"
+                                 style="width: 32px;height: 28px;">
+                            <span class="text-secondary">
+                                <span th:if="${event.type == 'Abendveranstaltung'}">
+                                    <sup>1</sup>/<sub>6</sub> CP
+                                </span>
+                                <span th:if="${event.type == 'EntwickelBar'}">
+                                    <sup>1</sup>/<sub>2</sub> CP
+                                </span>
+                                <span th:if="${event.type != 'Abendveranstaltung' and event.type != 'EntwickelBar'}"> <sup>1</sup>/<sub>2</sub> CP </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3 border-right my-1">
+                    <div class="row">
+                        <div class="col-12">
+                            <img src="../../static/icons/icon-payment.png"
+                                 th:src="@{/icons/icon-payment.png}"
+                                 style="width: 32px;height: 28px;">
+                            <span class="text-success" th:if="${event.price == 0}">kostenfrei</span>
+                            <span th:if="${event.price != 0}" th:text="${event.price} + ' €' "> 5.0 €</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row border-bottom  mx-1 my-1 align-content-center">
+                <div class="col-12 text-secondary text-center  my-1">
+                    <h2 class="font-weight-bold" th:text="${event.title}">
+                        Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                    </h2>
+                </div>
+            </div>
+            <div class="row border-bottom   text-light mx-1 ">
+                <div class=" container col-12 my-2">
+                    <div class="text-secondary justify-content-start">
+                        <h3 class="font-weight-bold">
+                            Beschreibung
+                        </h3>
+                    </div>
+                    <div class="text-secondary">
+                        <div id="description-1" th:id="'description-' + ${event.id}" class="collapse partial-collapse"
+                             aria-expanded="false">
+                            <!-- Jens allowed us to use utext explicitly -->
+                            <div class="text-secondary" th:utext="${event.description}">
+                                <p>
+                                    Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
+                                    Server
+                                    Pages
+                                    (JSP)
+                                    und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
+                                    Anforderungen
+                                    an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC
+                                    API
+                                    1.0
+                                    soll
+                                    dieses Problem gelöst werden.
+                                </p>
+                            </div>
+                        </div>
+                        <a role="button" class="partial-collapse collapsed" data-toggle="collapse"
+                           style="text-decoration: none !important"
+                           href="#description-1" th:href="'#description-' + ${event.id}"
+                           aria-expanded="false"
+                           aria-controls="description-1" th:attr="aria-controls='description-' + ${event.id}"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="row  mx-1 my-1 align-content-center justify-content-center">
+                <div class="col-12 text-secondary  text-small my-1">
+                    <img src="../../static/icons/icon-location.png"
+                         th:src="@{/icons/icon-location.png}"
+                         style="width: 32px;height: 28px;">
+                    <small th:text="${event.venue}">&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
+                </div>
+            </div>
+        </div>
 
-    <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-        <div class="row border-bottom  mx-1 my-1">
-            <div class="col-6 col-sm-3  border-right text-secondary my-1">
-                <div class="row">
-                    <div class="col-12">
-                        <i class="icono-calendar"></i>
-                        <span>13.03.2020</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-3  border-right  text-secondary my-1">
-                <div class="row">
-                    <div class="col-12">
-                        <span class="icono-clock"></span>
-                        <span>19:30pm</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-3  border-right my-1">
-                <div class="row ">
-                    <div class="col-12">
-                        <img src="/icons/icon-credit.png" style="width: 32px;height: 28px;">
-                        <span class="text-secondary"><sup>1</sup>/<sub>2</sub> CP</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-3 border-right my-1">
-                <div class="row">
-                    <div class="col-12">
-                        <img src="/icons/icon-payment.png" style="width: 32px;height: 28px;">
-                        <span class="text-success">&nbsp;kostenfrei</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row border-bottom  mx-1 my-1 align-content-center">
-            <div class="col-12 text-secondary text-center  my-1">
-                <h2 class="font-weight-bold">
-                    Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                </h2>
-            </div>
-        </div>
-        <div class="row border-bottom   text-light mx-1 ">
-            <div class=" container col-12 my-2">
-                <div class="text-secondary justify-content-start">
-                    <h3 class="font-weight-bold">
-                        Beschreibung
-                    </h3>
-                </div>
-                <div class="text-secondary">
-                    <p>
-                        Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java Server Pages
-                        (JSP)
-                        und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die Anforderungen
-                        an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API 1.0 soll
-                        dieses Problem gelöst
-                        <werden class=""></werden>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="row  mx-1 my-1 align-content-center justify-content-center">
-            <div class="col-12 text-secondary  text-small my-1">
-                <img src="/icons/icon-location.png" style="width: 32px;height: 28px;">
-                <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
-            </div>
-        </div>
-    </div>
 
+        <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+            <div class="row border-bottom  mx-1 my-1">
+                <div class="col-6 col-sm-3  border-right text-secondary my-1">
+                    <div class="row">
+                        <div class="col-12">
+                            <i class="icono-calendar"></i>
+                            <span>13.03.2020</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3  border-right  text-secondary my-1">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="icono-clock"></span>
+                            <span>19:30pm</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3  border-right my-1">
+                    <div class="row ">
+                        <div class="col-12">
+                            <img src="../../static/icons/icon-credit-points.png"
+                                 th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
+                            <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub> CP</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3 border-right my-1">
+                    <div class="row">
+                        <div class="col-12">
+                            <img src="../../static/icons/icon-payment.png"
+                                 th:src="@{/icons/icon-payment.png}" style="width: 32px;height: 28px;">
+                            <span class="text-success">&nbsp;kostenfrei</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row border-bottom  mx-1 my-1 align-content-center">
+                <div class="col-12 text-secondary text-center  my-1">
+                    <h2 class="font-weight-bold">
+                        Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                    </h2>
+                </div>
+            </div>
+            <div class="row border-bottom   text-light mx-1 ">
+                <div class=" container col-12 my-2">
+                    <div class="text-secondary justify-content-start">
+                        <h3 class="font-weight-bold">
+                            Beschreibung
+                        </h3>
+                    </div>
+                    <div class="text-secondary">
+                        <div id="description-2" class="collapse partial-collapse"
+                             aria-expanded="false">
+                            <div class="text-secondary">
+                                <p>
+                                    Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
+                                    Server
+                                    Pages
+                                    (JSP)
+                                    und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
+                                    Anforderungen
+                                    an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC
+                                    API
+                                    1.0
+                                    soll
+                                    dieses Problem gelöst werden.
+                                </p>
+                            </div>
+                        </div>
+                        <a role="button" class="partial-collapse collapsed" data-toggle="collapse"
+                           style="text-decoration: none !important"
+                           href="#description-2"
+                           aria-expanded="false"
+                           aria-controls="description-2"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="row  mx-1 my-1 align-content-center justify-content-center">
+                <div class="col-12 text-secondary  text-small my-1">
+                    <img src="../../static/icons/icon-location.png"
+                         th:src="@{/icons/icon-location.png}" style="width: 32px;height: 28px;">
+                    <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
+                </div>
+            </div>
+        </div>
 
-    <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-        <div class="row border-bottom  mx-1 my-1">
-            <div class="col-6 col-sm-3  border-right text-secondary my-1">
-                <div class="row">
-                    <div class="col-12">
-                        <i class="icono-calendar"></i>
-                        <span>13.03.2020</span>
+        <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+            <div class="row border-bottom  mx-1 my-1">
+                <div class="col-6 col-sm-3  border-right text-secondary my-1">
+                    <div class="row">
+                        <div class="col-12">
+                            <i class="icono-calendar"></i>
+                            <span>13.03.2020</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3  border-right  text-secondary my-1">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="icono-clock"></span>
+                            <span>19:30pm</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3  border-right my-1">
+                    <div class="row ">
+                        <div class="col-12">
+                            <img src="../../static/icons/icon-credit-points.png"
+                                 th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
+                            <span class="text-secondary"> <sup>1</sup>/<sub>2</sub> CP</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3 border-right my-1">
+                    <div class="row">
+                        <div class="col-12">
+                            <img src="../../static/icons/icon-payment.png"
+                                 th:src="@{/icons/icon-payment.png}" style="width: 32px;height: 28px;">
+                            <span class="text-success">&nbsp;kostenfrei</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-sm-3  border-right  text-secondary my-1">
-                <div class="row">
-                    <div class="col-12">
-                        <span class="icono-clock"></span>
-                        <span>19:30pm</span>
+            <div class="row border-bottom  mx-1 my-1 align-content-center">
+                <div class="col-12 text-secondary text-center  my-1">
+                    <h2 class="font-weight-bold">
+                        Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                    </h2>
+                </div>
+            </div>
+            <div class="row border-bottom   text-light mx-1 ">
+                <div class=" container col-12 my-2">
+                    <div class="text-secondary justify-content-start">
+                        <h3 class="font-weight-bold">
+                            Beschreibung
+                        </h3>
+                    </div>
+                    <div class="text-secondary">
+                        <div id="description-3" class="collapse partial-collapse"
+                             aria-expanded="false">
+                            <div class="text-secondary">
+                                <p>
+                                    Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
+                                    Server
+                                    Pages
+                                    (JSP)
+                                    und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die
+                                    Anforderungen
+                                    an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC
+                                    API
+                                    1.0
+                                    soll
+                                    dieses Problem gelöst werden.
+                                </p>
+                            </div>
+                        </div>
+                        <a role="button" class="partial-collapse collapsed" data-toggle="collapse"
+                           style="text-decoration: none !important"
+                           href="#description-3"
+                           aria-expanded="false"
+                           aria-controls="description-3"></a>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-sm-3  border-right my-1">
-                <div class="row ">
-                    <div class="col-12">
-                        <img src="/icons/icon-credit.png" style="width: 32px;height: 28px;">
-                        <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub> CP</span>
-                    </div>
+            <div class="row   mx-1 my-1 align-content-center justify-content-center">
+                <div class="col-12 text-secondary  text-small my-1">
+                    <img src="../../static/icons/icon-location.png"
+                         th:src="@{/icons/icon-location.png}" style="width: 32px;height: 28px;">
+                    <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
                 </div>
-            </div>
-            <div class="col-6 col-sm-3 border-right my-1">
-                <div class="row">
-                    <div class="col-12">
-                        <img src="/icons/icon-payment.png" style="width: 32px;height: 28px;">
-                        <span class="text-success">&nbsp;kostenfrei</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row border-bottom  mx-1 my-1 align-content-center">
-            <div class="col-12 text-secondary text-center  my-1">
-                <h2 class="font-weight-bold">
-                    Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                </h2>
-            </div>
-        </div>
-        <div class="row border-bottom   text-light mx-1 ">
-            <div class=" container col-12 my-2">
-                <div class="text-secondary justify-content-start">
-                    <h3 class="font-weight-bold">
-                        Beschreibung
-                    </h3>
-                </div>
-                <div class="text-secondary">
-                    <p>
-                        Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java Server Pages
-                        (JSP)
-                        und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die Anforderungen
-                        an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API 1.0 soll
-                        dieses Problem gelöst
-                        <werden class=""></werden>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="row  mx-1 my-1 align-content-center justify-content-center">
-            <div class="col-12 text-secondary  text-small my-1">
-                <img src="/icons/icon-location.png" style="width: 32px;height: 28px;">
-                <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
-            </div>
-        </div>
-    </div>
-
-    <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-        <div class="row border-bottom  mx-1 my-1">
-            <div class="col-6 col-sm-3  border-right text-secondary my-1">
-                <div class="row">
-                    <div class="col-12">
-                        <i class="icono-calendar"></i>
-                        <span>13.03.2020</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-3  border-right  text-secondary my-1">
-                <div class="row">
-                    <div class="col-12">
-                        <span class="icono-clock"></span>
-                        <span>19:30pm</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-3  border-right my-1">
-                <div class="row ">
-                    <div class="col-12">
-                        <img src="/icons/icon-credit.png" style="width: 32px;height: 28px;">
-                        <span class="text-secondary"> <sup>1</sup>/<sub>2</sub> CP</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-3 border-right my-1">
-                <div class="row">
-                    <div class="col-12">
-                        <img src="/icons/icon-payment.png" style="width: 32px;height: 28px;">
-                        <span class="text-success">&nbsp;kostenfrei</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row border-bottom  mx-1 my-1 align-content-center">
-            <div class="col-12 text-secondary text-center  my-1">
-                <h2 class="font-weight-bold">
-                    Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                </h2>
-            </div>
-        </div>
-        <div class="row border-bottom   text-light mx-1 ">
-            <div class=" container col-12 my-2">
-                <div class="text-secondary justify-content-start">
-                    <h3 class="font-weight-bold">
-                        Beschreibung
-                    </h3>
-                </div>
-                <div class="text-secondary">
-                    <p>
-                        Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java Server Pages
-                        (JSP)
-                        und Java Server Faces (JSF). Beide Technologien folgen Paradigmen, welche die Anforderungen
-                        an moderne und verteilte Systeme kaum erfüllen können. Mit der actionbasierten MVC API 1.0 soll
-                        dieses Problem gelöst
-                        <werden class=""></werden>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="row   mx-1 my-1 align-content-center justify-content-center">
-            <div class="col-12 text-secondary  text-small my-1">
-                <img src="/icons/icon-location.png" style="width: 32px;height: 28px;">
-                <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
             </div>
         </div>
     </div>
