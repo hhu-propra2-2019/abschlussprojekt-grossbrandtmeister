@@ -90,9 +90,9 @@ public class DatabaseInitializer implements ServletContextInitializer {
       }
 
       if (random.nextBoolean()) {
-        event.setType("Entwickelbar");
+        event.setType("EntwickelBar");
       } else {
-        event.setType("Abendveranstaltungen");
+        event.setType("Abendveranstaltung");
       }
       eventRepository.save(event);
     });
