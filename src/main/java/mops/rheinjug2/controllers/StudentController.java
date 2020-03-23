@@ -83,6 +83,7 @@ public class StudentController {
    * der Datenbank angepasst werden.
    */
   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+  @GetMapping("/reportsubmit")
   public String reportSubmit(final KeycloakAuthenticationToken token, final Model model,
                              final Long eventId) {
     final LocalDateTime today = LocalDateTime.now();
