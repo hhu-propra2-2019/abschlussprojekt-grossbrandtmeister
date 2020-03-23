@@ -21,6 +21,7 @@ import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileCheckService;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
+import mops.rheinjug2.services.ModelService;
 import org.apache.commons.io.IOUtils;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -45,6 +46,7 @@ public class FileUploadController {
 
   transient FileService fileService;
   transient FileCheckService fileCheckService;
+  transient ModelService modelService;
 
   private final transient Counter authenticatedAccess;
 
@@ -52,9 +54,10 @@ public class FileUploadController {
 
   @Autowired
   public FileUploadController(final FileService fileService,
-                              final MeterRegistry registry) {
+                              final MeterRegistry registry, final ModelService modelService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
+    this.modelService = modelService;
   }
 
   /**
@@ -65,8 +68,8 @@ public class FileUploadController {
                            final RedirectAttributes attributes,
                            @RequestParam(value = "file") final MultipartFile file,
                            final Long eventId) {
-    if(eventId==null) {
-      attributes.addFlashAttribute("message","You did not choose an event."
+    if (eventId == null) {
+      attributes.addFlashAttribute("message", "You did not choose an event."
           + "Go to your personal event side and choose for which event "
           + "you want to handle your summary in");
       return "redirect:/rheinjug2/student/reportsubmit";
@@ -76,6 +79,7 @@ public class FileUploadController {
         final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
         final String username = principal.getName();
         if (!username.isEmpty()) {
+          modelService.submitSummary(username, eventId);
           final String filename = username + "_" + eventId;
           fileService.uploadFile(file, filename);
           attributes.addFlashAttribute("message",
@@ -102,8 +106,8 @@ public class FileUploadController {
   public String useForm(final KeycloakAuthenticationToken token,
                         final RedirectAttributes attributes, final Summary summary,
                         final Long eventId) {
-    if(eventId==null) {
-      attributes.addFlashAttribute("message","You did not choose an event."
+    if (eventId == null) {
+      attributes.addFlashAttribute("message", "You did not choose an event."
           + "Go to your personal event side and choose for which event "
           + "you want to handle your summary in");
       return "redirect:/rheinjug2/student/reportsubmit";
@@ -112,6 +116,7 @@ public class FileUploadController {
       final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
       final String username = principal.getName();
       if (!username.isEmpty()) {
+        modelService.submitSummary(username, eventId);
         final String filename = username + "_" + eventId;
         fileService.uploadContentConvertToMd(summary.getContent(), filename);
         attributes.addFlashAttribute("message",
