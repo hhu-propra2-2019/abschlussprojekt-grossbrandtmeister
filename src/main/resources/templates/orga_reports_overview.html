@@ -12,8 +12,8 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
                 crossorigin="anonymous"></script>
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-                integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        <script src="https://code.jquery.com/jquery-3.4.1.js"
+                integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
                 crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
                 integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
@@ -21,7 +21,15 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
                 integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
                 crossorigin="anonymous"></script>
-
+        <script>
+            $(document).ready(function () {
+                $(".collapse.show").removeClass("show");
+                $(".collapsebtn").css("display", "block");
+                setTimeout(function () {
+                    $("#successmessage").hide(1000);
+                }, 4000);
+            });
+        </script>
     </th:block>
 </head>
 <body>
@@ -33,7 +41,8 @@
                 <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungen Übersicht </a>
             </li>
             <li class="active">
-                <a th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen </a>
+                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen &emsp; &emsp; <span
+                        class=" badge badge-primary badge-pill">14</span></a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/orga/delayedSubmission}"> Verspätete Abgabe hochladen </a>
@@ -43,6 +52,16 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
+    <div id="successmessage" class=" container alert alert-success alert-dismissible"
+         style="padding: 10px;"
+         role="alert" th:text="${successmessage}"
+         th:if="${successmessage != null }">
+    </div>
+    <div class=" container alert alert-success alert-dismissible"
+         style="padding: 10px;"
+         role="alert" th:if="${summaries.isEmpty()}">
+        keine offene Bewertungsanfragen Vorhanden.
+    </div>
     <div th:remove="all-but-first" th:each="summary : ${summaries}">
         <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
             <div class="row border-bottom  mx-1 my-1 align-content-center">
@@ -77,9 +96,9 @@
                         verspätete Abgabe</small>
                 </div>
             </div>
-            <div class=" row mx-1 my-1">
+            <div class=" row mx-1 my-1 collapsebtn" style="display: none">
                 <div class="col-12 my-1">
-                    <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
+                    <button id="collapsebtn" class="btn btn-primary btn-block" type="button" data-toggle="collapse"
                             data-target="#inhalt1"
                             th:data-target="'#inhalt_'+${summary.studentId} + '_' + ${summary.studentId}"
                             aria-expanded="true">
@@ -88,7 +107,7 @@
                 </div>
             </div>
             <div id="inhalt1" th:id="'inhalt_'+${summary.studentId} + '_' + ${summary.studentId}"
-                 class="collapse">
+                 class="collapse show">
                 <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
                     <div class="col-12 my-1">
                         <span>Inhalt</span>
@@ -211,7 +230,7 @@
             </div>
             <div class="row  mx-1 my-1">
                 <div class="col-12 my-1">
-                    <button id="collapsebtn" class="btn btn-primary btn-block" type="button" data-toggle="collapse"
+                    <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
                             data-target="#inhalt3" aria-expanded="false" aria-controls="inhalt3">jetzt bewerten
                     </button>
                 </div>
