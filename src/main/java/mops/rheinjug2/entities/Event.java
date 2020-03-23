@@ -1,6 +1,7 @@
 package mops.rheinjug2.entities;
 
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Data
 @Table("event")
-@EqualsAndHashCode(exclude = {"date"})
+@EqualsAndHashCode(exclude = {"date", "duration", "deadline"})
 public class Event {
   @Id
   private Long id;
@@ -19,6 +20,8 @@ public class Event {
   private String description;
   private double price;
   private LocalDateTime date;
+  private Duration duration;
+  private LocalDateTime deadline;
   private String address;
   private String venue;
   private String url;
@@ -35,8 +38,7 @@ public class Event {
    * werden können.
    */
   public boolean isOpenForSubmission() {
-    final LocalDateTime afterOneWeek = date.plusDays(7);
-    return LocalDateTime.now().isBefore(afterOneWeek);
+    return LocalDateTime.now().isBefore(deadline);
   }
 
   /**
