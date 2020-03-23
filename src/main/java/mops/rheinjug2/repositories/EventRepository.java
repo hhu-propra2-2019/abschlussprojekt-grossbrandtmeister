@@ -1,6 +1,7 @@
 package mops.rheinjug2.repositories;
 
 import java.util.List;
+import java.util.Optional;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.orgamodels.SummariesIDs;
@@ -56,4 +57,9 @@ public interface EventRepository extends CrudRepository<Event, Long> {
   @Query(value = "SELECT student,event FROM student_event WHERE"
       + " submitted_summary = FALSE")
   List<SummariesIDs> getUnSubmittedSummaries();
+
+  @Query(value = "SELECT student,event FROM student_event "
+      + "WHERE student_event.student = :studentid AND student_event.event = :eventid")
+  Optional<SummariesIDs> checkSummary(@Param("studentid") Long studentid,
+                                      @Param("eventid") Long eventid);
 }
