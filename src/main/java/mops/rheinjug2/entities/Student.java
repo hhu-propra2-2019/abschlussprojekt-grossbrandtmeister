@@ -55,11 +55,10 @@ public class Student {
    * Eine Zusammenfassung hinzufügen.
    */
 
-  public boolean addSummary(final Event event, final String url) {
+  public boolean addSummary(final Event event) {
     if (event.isOpenForSubmission()) {
       final EventRef ref = findEventRef(event);
       ref.setSubmittedSummary(true);
-      ref.setUrl(url);
       ref.setTimeOfSubmission(LocalDateTime.now());
       log.info("Summary submitted.");
       return true;

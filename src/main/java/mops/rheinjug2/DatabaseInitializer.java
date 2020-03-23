@@ -56,7 +56,7 @@ public class DatabaseInitializer implements ServletContextInitializer {
       final Long eventid = (long) faker.number().numberBetween(1, 30);
       modelService.addStudentToEvent(student.getLogin(), student.getEmail(), eventid);
       if (random.nextBoolean()) {
-        modelService.submitSummary(student.getLogin(), eventid, faker.internet().url());
+        modelService.submitSummary(student.getLogin(), eventid);
       }
     });
   }
@@ -100,6 +100,11 @@ public class DatabaseInitializer implements ServletContextInitializer {
       eventRepository.save(event);
       if (event.getId() == 1) {
         event.setDate(LocalDateTime.of(LocalDate.of(2020, 03, 22), LocalTime.of(17, 30)));
+        event.setStatus("PAST");
+        event.setType("Entwickelbar");
+      }
+      if (event.getId() == 2) {
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 03, 21), LocalTime.of(17, 30)));
         event.setStatus("PAST");
         event.setType("Entwickelbar");
       }
