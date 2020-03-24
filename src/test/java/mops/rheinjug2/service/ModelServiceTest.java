@@ -2,17 +2,12 @@ package mops.rheinjug2.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
-import static org.mockito.Mockito.when;
-
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mops.rheinjug2.Account;
-import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
@@ -29,7 +24,6 @@ import org.keycloak.adapters.OidcKeycloakAccount;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessToken;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -105,8 +99,6 @@ public class ModelServiceTest {
     event2.setDate(LocalDateTime.now());
     eventRepository.saveAll(List.of(event1, event2));
     final Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
     student.addEvent(event1);
     student.addEvent(event2);
     student.addSummary(event1);
@@ -163,9 +155,6 @@ public class ModelServiceTest {
         eventWithSubmissionAccepted, eventWithSubmissionNotAccepted);
     eventRepository.saveAll(events);
 
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
-
     final Student student = createAndSaveStudent("ll100", "ll@hhu.de");
     addEventsToStudent(events, student);
     student.addSummary(eventWithSubmissionAccepted);
@@ -186,7 +175,7 @@ public class ModelServiceTest {
   }
 
   @Test
-  public void testGetAllEventIdsPerStudent(){
+  public void testGetAllEventIdsPerStudent() {
 
     final Event eventUpcoming = createAndSaveEvent("Veranstaltung Java");
     eventUpcoming.setDate(LocalDateTime.now().plusDays(1));
@@ -204,7 +193,7 @@ public class ModelServiceTest {
     studentRepository.save(student);
 
     assertThat(modelService.getAllEventIdsPerStudent(student.getLogin()))
-               .containsExactlyInAnyOrder(events.get(0).getId(), events.get(1).getId());
+        .containsExactlyInAnyOrder(events.get(0).getId(), events.get(1).getId());
 
   }
 
@@ -217,8 +206,6 @@ public class ModelServiceTest {
     event2.setDate(LocalDateTime.now());
     event2.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2));
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
     final Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     addEventsToStudent(List.of(event1, event2), student);
     student.addSummary(event1);
@@ -246,9 +233,6 @@ public class ModelServiceTest {
 
     final Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     addEventsToStudent(List.of(event1, event2, event3), student);
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
-    final String url3 = "Test-Url 3";
     student.addSummary(event1);
     student.addSummary(event2);
     student.addSummary(event3);
@@ -269,8 +253,6 @@ public class ModelServiceTest {
     event2.setDate(LocalDateTime.now());
     event2.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2));
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
     final Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     addEventsToStudent(List.of(event1, event2), student);
     student.addSummary(event1);

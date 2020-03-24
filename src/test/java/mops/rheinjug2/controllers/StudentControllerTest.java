@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-
 import io.micrometer.core.instrument.MeterRegistry;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,22 +30,22 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 class StudentControllerTest {
   @Autowired
-  private MockMvc mvc;
+  private transient MockMvc mvc;
 
   @MockBean
-  private FileService fileService;
+  private transient FileService fileService;
 
   @MockBean
-  private ModelService modelService;
+  private transient ModelService modelService;
 
   @Autowired
-  private WebApplicationContext context;
+  private transient WebApplicationContext context;
 
   @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
   MeterRegistry registry;
 
   @BeforeEach
-  public void setup() {
+  public void setUp() {
     mvc = MockMvcBuilders
         .webAppContextSetup(context)
         .apply(springSecurity())
