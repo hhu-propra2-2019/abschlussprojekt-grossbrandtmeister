@@ -2,6 +2,7 @@ package mops.rheinjug2.controllers;
 
 import static mops.rheinjug2.KeycloakTokenMock.setupTokenMock;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,12 +10,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.services.ModelService;
+import mops.rheinjug2.services.SubmissionStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
@@ -50,6 +56,30 @@ class StudentControllerTest {
         .webAppContextSetup(context)
         .apply(springSecurity())
         .build();
+  }
+
+  @Test
+  void testGetPersonal() throws Exception {
+    final Set<String> roles = new HashSet<>();
+    roles.add("studentin");
+    final Account account = new Account("name", "User@email.de", "image", roles,
+        "givenname", "familyname");
+    setupTokenMock(account);
+
+    final Event event1 = new Event();
+    event1.setDate(LocalDateTime.now());
+    event1.setType("Entwickelbar");
+    event1.setTitle("Entwickelbar");
+    event1.setDuration(Duration.ofHours(1));
+    final Map<Event, SubmissionStatus> map = new HashMap<>();
+    map.put(event1, SubmissionStatus.UPCOMING);
+    when(modelService.studentExists(anyString())).thenReturn(true);
+    when(modelService.getAllEventsPerStudent(anyString())).thenReturn(map);
+
+    final String eventId = "123";
+    mvc.perform(get("/rheinjug2/student/visitedevents"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("personalView"));
   }
 
   @Test
