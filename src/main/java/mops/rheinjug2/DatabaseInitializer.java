@@ -70,6 +70,7 @@ public class DatabaseInitializer implements ServletContextInitializer {
     });
   }
 
+  @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
   private void fakeEvent(final Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
       final Event event = new Event();

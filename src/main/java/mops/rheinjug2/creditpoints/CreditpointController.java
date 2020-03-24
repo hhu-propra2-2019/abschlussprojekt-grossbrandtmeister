@@ -21,15 +21,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Secured({"ROLE_studentin"})
 @RequestMapping("/rheinjug2/student/creditpoints")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class CreditpointController {
-  
-  
+
+
   private final transient Counter authenticatedAccess;
   private final transient ModelService modelService;
   private final transient EmailService emailService;
   private transient CertificateForm certificateForm = new CertificateForm();
-  
-  
+
+
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public CreditpointController(final MeterRegistry registry,
                                final ModelService modelService,
@@ -38,8 +39,8 @@ public class CreditpointController {
     this.modelService = modelService;
     this.emailService = emailService;
   }
-  
-  
+
+
   /**
    * Methode die überprüft ob der/die Student/in Zusammenfassungen bei einer EntwickelBar
    * abgegeben hat um CreditPoints zu beantragen.
@@ -49,15 +50,15 @@ public class CreditpointController {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     authenticatedAccess.increment();
-    
+
     final String login = account.getName();
     model.addAttribute("eventsExist", modelService.acceptedEventsExist(login));
     model.addAttribute("events", modelService.getAllEventsForCP(login));
     model.addAttribute("useForCP", modelService.useEventsIsPossible(login));
     model.addAttribute("exists", modelService.studentExists(login));
-    
+
     final boolean eventsAreUsable;
-    
+
     if (modelService.loadStudentByLogin(login) != null) {
       final List<Event> allEventsForCP = modelService.getAllEventsForCP(login);
       model.addAttribute("events", allEventsForCP);
@@ -67,10 +68,10 @@ public class CreditpointController {
     }
     final boolean disabled = !eventsAreUsable;
     model.addAttribute("disabled", disabled);
-    
+
     return "credit_points_apply";
   }
-  
+
   /**
    * Post-Formular für die Scheinabgabe.
    */
@@ -83,10 +84,10 @@ public class CreditpointController {
     this.certificateForm = certificateForm;
     model.addAttribute("certificateForm", certificateForm);
     authenticatedAccess.increment();
-    
+
     return "credit_points_form";
   }
-  
+
   /**
    * Post-Mapping um PDF zu erzeugen und zu senden.
    */
@@ -99,24 +100,24 @@ public class CreditpointController {
     this.certificateForm = certificateForm;
     model.addAttribute("certificateForm", certificateForm);
     authenticatedAccess.increment();
-    
+
     final String login = account.getName();
-    
+
     if (modelService.loadStudentByLogin(login) != null
         && modelService.checkEventsForCertificate(login)) {
       final String forename = account.getGivenName();
       final String surname = account.getFamilyName();
       final String name = forename + " " + surname;
-      
+
       final List<Event> usableEvents = modelService.getEventsForCertificate(login);
-      
+
       modelService.useEventsForCertificate(login);
-      
+
       emailService.sendMail(name, certificateForm.getGender(),
           certificateForm.getMatNr(), usableEvents);
     }
-    
+
     return "redirect:/rheinjug2/student/creditpoints/";
   }
-  
+
 }
