@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class CertificateService {
   
-  private final transient int entwickelbarEventsAnzahl = 1;
-  private final transient int normalEventsAnzahl = 3;
+  private final transient int numberOfRequiredEntwickelbarEvents = 1;
+  private final transient int numberOfRequiredEveningEvents = 3;
   
   transient PDDocument pdfForm;
   
@@ -30,27 +30,30 @@ public class CertificateService {
    * @param matnr        Matrikelnummer des Studenten/der Studentin
    * @param usedEvents   Liste der Events die für das PDF verbraucht werden.
    */
-  public void createCertificatePdf(ByteArrayOutputStream outputStream,
-                                   String name, String gender,
-                                   String matnr, List<Event> usedEvents) {
-    File pdf = new File("./rheinjug_schein.pdf");
+  public void createCertificatePdf(final ByteArrayOutputStream outputStream,
+                                   final String name, final String gender,
+                                   final String matnr, final List<Event> usedEvents) {
+    final File pdf = new File("./rheinjug_schein.pdf");
     try {
       pdfForm = PDDocument.load(pdf);
       
-      PDDocumentCatalog docCatalog = pdfForm.getDocumentCatalog();
-      PDAcroForm acroForm = docCatalog.getAcroForm();
+      final PDDocumentCatalog docCatalog = pdfForm.getDocumentCatalog();
+      final PDAcroForm acroForm = docCatalog.getAcroForm();
       
       acroForm.getField("Vorname, Name").setValue(name);
-      acroForm.getField("Anrede, Vorname, Name")
-          .setValue(setGenderFormOfAddress(gender) + " " + name);
-      acroForm.getField("Matrikelnummer").setValue(matnr);
-      acroForm.getField("er,sie").setValue(setGenderPronoun(gender));
       
-      if (usedEvents.size() == normalEventsAnzahl) {
+      acroForm.getField("Text").setValue(setGenderFormOfAddress(gender) + " "
+          + name + " - Matrikelnummer " + matnr + " wird hiermit bescheinigt, dass "
+          + setGenderPronoun(gender)
+          + " an folgenden rheinjug-Veranstaltungen (Java in der Praxis) "
+          + "teilgenommen und dazu jeweils eine Zusammenfassung geschrieben hat.");
+      
+      
+      if (usedEvents.size() == numberOfRequiredEveningEvents) {
         acroForm.getField("Veranstaltung 1").setValue(usedEvents.get(0).getTitle());
         acroForm.getField("Veranstaltung 2").setValue(usedEvents.get(1).getTitle());
         acroForm.getField("Veranstaltung 3").setValue(usedEvents.get(2).getTitle());
-      } else if (usedEvents.size() == entwickelbarEventsAnzahl) {
+      } else if (usedEvents.size() == numberOfRequiredEntwickelbarEvents) {
         acroForm.getField("Veranstaltung 1").setValue(usedEvents.get(0).getTitle());
         acroForm.getField("Veranstaltung 2").setValue("");
         acroForm.getField("Veranstaltung 3").setValue("");
@@ -61,14 +64,13 @@ public class CertificateService {
       acroForm.getField("Datum 1").setValue(setCertificateDate());
       acroForm.getField("Datum 2").setValue(setCertificateDate());
       
-      // pdfForm.save("DummyCertificate" + forename + ".pdf");
       pdfForm.save(outputStream);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       log.catching(e);
     } finally {
       try {
         pdfForm.close();
-      } catch (IOException e) {
+      } catch (final IOException e) {
         log.catching(e);
       }
     }
@@ -78,14 +80,14 @@ public class CertificateService {
    * Setzt beim Schein das aktuelle Datum.
    */
   private static String setCertificateDate() {
-    LocalDate currentDate = LocalDate.now();
-    int day = currentDate.getDayOfMonth();
-    int month = currentDate.getMonthValue();
-    int year = currentDate.getYear();
+    final LocalDate currentDate = LocalDate.now();
+    final int day = currentDate.getDayOfMonth();
+    final int month = currentDate.getMonthValue();
+    final int year = currentDate.getYear();
     return day + "." + month + "." + year;
   }
   
-  private static String setGenderFormOfAddress(String gender) {
+  private static String setGenderFormOfAddress(final String gender) {
     switch (gender) {
       case "male":
         return "Herr";
@@ -96,7 +98,7 @@ public class CertificateService {
     }
   }
   
-  private static String setGenderPronoun(String gender) {
+  private static String setGenderPronoun(final String gender) {
     switch (gender) {
       case "male":
         return "er";
