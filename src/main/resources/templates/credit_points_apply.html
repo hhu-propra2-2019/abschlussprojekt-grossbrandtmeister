@@ -14,7 +14,7 @@
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltugen Übersicht </a>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungen Übersicht </a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal">
@@ -29,48 +29,38 @@
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
     <h1 class="text-center text-secondary"> CP beantragen</h1>
-    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+
+    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px"
+         th:if="${eventsExist}">
         <table class="table table-borderless">
             <thead>
             <tr>
-                <th>Besuchte Veranstaltungen</th>
-                <th>Erworbene CP</th>
+                <th>Veranstaltungen für CP</th>
+                <th>Eventtyp</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
-                <td><span>&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span></td>
+            <tbody th:remove="all-but-first">
+            <tr th:each="event: ${events}">
+                <td th:text="${event.title}">Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
+                <td th:text="${event.type}">Abendveranstaltung</td>
             </tr>
             <tr>
                 <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter (2)</td>
-                <td><span>&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span></td>
+                <td>Abendveranstaltung</td>
             </tr>
             </tbody>
         </table>
-        <button type="submit" class="btn col-12 btn-outline-success"> 1 CP Bentagen</button>
+        <form action="/rheinjug2/student/creditpoints/certificateform" method="GET" id="getForm">
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+            <button type="submit" class="btn col-12 btn-outline-success" name="second"
+                    th:disabled="${disabled}">CP Beantragen
+            </button>
+        </form>
     </div>
-    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Besuchte Veranstaltungen</th>
-                <th>Erworbene CP</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
-                <td><span>&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span></td>
-            </tr>
-            <tr>
-                <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter (2)</td>
-                <td><span>&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span></td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="alert alert-danger text-center">
-            CP Beantragung ist noch nicht möglich. sie brauchen mindestens <sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px"
+         th:if="${!exists  || !eventsExist}">
+        <div class="row border-bottom  mx-1 my-md-5 justify-content-center">
+            <p class="font-weight-bold text-dark"> Es gibt keine Veranstaltungen zur Beantragung von CPs </p>
         </div>
     </div>
 </main>

@@ -16,6 +16,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class KeycloakTokenMock {
 
+  /**
+   * Erstellt einen Mock Token.
+   */
   public static void setupTokenMock(final Account account) {
     final String userName = account.getName();
     final String userEmail = account.getEmail();
@@ -25,9 +28,11 @@ public class KeycloakTokenMock {
     when(principal.getKeycloakSecurityContext().getIdToken().getEmail()).thenReturn(userEmail);
     final SimpleKeycloakAccount keyaccount = new SimpleKeycloakAccount(principal, roles,
         mock(RefreshableKeycloakSecurityContext.class));
-    final KeycloakAuthenticationToken authenticationToken = new KeycloakAuthenticationToken(keyaccount, true);
+    final KeycloakAuthenticationToken authenticationToken =
+        new KeycloakAuthenticationToken(keyaccount, true);
     final SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authenticationToken);
   }
 
 }
+

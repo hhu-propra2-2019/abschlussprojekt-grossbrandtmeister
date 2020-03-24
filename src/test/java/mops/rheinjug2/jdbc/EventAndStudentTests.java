@@ -102,10 +102,9 @@ public class EventAndStudentTests {
   public void testOneStudentAddsSummaryToEvent() {
     final Event event = createAndSaveEvent("Veranstaltung");
     eventRepository.save(event);
-    final String url = "Test-Url 1";
     final Student student = createAndSaveStudent("ax100", "ax@hhu.de");
     student.addEvent(event);
-    student.addSummary(event, url);
+    student.addSummary(event);
     studentRepository.save(student);
 
     assertThat(studentRepository.getSubmittedValue(student.getId(), event.getId())).isEqualTo(true);
@@ -117,14 +116,12 @@ public class EventAndStudentTests {
     eventRepository.save(event);
     final Event event2 = createAndSaveEvent("Veranstaltung B");
     eventRepository.save(event2);
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
     final Student student = createAndSaveStudent("ax100", "ax@hhu.de");
     student.addEvent(event);
     student.addEvent(event2);
 
-    student.addSummary(event, url1);
-    student.addSummary(event2, url2);
+    student.addSummary(event);
+    student.addSummary(event2);
     studentRepository.save(student);
 
     assertThat(studentRepository.getSubmittedValue(student.getId(), event.getId())).isTrue();

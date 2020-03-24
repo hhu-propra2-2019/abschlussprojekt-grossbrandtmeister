@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.fileupload.FileService;
+import mops.rheinjug2.services.ModelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,9 @@ class FileUploadControllerTest {
 
   @Autowired
   private WebApplicationContext context;
+
+  @MockBean
+  private ModelService modelService;
 
   @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
   MeterRegistry registry;
@@ -119,7 +123,7 @@ class FileUploadControllerTest {
         .andExpect(status().isFound())
         .andExpect(MockMvcResultMatchers.flash().attribute("message",
             "You did not choose an event.Go to your personal event side "
-                + "and choose which event you want to give your summary"));
+                + "and choose for which event you want to handle your summary in"));
   }
 
 
@@ -195,7 +199,7 @@ class FileUploadControllerTest {
 
     when(fileService.getFileInputStream(anyString())).thenReturn(inputStream);
 
-    String eventId = "123";
+    final String eventId = "123";
     final MvcResult result = mvc.perform(get("/rheinjug2/download/file").param("eventId", eventId))
         .andExpect(status().isOk()).andReturn();
     final String resultcontent = result.getResponse().getContentAsString();
@@ -209,7 +213,7 @@ class FileUploadControllerTest {
   void downloadFileByvent_IdFileNameIsCorrect() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
-    String name = "Johanna Steiner";
+    final String name = "Johanna Steiner";
     final Account account = new Account(name, "User@email.de", "image", roles,
         "givenname", "familyname");
     setupTokenMock(account);
@@ -220,11 +224,11 @@ class FileUploadControllerTest {
 
     when(fileService.getFileInputStream(anyString())).thenReturn(inputStream);
 
-    String eventId = "123";
+    final String eventId = "123";
     final MvcResult result = mvc.perform(get("/rheinjug2/download/file").param("eventId", eventId))
         .andExpect(status().isOk()).andReturn();
     final String resultcontent = result.getResponse().getHeader("Content-disposition");
-    String nameOfFile = name + "_" + eventId + ".md";
+    final String nameOfFile = name + "_" + eventId + ".md";
 
     assertEquals("attachment;filename=" + nameOfFile, resultcontent);
 
