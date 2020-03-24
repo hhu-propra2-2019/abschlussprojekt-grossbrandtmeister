@@ -49,8 +49,11 @@ public class StudentController {
    */
   @GetMapping("/events")
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     model.addAttribute("events", modelService.getAllEvents());
+    model.addAttribute("studentRegisteredForEvent",
+        modelService.getAllEventIdsPerStudent(account.getName()));
     authenticatedAccess.increment();
     return "student_events_overview";
   }
@@ -70,21 +73,6 @@ public class StudentController {
   }
 
   /**
-   * Formular zum Beantragen von Credit-Points.
-   */
-  @GetMapping("/creditpoints")
-  public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
-    final Account account = AccountCreator.createAccountFromPrincipal(token);
-    model.addAttribute("account", account);
-    model.addAttribute("eventsExist", modelService.acceptedEventsExist(account.getName()));
-    model.addAttribute("events", modelService.getAllEventsForCP(account.getName()));
-    model.addAttribute("useForCP", modelService.useEventsIsPossible(account.getName()));
-    model.addAttribute("exists", modelService.studentExists(account.getName()));
-    authenticatedAccess.increment();
-    return "credit_points_apply";
-  }
-
-  /**
    * Formular zur Einreichung der Zusammenfassung.
    * Das Summary-Objekt muss noch auf die Angaben des jeweiligen Events aus
    * der Datenbank angepasst werden.
@@ -93,6 +81,9 @@ public class StudentController {
   @GetMapping("/reportsubmit")
   public String reportSubmit(final KeycloakAuthenticationToken token, final Model model,
                              final Long eventId) {
+    if (eventId == null) {
+      return "redirect:rheinjug2/student/visitedevents";
+    }
     final LocalDateTime today = LocalDateTime.now();
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final Event event = modelService.loadEventById(eventId);
@@ -105,7 +96,7 @@ public class StudentController {
       content = fileService.getContentOfFileAsString("VorlageZusammenfassung.md");
       content = content.isEmpty()
           ? "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein." : content;
-    } catch (Exception e) {
+    } catch (final Exception e) {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
     final String student = account.getGivenName() + " " + account.getFamilyName();

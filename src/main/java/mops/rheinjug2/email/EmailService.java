@@ -10,39 +10,38 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.entities.Event;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+@SuppressWarnings("checkstyle:LineLength")
 @Service
 @Log4j2
 public class EmailService {
 
   private final transient CertificateService certificateService;
   private final transient JavaMailSender emailSender;
+  private final transient String recipient;
 
-  private final transient String recipient = "pamei104@uni-duesseldorf.de";
 
-  public EmailService(CertificateService certificateService, JavaMailSender emailSender) {
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  public EmailService(CertificateService certificateService,
+                      JavaMailSender emailSender, @Value("${email.recipient}") String recipient) {
     this.certificateService = certificateService;
     this.emailSender = emailSender;
+    this.recipient = recipient;
   }
 
   /**
-   * Dummy Methode die beim aufrufen von /sendEmail eine
-   * Test Email an eine angegebene Email sendet.
-   * Die Parameter beziehen sich auf die Angaben des/der Studenten/Studentin.
-   *
-   * @return
+   * erzeugen einer Email (+PDF) und versenden.
    */
   public void sendMail(String name, String gender, String matNr, List<Event> usedEvents)
       throws MessagingException {
     //TODO Veranstaltungen hinzufügen
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    if (!certificateService.createCertificatePdf(outputStream, name, gender, matNr, usedEvents)) {
-      return;
-    }
+    certificateService.createCertificatePdf(outputStream, name, gender, matNr, usedEvents);
     byte[] bytes = outputStream.toByteArray();
 
     ByteArrayDataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");

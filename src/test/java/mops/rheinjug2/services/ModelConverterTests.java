@@ -8,9 +8,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 import mops.rheinjug2.meetupcom.Event;
@@ -37,6 +36,61 @@ import org.springframework.web.client.RestTemplate;
 @DisplayName("Testing conversion from meetup event to event entity")
 public class ModelConverterTests {
 
+  public static final String SINGLE_EVENT_IN_ARRAY_JSON = "[{\n"
+      + "        \"created\": 1582726842000,\n"
+      + "        \"duration\": 27000000,\n"
+      + "        \"fee\": {\n"
+      + "            \"accepts\": \"paypal\",\n"
+      + "            \"amount\": 5.0,\n"
+      + "            \"currency\": \"EUR\",\n"
+      + "            \"description\": \"\",\n"
+      + "            \"label\": \"Price\",\n"
+      + "            \"required\": true\n"
+      + "        },\n"
+      + "        \"id\": \"269005066\",\n"
+      + "        \"name\": \"EntwickelBar 6.0\",\n"
+      + "        \"date_in_series_pattern\": false,\n"
+      + "        \"status\": \"upcoming\",\n"
+      + "        \"time\": 1599895800000,\n"
+      + "        \"local_date\": \"2020-09-12\",\n"
+      + "        \"local_time\": \"09:30\",\n"
+      + "        \"updated\": 1582727160000,\n"
+      + "        \"utc_offset\": 7200000,\n"
+      + "        \"waitlist_count\": 0,\n"
+      + "        \"yes_rsvp_count\": 7,\n"
+      + "        \"venue\": {\n"
+      + "            \"id\": 25588589,\n"
+      + "            \"name\": \"Universität Düsseldorf, Gebäude 25.22 U1\",\n"
+      + "            \"lat\": 0.0,\n"
+      + "            \"lon\": 0.0,\n"
+      + "            \"repinned\": false,\n"
+      + "            \"address_1\": \"Universitätsstr. 1\",\n"
+      + "            \"city\": \"Düsseldorf\",\n"
+      + "            \"country\": \"de\",\n"
+      + "            \"localized_country_name\": \"Germany\"\n"
+      + "        },\n"
+      + "        \"group\": {\n"
+      + "            \"created\": 1474533027000,\n"
+      + "            \"name\": \"rheinJUG\",\n"
+      + "            \"id\": 20453884,\n"
+      + "            \"join_mode\": \"open\",\n"
+      + "            \"lat\": 51.2400016784668,\n"
+      + "            \"lon\": 6.789999961853027,\n"
+      + "            \"urlname\": \"rheinJUG\",\n"
+      + "            \"who\": \"Mitglieder\",\n"
+      + "            \"localized_location\": \"Düsseldorf, Germany\",\n"
+      + "            \"state\": \"\",\n"
+      + "            \"country\": \"de\",\n"
+      + "            \"region\": \"en_US\",\n"
+      + "            \"timezone\": \"Europe/Berlin\"\n"
+      + "        },\n"
+      + "        \"link\": \"https://www.meetup.com/rheinJUG/events/269005066/\",\n"
+      + "        \"description\": \"<p>EntwickelBar ist eine Unconference...<a href=\\\"https://entwickelbar.github.io\\\" class=\\\"linkified\\\">https://entwickelbar.github.io</a></p> \",\n"
+      + "        \"how_to_find_us\": \"Leider hat der gesamte Universitätscampus nur eine Adresse. Unter https://entwickelbar.github.io/wegbeschreibung.html findest du eine Wegbeschreibung \",\n"
+      + "        \"visibility\": \"public\",\n"
+      + "        \"member_pay_fee\": false\n"
+      + "    }\n"
+      + "]\n";
   @Autowired
   private transient RestTemplate restTemplate;
 
@@ -56,61 +110,7 @@ public class ModelConverterTests {
         .andExpect(method(HttpMethod.GET))
         .andRespond(withStatus(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body("[{\n"
-                + "        \"created\": 1582726842000,\n"
-                + "        \"duration\": 27000000,\n"
-                + "        \"fee\": {\n"
-                + "            \"accepts\": \"paypal\",\n"
-                + "            \"amount\": 5.0,\n"
-                + "            \"currency\": \"EUR\",\n"
-                + "            \"description\": \"\",\n"
-                + "            \"label\": \"Price\",\n"
-                + "            \"required\": true\n"
-                + "        },\n"
-                + "        \"id\": \"269005066\",\n"
-                + "        \"name\": \"EntwickelBar 6.0\",\n"
-                + "        \"date_in_series_pattern\": false,\n"
-                + "        \"status\": \"upcoming\",\n"
-                + "        \"time\": 1599895800000,\n"
-                + "        \"local_date\": \"2020-09-12\",\n"
-                + "        \"local_time\": \"09:30\",\n"
-                + "        \"updated\": 1582727160000,\n"
-                + "        \"utc_offset\": 7200000,\n"
-                + "        \"waitlist_count\": 0,\n"
-                + "        \"yes_rsvp_count\": 7,\n"
-                + "        \"venue\": {\n"
-                + "            \"id\": 25588589,\n"
-                + "            \"name\": \"Universität Düsseldorf, Gebäude 25.22 U1\",\n"
-                + "            \"lat\": 0.0,\n"
-                + "            \"lon\": 0.0,\n"
-                + "            \"repinned\": false,\n"
-                + "            \"address_1\": \"Universitätsstr. 1\",\n"
-                + "            \"city\": \"Düsseldorf\",\n"
-                + "            \"country\": \"de\",\n"
-                + "            \"localized_country_name\": \"Germany\"\n"
-                + "        },\n"
-                + "        \"group\": {\n"
-                + "            \"created\": 1474533027000,\n"
-                + "            \"name\": \"rheinJUG\",\n"
-                + "            \"id\": 20453884,\n"
-                + "            \"join_mode\": \"open\",\n"
-                + "            \"lat\": 51.2400016784668,\n"
-                + "            \"lon\": 6.789999961853027,\n"
-                + "            \"urlname\": \"rheinJUG\",\n"
-                + "            \"who\": \"Mitglieder\",\n"
-                + "            \"localized_location\": \"Düsseldorf, Germany\",\n"
-                + "            \"state\": \"\",\n"
-                + "            \"country\": \"de\",\n"
-                + "            \"region\": \"en_US\",\n"
-                + "            \"timezone\": \"Europe/Berlin\"\n"
-                + "        },\n"
-                + "        \"link\": \"https://www.meetup.com/rheinJUG/events/269005066/\",\n"
-                + "        \"description\": \"<p>EntwickelBar ist eine Unconference...<a href=\\\"https://entwickelbar.github.io\\\" class=\\\"linkified\\\">https://entwickelbar.github.io</a></p> \",\n"
-                + "        \"how_to_find_us\": \"Leider hat der gesamte Universitätscampus nur eine Adresse. Unter https://entwickelbar.github.io/wegbeschreibung.html findest du eine Wegbeschreibung \",\n"
-                + "        \"visibility\": \"public\",\n"
-                + "        \"member_pay_fee\": false\n"
-                + "    }\n"
-                + "]\n"));
+            .body(SINGLE_EVENT_IN_ARRAY_JSON));
   }
 
   /**
@@ -132,9 +132,11 @@ public class ModelConverterTests {
     assertEquals("EntwickelBar 6.0", eventEntity.getTitle());
     assertEquals("<p>EntwickelBar ist eine Unconference...<a href=\"https://entwickelbar.github.io\" class=\"linkified\">https://entwickelbar.github.io</a></p> ", eventEntity.getDescription());
     assertEquals(5.0, eventEntity.getPrice());
-    assertEquals(
-        LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
+    assertEquals(LocalDateTime.of(2020, 9, 12, 9, 30),
         eventEntity.getDate());
+    assertEquals(Duration.parse("PT7H30M"), eventEntity.getDuration()); //ISO-8601 format
+    assertEquals(LocalDateTime.of(2020, 9, 19, 17, 0),
+        eventEntity.getDeadline());
     assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
     assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenue());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());
@@ -162,9 +164,11 @@ public class ModelConverterTests {
     assertEquals("EntwickelBar 6.0", eventEntity.getTitle());
     assertEquals("<p>EntwickelBar ist eine Unconference...<a href=\"https://entwickelbar.github.io\" class=\"linkified\">https://entwickelbar.github.io</a></p> ", eventEntity.getDescription());
     assertEquals(5.0, eventEntity.getPrice());
-    assertEquals(
-        LocalDateTime.ofInstant(Instant.ofEpochMilli(1599895800000L), ZoneId.of("Europe/Berlin")),
+    assertEquals(LocalDateTime.of(2020, 9, 12, 9, 30),
         eventEntity.getDate());
+    assertEquals(Duration.parse("PT7H30M"), eventEntity.getDuration()); //ISO-8601 format
+    assertEquals(LocalDateTime.of(2020, 9, 19, 17, 0),
+        eventEntity.getDeadline());
     assertEquals("Universitätsstr. 1, Düsseldorf", eventEntity.getAddress());
     assertEquals("Universität Düsseldorf, Gebäude 25.22 U1", eventEntity.getVenue());
     assertEquals("https://www.meetup.com/rheinJUG/events/269005066/", eventEntity.getUrl());

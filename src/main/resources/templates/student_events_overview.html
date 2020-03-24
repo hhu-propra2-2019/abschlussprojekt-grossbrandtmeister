@@ -161,20 +161,30 @@
                 <div class="col-12 col-sm-3 col-md-4 mt-2">
                     <form action="#" method="POST">
                         <div th:switch="${event.status}">
+
                             <form action="#" method="POST" th:action="'/personalView'">
-                                <button th:case="UPCOMING" th:value="${event.status}"
-                                        class="btn btn-outline-secondary btn-block" type="submit">
-                                    <input type="hidden" name="name" th:value="${account.getName()}">
-                                    <input type="hidden" name="email" th:value="${account.getEmail()}">
-                                    <input type="hidden" name="eventId" th:value="${event.getId()}">
-                                    anmelden
-                                </button>
+                               <span th:if="${#lists.contains(studentRegisteredForEvent, event.getId())}">
+                                    <button class="btn btn-outline-danger btn-block" disabled type="submit">
+                                        Bereits angemeldet
+                                    </button>
+                                </span>
+                                <span th:unless="${#lists.contains(studentRegisteredForEvent, event.getId())}">
+                                    <button th:case="UPCOMING" th:value="${event.status}"
+                                            class="btn btn-outline-secondary btn-block" type="submit">
+                                        <input type="hidden" name="name" th:value="${account.getName()}">
+                                        <input type="hidden" name="email" th:value="${account.getEmail()}">
+                                        <input type="hidden" name="eventId" th:value="${event.getId()}">
+                                        anmelden
+                                    </button>
+                                    <button th:case="PAST"
+                                            class="btn btn-outline-danger btn-block"
+                                            disabled type="submit">
+                                        Anmeldung nicht mehr möglich
+                                    </button>
+                                </span>
+
                             </form>
-                            <button th:case="*"
-                                    class="btn btn-outline-danger btn-block"
-                                    disabled type="submit">
-                                Anmeldung nicht mehr möglich
-                            </button>
+
                         </div>
                     </form>
                 </div>

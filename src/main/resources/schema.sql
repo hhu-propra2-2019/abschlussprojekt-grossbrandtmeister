@@ -10,6 +10,8 @@ CREATE TABLE event
     description varchar,
     price       double,
     date        datetime,
+    duration    varchar(200),
+    deadline    datetime,
     address     varchar(200),
     venue       varchar(200),
     url         varchar,
@@ -32,6 +34,7 @@ CREATE TABLE student_event
     submitted_summary    boolean,
     url                  varchar(600),
     time_of_submission   datetime,
+    deadline             datetime,
     accepted             boolean,
     used_for_certificate boolean,
     primary key (student, event)

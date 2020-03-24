@@ -9,7 +9,6 @@ import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.email.EmailService;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.services.ModelService;
-import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -21,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @Secured({"ROLE_studentin"})
-@RequestMapping("/rheinjug2/student")
+@RequestMapping("/rheinjug2/student/creditpoints")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class CreditpointController {
 
 
@@ -32,9 +32,9 @@ public class CreditpointController {
 
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public CreditpointController(MeterRegistry registry,
-                               ModelService modelService,
-                               EmailService emailService) {
+  public CreditpointController(final MeterRegistry registry,
+                               final ModelService modelService,
+                               final EmailService emailService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.modelService = modelService;
     this.emailService = emailService;
@@ -45,56 +45,71 @@ public class CreditpointController {
    * Methode die überprüft ob der/die Student/in Zusammenfassungen bei einer EntwickelBar
    * abgegeben hat um CreditPoints zu beantragen.
    */
-  @GetMapping("/creditpoints2")
-  public String getCreditPoints(KeycloakAuthenticationToken token, Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+  @GetMapping("")
+  public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     authenticatedAccess.increment();
 
-    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    String login = principal.getKeycloakSecurityContext().getIdToken().getName();
+    final String login = account.getName();
+    model.addAttribute("eventsExist", modelService.acceptedEventsExist(login));
+    model.addAttribute("events", modelService.getAllEventsForCP(login));
+    model.addAttribute("useForCP", modelService.useEventsIsPossible(login));
+    model.addAttribute("exists", modelService.studentExists(login));
 
-    //  False setzen
-    boolean eventsAreUsable;
+    final boolean eventsAreUsable;
 
     if (modelService.loadStudentByLogin(login) != null) {
-      List<Event> allEventsForCP = modelService.getAllEventsForCP(login);
+      final List<Event> allEventsForCP = modelService.getAllEventsForCP(login);
       model.addAttribute("events", allEventsForCP);
       eventsAreUsable = modelService.checkEventsForCertificate(login);
     } else {
-      eventsAreUsable = true;
+      eventsAreUsable = false;
     }
-    boolean disabled = !eventsAreUsable;
+    final boolean disabled = !eventsAreUsable;
     model.addAttribute("disabled", disabled);
 
     return "credit_points_apply";
-    // CertificateServer Veranstaltungen übergeben ODER überprüfung ob vorhanden
-    // Veranstaltungen auf jeden Fall auf gebucht setzen
-    // sendEmail (java)
   }
 
   /**
    * Post-Formular für die Scheinabgabe.
    */
-  @PostMapping("/certificateform")
-  public String formular(@ModelAttribute("certificateForm") CertificateForm certificateForm,
-                         KeycloakAuthenticationToken token,
-                         Model model) throws MessagingException {
-    Account account = AccountCreator.createAccountFromPrincipal(token);
+  @GetMapping("/certificateform")
+  public String formular(@ModelAttribute("certificateForm") final CertificateForm certificateForm,
+                         final KeycloakAuthenticationToken token,
+                         final Model model) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     this.certificateForm = certificateForm;
     model.addAttribute("certificateForm", certificateForm);
     authenticatedAccess.increment();
 
-    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    String login = principal.getKeycloakSecurityContext().getIdToken().getName();
+    return "credit_points_form";
+  }
+
+  /**
+   * Post-Mapping um PDF zu erzeugen und zu senden.
+   */
+  @PostMapping("/certificateform")
+  public String sendEmail(@ModelAttribute("certificateForm") final CertificateForm certificateForm,
+                          final KeycloakAuthenticationToken token,
+                          final Model model) throws MessagingException {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    this.certificateForm = certificateForm;
+    model.addAttribute("certificateForm", certificateForm);
+    authenticatedAccess.increment();
+
+    final String login = account.getName();
 
     if (modelService.loadStudentByLogin(login) != null
         && modelService.checkEventsForCertificate(login)) {
-      String forename = principal.getKeycloakSecurityContext().getIdToken().getGivenName();
-      String surname = principal.getKeycloakSecurityContext().getIdToken().getFamilyName();
-      String name = forename + " " + surname;
+      final String forename = account.getGivenName();
+      final String surname = account.getFamilyName();
+      final String name = forename + " " + surname;
 
-      List<Event> usableEvents = modelService.getEventsForCertificate(login);
+      final List<Event> usableEvents = modelService.getEventsForCertificate(login);
 
       modelService.useEventsForCertificate(login);
 
@@ -102,9 +117,7 @@ public class CreditpointController {
           certificateForm.getMatNr(), usableEvents);
     }
 
-    System.out.println(certificateForm.getGender() + certificateForm.getMatNr());
-    return "credit_points_form";
+    return "redirect:/rheinjug2/student/creditpoints/";
   }
-
 
 }

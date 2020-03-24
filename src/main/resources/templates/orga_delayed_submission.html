@@ -21,6 +21,18 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
                 integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
                 crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function () {
+                $(".collapse.show").removeClass("show");
+                $(".collapsebtn").css("display", "block");
+                setTimeout(function () {
+                    $("#successmessage").hide(1000);
+                }, 4000);
+                setTimeout(function () {
+                    $("#errormessage").hide(1000);
+                }, 4000);
+            });
+        </script>
 
     </th:block>
 </head>
@@ -33,7 +45,9 @@
                 <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungen Übersicht </a>
             </li>
             <li>
-                <a th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen </a>
+                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen &emsp; &emsp;
+                    <span class=" badge badge-primary badge-pill" th:text="${numberOfEvaluationRequests}">14</span>
+                </a>
             </li>
             <li class="active">
                 <a th:href="@{/rheinjug2/orga/delayedSubmission}"> Verspätete Abgabe hochladen </a>
@@ -43,54 +57,69 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
+    <div id="successmessage" class=" container alert alert-success alert-dismissible"
+         style="padding: 10px;"
+         role="alert" th:text="${successmessage}"
+         th:if="${successmessage != ''}">
+    </div>
+    <div id="errormessage" class=" container alert alert-danger alert-dismissible"
+         style="padding: 10px;"
+         role="alert" th:text="${errormessage}"
+         th:if="${errormessage != ''}">
+    </div>
     <div th:each=" submission : ${delayedsubmissions}">
         <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
-            <div class="row border-bottom  mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center  my-1">
-                    <h3 class="font-weight-bold" th:text="${submission.getEventTitle()}">
-                        Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                    </h3>
+            <form method="POST" th:action="@{/rheinjug2/orga/summaryupload}">
+                <div class="row border-bottom  mx-1 my-1 align-content-center">
+                    <div class="col-12 text-secondary text-center  my-1">
+                        <h3 class="font-weight-bold" th:text="${submission.getEventTitle()}">
+                            Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        </h3>
+                    </div>
                 </div>
-            </div>
-            <div class="row border-bottom  mx-1 my-1">
-                <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Student Name:</span>
-                    <span th:text="${submission.getStudentName()}">&nbsp;Ein Student</span>
+                <div class="row border-bottom  mx-1 my-1">
+                    <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                        <span>Student Name:</span>
+                        <span th:text="${submission.getStudentName()}">&nbsp;Ein Student</span>
+                    </div>
+                    <div class="col-12 col-sm-6 border-right text-secondary my-1">
+                        <span>Abgabe Frist war am:</span>
+                        <span>&nbsp15.03.2020</span>
+                    </div>
                 </div>
-                <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Abgabe Frist war am:</span>
-                    <span >&nbsp15.03.2020</span>
-                </div>
-            </div>
-            <div class=" row mx-1 my-1">
-                <div class="col-12 my-1">
-                    <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
-                            data-target="#inhalt1"
-                            th:data-target="'#inhalt_'+${submission.getStudentId()} + '_' + ${submission.getEventId()}"
-                            aria-expanded="true">
-                        Zusammenfassung jetzt Abgeben
-                    </button>
-                </div>
-            </div>
-            <div id="inhalt1" th:id="'inhalt_'+${submission.getStudentId()} + '_' + ${submission.getEventId()}"
-                 class="collapse">
-                <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
+                <div class=" row mx-1 my-1 collapsebtn" style="display: none">
                     <div class="col-12 my-1">
-                        <span>Inhalt</span>
-                    </div>
-                    <div class="col-12 my-1 mb-2">
-                    <textarea class="input-group" placeholder="Zusammenfassung hier schreiben"
-                              rows="12"></textarea>
-                    </div>
-                </div>
-                <div class=" row mx-1 my-1 ">
-                    <div class="col-12 my-1 mb-2">
-                        <form action="#" method="Get">
-                            <button class="btn btn-success btn-block" type="submit">Zusammenfassung als akzeptiert hochladen</button>
-                        </form>
+                        <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
+                                data-target="#inhalt1"
+                                th:data-target="'#inhalt_'+${submission.getStudentId()} + '_' + ${submission.getEventId()}"
+                                aria-expanded="true">
+                            Zusammenfassung jetzt Abgeben
+                        </button>
                     </div>
                 </div>
-            </div>
+                <div id="inhalt1" th:id="'inhalt_'+${submission.getStudentId()} + '_' + ${submission.getEventId()}"
+                     class="collapse show">
+                    <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
+                        <div class="col-12 my-1">
+                            <span>Inhalt</span>
+                        </div>
+                        <div class="col-12 my-1 mb-2">
+                    <textarea class="input-group" name="summaryContent" placeholder="Zusammenfassung hier schreiben"
+                              rows="12" th:value="${submission.summaryContent}"></textarea>
+                        </div>
+                    </div>
+                    <input type="hidden" th:name="studentId" th:value="${submission.getStudentId()}">
+                    <input type="hidden" th:name="eventId" th:value="${submission.getEventId()}">
+                    <input type="hidden" th:name="studentName" th:value="${submission.getStudentName()}">
+                    <div class=" row mx-1 my-1 ">
+                        <div class="col-12 my-1 mb-2">
+                            <button class="btn btn-success btn-block" type="submit">Zusammenfassung als akzeptiert
+                                hochladen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </main>

@@ -43,7 +43,7 @@ public class Event {
   @JsonProperty("created")
   private Long created;
   @JsonProperty("duration")
-  private Long duration;
+  private final Long duration = 0L;
   @JsonProperty("fee")
   private Fee fee;
   @JsonProperty("id")
