@@ -20,6 +20,7 @@ import mops.rheinjug2.Account;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.services.ModelService;
+import mops.rheinjug2.services.SubmissionStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
@@ -58,6 +59,31 @@ class StudentControllerTest {
   }
 
   @Test
+  void testGetPersonal() throws Exception {
+    final Set<String> roles = new HashSet<>();
+    roles.add("studentin");
+    final Account account = new Account("name", "User@email.de", "image", roles,
+        "givenname", "familyname");
+    setupTokenMock(account);
+
+    final Event event1 = new Event();
+    event1.setDate(LocalDateTime.now());
+    event1.setType("Entwickelbar");
+    event1.setTitle("Entwickelbar");
+    event1.setDuration(Duration.ofHours(1));
+    final Map<Event, SubmissionStatus> map = new HashMap<>();
+    map.put(event1, SubmissionStatus.UPCOMING);
+    when(modelService.studentExists(anyString())).thenReturn(true);
+    when(modelService.getAllEventsPerStudent(anyString())).thenReturn(map);
+
+    final String eventId = "123";
+    mvc.perform(get("/rheinjug2/student/visitedevents"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("personalView"));
+  }
+
+  @Test
+  void testReportsubmitAdmisionStudent() throws Exception {
   void testReportsubmitAdmissionStudent() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
@@ -86,6 +112,31 @@ class StudentControllerTest {
     mvc.perform(get("/rheinjug2/student/reportsubmit").param("eventId", eventId))
         .andExpect(status().isForbidden());
   }
+
+  @Test
+  void testGetPersonal() throws Exception {
+    final Set<String> roles = new HashSet<>();
+    roles.add("studentin");
+    final Account account = new Account("name", "User@email.de", "image", roles,
+        "givenname", "familyname");
+    setupTokenMock(account);
+
+    final Event event1 = new Event();
+    event1.setDate(LocalDateTime.now());
+    event1.setType("Entwickelbar");
+    event1.setTitle("Entwickelbar");
+    event1.setDuration(Duration.ofHours(1));
+    final Map<Event, SubmissionStatus> map = new HashMap<>();
+    map.put(event1, SubmissionStatus.UPCOMING);
+    when(modelService.studentExists(anyString())).thenReturn(true);
+    when(modelService.getAllEventsPerStudent(anyString())).thenReturn(map);
+
+    final String eventId = "123";
+    mvc.perform(get("/rheinjug2/student/visitedevents"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("personalView"));
+  }
+
 
   @Test
   void testStudentEventsOverviewAdmissionStudent() throws Exception {
