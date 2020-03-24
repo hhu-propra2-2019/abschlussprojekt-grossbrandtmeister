@@ -87,8 +87,11 @@ public class CreditpointController {
     return "credit_points_form";
   }
 
+  /**
+   * Post-Mapping um PDF zu erzeugen und zu senden.
+   */
   @PostMapping("/certificateform")
-  public String formular2(@ModelAttribute("certificateForm") CertificateForm certificateForm,
+  public String sendEmail(@ModelAttribute("certificateForm") CertificateForm certificateForm,
                           KeycloakAuthenticationToken token,
                           Model model) throws MessagingException {
     Account account = AccountCreator.createAccountFromPrincipal(token);
