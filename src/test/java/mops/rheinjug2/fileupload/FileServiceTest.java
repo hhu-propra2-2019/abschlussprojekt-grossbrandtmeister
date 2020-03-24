@@ -45,8 +45,6 @@ class FileServiceTest {
       .withEnv("MINIO_SECRET_KEY", SECRET_KEY)
       .withCommand("server /data")
       .withExposedPorts(9000);
-  //.withNetworkAliases("minio-" + Base58.randomString(6)
-  //.withClasspathResourceMapping("minio.conf","/mnt/data:/data ",BindMode.READ_ONLY);
 
   private transient FileService fileService;
 
@@ -80,8 +78,6 @@ class FileServiceTest {
     minioClient.makeBucket(bucketName);
     assertTrue(minioClient.bucketExists(bucketName));
   }
-}
-
 
   /*
   @Test
@@ -145,7 +141,7 @@ class FileServiceTest {
         Charset.forName("UTF-8")));
     final String filename = "filenameInputstreamIsSame";
     minioClient.putObject("großbrandmeister", filename,
-        testInputStream, null, null, null, null;
+        testInputStream, null, null, null, null);
     final InputStream minioInputsream = fileService.getFileInputStream(filename);
     assertEquals(testInputStream, minioInputsream);
     minioInputsream.close();
@@ -210,4 +206,4 @@ class FileServiceTest {
     assertEquals(testContentInHtml, testString);
   }
   */
-
+}
