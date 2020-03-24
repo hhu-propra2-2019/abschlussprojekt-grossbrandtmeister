@@ -63,21 +63,6 @@ public class StudentController {
   }
 
   /**
-   * Formular zum Beantragen von Credit-Points.
-   */
-  @GetMapping("/creditpoints")
-  public String getCreditPoints(final KeycloakAuthenticationToken token, final Model model) {
-    final Account account = AccountCreator.createAccountFromPrincipal(token);
-    model.addAttribute("account", account);
-    model.addAttribute("eventsExist", modelService.acceptedEventsExist(account.getName()));
-    model.addAttribute("events", modelService.getAllEventsForCP(account.getName()));
-    model.addAttribute("useForCP", modelService.useEventsIsPossible(account.getName()));
-    model.addAttribute("exists", modelService.studentExists(account.getName()));
-    authenticatedAccess.increment();
-    return "credit_points_apply";
-  }
-
-  /**
    * Formular zur Einreichung der Zusammenfassung.
    * Das Summary-Objekt muss noch auf die Angaben des jeweiligen Events aus
    * der Datenbank angepasst werden.

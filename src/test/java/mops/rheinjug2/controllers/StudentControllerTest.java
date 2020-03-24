@@ -143,4 +143,17 @@ class StudentControllerTest {
         .name("student_events_overview"));
 
   }
+
+  @Test
+  void testStudentEventsOverviewNoAdmissionOrga() throws Exception {
+    final Set<String> roles = new HashSet<>();
+    roles.add("orga");
+    final Account account = new Account("name", "User@email.de", "image", roles,
+        "givenname", "familyname");
+    setupTokenMock(account);
+
+    mvc.perform(get("/rheinjug2/student/events"))
+        .andExpect(status().isForbidden());
+
+  }
 }
