@@ -52,7 +52,7 @@ public class StudentController {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     model.addAttribute("events", modelService.getAllEvents());
-    model.addAttribute("studentRegisteredForEvent", modelService.getAllEventIdsPerStudent(account));
+    model.addAttribute("studentRegisteredForEvent", modelService.getAllEventIdsPerStudent(account.getName()));
     authenticatedAccess.increment();
     return "student_events_overview";
   }
