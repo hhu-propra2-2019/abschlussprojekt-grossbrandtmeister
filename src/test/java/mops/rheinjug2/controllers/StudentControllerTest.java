@@ -77,10 +77,21 @@ class StudentControllerTest {
     when(modelService.studentExists(anyString())).thenReturn(true);
     when(modelService.getAllEventsPerStudent(anyString())).thenReturn(map);
 
-    final String eventId = "123";
     mvc.perform(get("/rheinjug2/student/visitedevents"))
         .andExpect(status().isOk())
         .andExpect(view().name("personalView"));
+  }
+
+  @Test
+  void testGetPersonalOrga() throws Exception {
+    final Set<String> roles = new HashSet<>();
+    roles.add("orga");
+    final Account account = new Account("name", "User@email.de", "image", roles,
+        "givenname", "familyname");
+    setupTokenMock(account);
+
+    mvc.perform(get("/rheinjug2/student/visitedevents"))
+        .andExpect(status().isForbidden());
   }
 
   @Test
