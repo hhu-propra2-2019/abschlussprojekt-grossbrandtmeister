@@ -8,7 +8,6 @@ import static org.testcontainers.Testcontainers.exposeHostPorts;
 import io.minio.MinioClient;
 import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidPortException;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -31,7 +29,7 @@ import org.testcontainers.utility.Base58;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(initializers = {FileServiceTest.MinioInitializer.class}, classes = {FileConfiguration.class})
+@ContextConfiguration(classes = {FileService.class,FileCheckService.class,FileConfiguration.class})
 @Testcontainers
 class FileServiceTest {
 
@@ -45,7 +43,7 @@ class FileServiceTest {
   static GenericContainer minioServer = new GenericContainer<>("minio/minio")
       .withEnv("MINIO_ACCESS_KEY", ACCESS_KEY)
       .withEnv("MINIO_SECRET_KEY", SECRET_KEY)
-      .withCommand("server", "/data")
+      .withCommand("server /data")
       .withExposedPorts(9000);
   //.withNetworkAliases("minio-" + Base58.randomString(6)
   //.withClasspathResourceMapping("minio.conf","/mnt/data:/data ",BindMode.READ_ONLY);
@@ -81,20 +79,6 @@ class FileServiceTest {
     final String bucketName = "foo";
     minioClient.makeBucket(bucketName);
     assertTrue(minioClient.bucketExists(bucketName));
-  }
-
-  static class MinioInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-    @Override
-    public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-      minioServer.start();
-      TestPropertyValues.of(
-          "minio.bucket.name=" + "grossbrandtmeister",
-          "minio.default.folder=" + "/",
-          "minio.access.name="+ ACCESS_KEY,
-          "minio.access.secret=" + SECRET_KEY,
-          "minio.url=" + minioServerUrl
-      ).applyTo(configurableApplicationContext.getEnvironment());
-    }
   }
 }
 
