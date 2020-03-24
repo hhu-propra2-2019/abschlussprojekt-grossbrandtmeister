@@ -33,7 +33,7 @@ public class Student {
    * Event hinzufügen.
    */
   public void addEvent(final Event event) {
-    events.add(new EventRef(event.getId()));
+    events.add(new EventRef(event.getId(), event.getDeadline()));
   }
   
   /**
