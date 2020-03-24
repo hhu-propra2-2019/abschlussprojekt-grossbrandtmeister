@@ -56,7 +56,7 @@ public class StudentController {
     modelService.acceptSummary((long) 1, account.getName());
     model.addAttribute("account", account);
     model.addAttribute("events", modelService.getAllEvents());
-    model.addAttribute("studentRegisteredForEvent", modelService.getAllEventIdsPerStudent(account));
+    model.addAttribute("studentRegisteredForEvent", modelService.getAllEventIdsPerStudent(account.getName()));
     authenticatedAccess.increment();
     return "student_events_overview";
   }

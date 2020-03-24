@@ -77,8 +77,8 @@ public class ModelService {
    * Alle Ids der Veranstaltungen, für die sich ein Student angemeldet hat,
    * werden zurückgegeben.
    */
-  public List<Long> getAllEventIdsPerStudent(Account account) {
-    Map<Event, SubmissionStatus> getAllEventsPerStudent = getAllEventsPerStudent(account.getName());
+  public List<Long> getAllEventIdsPerStudent(String login) {
+    Map<Event, SubmissionStatus> getAllEventsPerStudent = getAllEventsPerStudent(login);
     List<Long> eventsFromStudent = new ArrayList<>();
     for (Event s : getAllEventsPerStudent.keySet()) {
       eventsFromStudent.add(s.getId());

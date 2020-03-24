@@ -2,11 +2,17 @@ package mops.rheinjug2.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
+import static org.mockito.Mockito.when;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import mops.rheinjug2.Account;
+import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
@@ -17,6 +23,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.adapters.OidcKeycloakAccount;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.representations.AccessToken;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -33,6 +46,23 @@ public class ModelServiceTest {
   private transient StudentRepository studentRepository;
 
   private transient ModelService modelService;
+
+  @Mock
+  private static KeycloakAuthenticationToken keycloakAuthenticationToken;
+
+  @Mock
+  private static OidcKeycloakAccount keycloakAccount;
+
+  @Mock
+  private static KeycloakPrincipal<KeycloakSecurityContext> keycloakPrincipal;
+
+  @Mock
+  private static KeycloakSecurityContext keycloakSecurityContext;
+
+  @Mock
+  private static AccessToken accessToken;
+
+  private static final Set<String> roles = new HashSet<>();
 
   @BeforeEach
   public void init() {
@@ -152,6 +182,29 @@ public class ModelServiceTest {
         entry(eventWithSubmissionAccepted, SubmissionStatus.SUBMITTED_ACCEPTED),
         entry(eventWithSubmissionNotAccepted,
             SubmissionStatus.SUBMITTED_NOT_ACCEPTED));
+
+  }
+
+  @Test
+  public void testGetAllEventIdsPerStudent(){
+
+    final Event eventUpcoming = createAndSaveEvent("Veranstaltung Java");
+    eventUpcoming.setDate(LocalDateTime.now().plusDays(1));
+    eventUpcoming.setStatus("Upcoming");
+
+    final Event eventOpen = createAndSaveEvent("Veranstaltung Java2");
+    eventOpen.setDate(LocalDateTime.now());
+    eventOpen.setStatus("Past");
+
+    final List<Event> events = List.of(eventOpen, eventUpcoming);
+    eventRepository.saveAll(events);
+
+    final Student student = createAndSaveStudent("test120", "test120@hhu.de");
+    addEventsToStudent(events, student);
+    studentRepository.save(student);
+
+    assertThat(modelService.getAllEventIdsPerStudent(student.getLogin()))
+               .containsExactlyInAnyOrder(events.get(0).getId(), events.get(1).getId());
 
   }
 
