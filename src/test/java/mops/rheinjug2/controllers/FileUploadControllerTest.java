@@ -40,6 +40,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@DisplayName("Testing FileUploadcontoller")
 class FileUploadControllerTest {
   @Autowired
   private MockMvc mvc;
@@ -61,7 +62,6 @@ class FileUploadControllerTest {
         .build();
   }
 
-  @DisplayName("Test token Name")
   @Test
   void testUploadMulitpartfileWithTokenName() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -86,9 +86,8 @@ class FileUploadControllerTest {
             "You successfully uploaded " + filename + '!'));
   }
 
-  @DisplayName("Multiplipartfile Upload works with correct crsf token")
   @Test
-  void testUploadMulitpartfile() throws Exception {
+  void testUploadMulitpartfileWithRightCrfIsFound() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
     final Account account = new Account("name", "User@email.de", "image", roles,
@@ -106,7 +105,7 @@ class FileUploadControllerTest {
         .andExpect(status().isFound());
   }
 
-  @DisplayName("Test if summarysubmit in report_submit.html works")
+
   @Test
   void testSummarysubmitWithoutIdgetMessageTorReturnToVisitevents() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -123,7 +122,7 @@ class FileUploadControllerTest {
                 + "and choose which event you want to give your summary"));
   }
 
-  @DisplayName("Test if summarysubmit in report_submit.html works")
+
   @Test
   void testSummarysubmitWithEventIdIncluded() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -139,9 +138,9 @@ class FileUploadControllerTest {
             "You successfully uploaded the form !"));
   }
 
-  @DisplayName("Redirect to view works, still need to check attributes!")
+
   @Test
-  void testUploadTestExpectedViewReportsubmitWithoutEventId() throws Exception {
+  void testUploadFileExpectedViewReportsubmitWithoutEventId() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
     final Account account = new Account("name", "User@email.de", "image", roles,
@@ -160,7 +159,7 @@ class FileUploadControllerTest {
         .andExpect(view().name("redirect:/rheinjug2/student/reportsubmit"));
   }
 
-  @DisplayName("Redirect to view report_submit with correct eventId passed")
+
   @Test
   void testUploadTestRedirectWithEventId() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -182,7 +181,56 @@ class FileUploadControllerTest {
         .andExpect(view().name("redirect:/rheinjug2/student/reportsubmit?eventId=" + eventId));
   }
 
-  @DisplayName("Content of Downloaded Presentfile is Correct")
+  @Test
+  void downloadFileByEvent_IdContenIsCorrect() throws Exception {
+    final Set<String> roles = new HashSet<>();
+    roles.add("studentin");
+    final Account account = new Account("name", "User@email.de", "image", roles,
+        "givenname", "familyname");
+    setupTokenMock(account);
+
+    final String content = "Versuche diesen Text downzuloaden";
+    final InputStream inputStream = new ByteArrayInputStream(content.getBytes(
+        Charset.forName("UTF-8")));
+
+    when(fileService.getFileInputStream(anyString())).thenReturn(inputStream);
+
+    String eventId = "123";
+    final MvcResult result = mvc.perform(get("/rheinjug2/download/file").param("eventId", eventId))
+        .andExpect(status().isOk()).andReturn();
+    final String resultcontent = result.getResponse().getContentAsString();
+
+    assertEquals(content, resultcontent);
+
+    inputStream.close();
+  }
+
+  @Test
+  void downloadFileByvent_IdFileNameIsCorrect() throws Exception {
+    final Set<String> roles = new HashSet<>();
+    roles.add("studentin");
+    String name = "Johanna Steiner";
+    final Account account = new Account(name, "User@email.de", "image", roles,
+        "givenname", "familyname");
+    setupTokenMock(account);
+
+    final String content = "Versuche diesen Text downzuloaden";
+    final InputStream inputStream = new ByteArrayInputStream(content.getBytes(
+        Charset.forName("UTF-8")));
+
+    when(fileService.getFileInputStream(anyString())).thenReturn(inputStream);
+
+    String eventId = "123";
+    final MvcResult result = mvc.perform(get("/rheinjug2/download/file").param("eventId", eventId))
+        .andExpect(status().isOk()).andReturn();
+    final String resultcontent = result.getResponse().getHeader("Content-disposition");
+    String nameOfFile = name + "_" + eventId + ".md";
+
+    assertEquals("attachment;filename=" + nameOfFile, resultcontent);
+
+    inputStream.close();
+  }
+
   @Test
   void downloadPresentationFileAndCheckContent() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -207,7 +255,6 @@ class FileUploadControllerTest {
   }
 
   @Test
-  @DisplayName("Name of Downloaded Presentfile is Correct")
   void downloadPresentationFileAndCheckIfNameISCorrect() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
@@ -229,7 +276,7 @@ class FileUploadControllerTest {
     inputStream.close();
   }
 
-  @DisplayName("Able to download Presentation File")
+
   @Test
   void downloadPresentationFileStatusIsOkay() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -240,14 +287,15 @@ class FileUploadControllerTest {
 
     final InputStream testInputStream = new ByteArrayInputStream("testcontent".getBytes(
         Charset.forName("UTF-8")));
+
     when(fileService.getFileInputStream(anyString())).thenReturn(testInputStream);
 
     mvc.perform(get("/rheinjug2/download/presentation"))
         .andExpect(status().isOk());
+
     testInputStream.close();
   }
 
-  @DisplayName("Just with right token, you have access to Uploading Files in Summarysubmit")
   @Test
   void testFileUploadSummarySubmitWithValidCsrf() throws Exception {
     mvc.perform(post("/rheinjug2/student/summarysubmit")
@@ -255,7 +303,6 @@ class FileUploadControllerTest {
         .andExpect(status().isFound());
   }
 
-  @DisplayName("Wrong token, no access to Uploading Files in Summarysubmit")
   @Test
   void testFileUploadSummarySubmitWithInvalidCsrf() throws Exception {
     mvc.perform(post("/rheinjug2/student/summarysubmit")
@@ -263,7 +310,6 @@ class FileUploadControllerTest {
         .andExpect(status().isForbidden());
   }
 
-  @DisplayName("Wrong token, no access to Uploading Files in Reportsubmit")
   @Test
   void testFileUploadReportSubmitWithInvalidCsrf() throws Exception {
     mvc.perform(post("/rheinjug2/student/reportsubmit")
@@ -271,9 +317,8 @@ class FileUploadControllerTest {
         .andExpect(status().isForbidden());
   }
 
-  @DisplayName("Multiplipartfile Upload works with correct crsf token")
   @Test
-  void testUploadMulitpartfileWithInvalidCrf() throws Exception {
+  void testUploadMultitpartFileWithInvalidCrf() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
     final Account account = new Account("name", "User@email.de", "image", roles,
