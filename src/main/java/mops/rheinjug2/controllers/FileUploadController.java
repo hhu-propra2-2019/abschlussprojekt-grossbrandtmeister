@@ -39,9 +39,10 @@ public class FileUploadController {
 
   static final String Veranstaltung = "Veranstaltung";
 
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
   @Autowired
-  public FileUploadController(final FileService fileService,
-                              final MeterRegistry registry, final ModelService modelService) {
+  public FileUploadController(FileService fileService,
+                              MeterRegistry registry, ModelService modelService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
     this.modelService = modelService;
@@ -51,10 +52,10 @@ public class FileUploadController {
    * Gibt das File an den FileService weiter um das File zu speichern.
    */
   @PostMapping(path = "/student/reportsubmit")
-  public String uploadFile(final KeycloakAuthenticationToken token,
-                           final RedirectAttributes attributes,
-                           @RequestParam(value = "file") final MultipartFile file,
-                           final Long eventId) {
+  public String uploadFile(KeycloakAuthenticationToken token,
+                           RedirectAttributes attributes,
+                           @RequestParam(value = "file") MultipartFile file,
+                           Long eventId) {
     if (eventId == null) {
       attributes.addFlashAttribute("message", "You did not choose an event."
           + "Go to your personal event side and choose for which event "
@@ -63,16 +64,16 @@ public class FileUploadController {
     }
     if (fileCheckService.checkIfIsMarkdown(file)) {
       try {
-        final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-        final String username = principal.getName();
+        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        String username = principal.getName();
         if (!username.isEmpty()) {
           modelService.submitSummary(username, eventId);
-          final String filename = username + "_" + eventId;
+          String filename = username + "_" + eventId;
           fileService.uploadFile(file, filename);
           attributes.addFlashAttribute("message",
               "You successfully uploaded " + filename + '!');
         }
-      } catch (final Exception e) {
+      } catch (Exception e) {
         log.catching(e);
         attributes.addFlashAttribute("message",
             "Your file was not able to be uploaded ");
@@ -90,9 +91,9 @@ public class FileUploadController {
    * um das File zu speichern.
    */
   @PostMapping(path = "/student/summarysubmit")
-  public String useForm(final KeycloakAuthenticationToken token,
-                        final RedirectAttributes attributes, final Summary summary,
-                        final Long eventId) {
+  public String useForm(KeycloakAuthenticationToken token,
+                        RedirectAttributes attributes, Summary summary,
+                        Long eventId) {
     if (eventId == null) {
       attributes.addFlashAttribute("message", "You did not choose an event."
           + "Go to your personal event side and choose for which event "
@@ -100,17 +101,17 @@ public class FileUploadController {
       return "redirect:/rheinjug2/student/reportsubmit";
     }
     try {
-      final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-      final String username = principal.getName();
+      KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+      String username = principal.getName();
       if (!username.isEmpty()) {
         modelService.submitSummary(username, eventId);
-        final String filename = username + "_" + eventId;
+        String filename = username + "_" + eventId;
         fileService.uploadContentConvertToMd(summary.getContent(), filename);
         attributes.addFlashAttribute("message",
             "You successfully uploaded the form !");
       }
 
-    } catch (final Exception e) {
+    } catch (Exception e) {
       log.catching(e);
       attributes.addFlashAttribute("message",
           "Your file was not able to be uploaded ");
@@ -125,21 +126,21 @@ public class FileUploadController {
    */
   @RequestMapping("/download/file")
   @ResponseBody
-  public void downloadFilebyToken(final KeycloakAuthenticationToken token,
-                                  final HttpServletResponse response, final Long eventId)
+  public void downloadFilebyToken(KeycloakAuthenticationToken token,
+                                  HttpServletResponse response, Long eventId)
       throws IOException {
 
 
-    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    final String username = principal.getName();
+    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    String username = principal.getName();
     if (!username.isEmpty()) {
-      final String filename = username + "_" + eventId;
-      try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
+      String filename = username + "_" + eventId;
+      try (InputStream inputStream = fileService.getFileInputStream(filename)) {
         response.addHeader("Content-disposition", "attachment;filename=" + filename + ".md");
         response.setContentType(URLConnection.guessContentTypeFromName(filename));
         IOUtils.copy(inputStream, response.getOutputStream());
         response.flushBuffer();
-      } catch (final Exception e) {
+      } catch (Exception e) {
         log.catching(e);
       }
     } else {
@@ -154,17 +155,17 @@ public class FileUploadController {
    */
   @RequestMapping("/download/presentation")
   @ResponseBody
-  public void downloadPResentationforSummary(final KeycloakAuthenticationToken token,
-                                             final HttpServletResponse response)
+  public void downloadPResentationforSummary(KeycloakAuthenticationToken token,
+                                             HttpServletResponse response)
       throws IOException {
 
     final String filename = "VorlageZusammenfassung.md";
-    try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
+    try (InputStream inputStream = fileService.getFileInputStream(filename)) {
       response.addHeader("Content-disposition", "attachment;filename=" + filename);
       response.setContentType(URLConnection.guessContentTypeFromName(filename));
       IOUtils.copy(inputStream, response.getOutputStream());
       response.flushBuffer();
-    } catch (final Exception e) {
+    } catch (Exception e) {
       response.sendError(404, "File not found");
     }
     authenticatedAccess.increment();

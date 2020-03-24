@@ -15,6 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+@SuppressWarnings("checkstyle:LineLength")
 @Service
 @Log4j2
 public class EmailService {
@@ -24,7 +25,9 @@ public class EmailService {
   private final transient String recipient;
 
 
-  public EmailService(CertificateService certificateService, JavaMailSender emailSender, @Value("${email.recipient}") String recipient) {
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  public EmailService(CertificateService certificateService,
+                      JavaMailSender emailSender, @Value("${email.recipient}") String recipient) {
     this.certificateService = certificateService;
     this.emailSender = emailSender;
     this.recipient = recipient;
