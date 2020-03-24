@@ -6,6 +6,11 @@
     <title>Name des Subsystems</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+              integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+              crossorigin="anonymous"
+              th:remove="all">
+        <link rel="stylesheet" href="https://icono-49d6.kxcdn.com/icono.min.css" th:remove="all">
         <link rel="stylesheet" href="../static/css/main.css" th:href="@{/css/main.css}">
     </th:block>
 
@@ -31,227 +36,349 @@
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
     <h1 class="text-center text-secondary">Belegte Veranstaltungen</h1>
-    <div>
-        <div class="container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
-            <div class="row border-bottom  mx-1 my-1">
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <i class="icono-calendar"></i>
-                            <span class="text-success">&nbsp;13.03.2020</span>
+    <div th:if="${exists}">
+        <div th:remove="all-but-first" th:each="eventAndStatus : ${studentEvents}">
+            <div class="container bg-light rounded shadow "
+                 style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+                <div class="row border-bottom  mx-1 my-1">
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="icono-calendar"></i>
+                                <span class="text-success"
+                                      th:text="${#temporals.format(eventAndStatus.key.date.toLocalDate(), 'yyyy.MM.dd')}">&nbsp;13.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-time-clock.png"
+                                     th:src="@{/icons/icon-time-clock.png}" style="width: 32px;height: 28px;">
+                                <span>&nbsp;Abgabefrist</span>
+                                <span th:text="${eventAndStatus.key.getDeadlineDate()}">&nbsp;13.03.2020</span>
+                                <span th:text="${eventAndStatus.key.getDeadlineTime()}">&nbsp;19:30</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4  my-1">
+                        <div class="row ">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-credit-points.png"
+                                     th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
+                                <span class="text-secondary">
+                                    <span th:if="${eventAndStatus.key.type == 'Abendveranstaltung'}">
+                                    &nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span>
+                                    </span>
+                                <span th:if="${eventAndStatus.key.type == 'EntwickelBar'}">
+                                    &nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <img src="/icons/icon-time-clock.png" style="width: 32px;height: 28px;">
-                            <span>&nbsp;Abgabefrist</span>
-                            <span>&nbsp;13.03.2020</span>
-                        </div>
+                <div class="row border-bottom  mx-1 my-1 align-content-center">
+                    <div class="col-12 text-secondary text-center  my-1">
+                        <h2 class="font-weight-bold" th:text="${eventAndStatus.key.title}">
+                            Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        </h2>
                     </div>
                 </div>
-                <div class="col-12 col-sm-4  my-1">
-                    <div class="row ">
-                        <div class="col-12">
-                            <img src="/icons/icon-credit-points.png" style="width: 32px;height: 28px;">
-                            <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                <div th:switch="${eventAndStatus.value}">
+                    <div th:case="${T(mops.rheinjug2.services.SubmissionStatus).OPEN_FOR_SUBMISSION}">
+                        <div class="row text-light justify-content-around mx-1 ">
+                            <div class="col-12 mt-2">
+                                <a class="btn btn-outline-success btn-block" href="/rheinjug2/student/reportsubmit"
+                                   role="button"
+                                   th:href="@{/rheinjug2/student/reportsubmit(eventId=${eventAndStatus.key.id})}">
+                                    Zusammenfassung abgeben
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:case="${T(mops.rheinjug2.services.SubmissionStatus).UPCOMING}">
+                        <div class="row text-light justify-content-around mx-1 ">
+                            <div class="col-12 mt-2">
+                                <div class="alert alert-warning text-center">
+                                    Veranstaltung steht an
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:case="${T(mops.rheinjug2.services.SubmissionStatus).SUBMITTED_NOT_ACCEPTED}">
+                        <div class="row text-light justify-content-around mx-1 ">
+                            <div class="col-12 mt-2">
+                                <div class="alert alert-info text-center">
+                                    Zusammenfassung wird bewertet
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:case="${T(mops.rheinjug2.services.SubmissionStatus).SUBMITTED_ACCEPTED}">
+                        <div class="row text-light justify-content-around mx-1 ">
+                            <div class="col-12 mt-2">
+                                <div class="alert alert-success text-center">
+                                    Zusammenfassung ist akzeptiert
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:case="${T(mops.rheinjug2.services.SubmissionStatus).NO_SUBMISSION}">
+                        <div class="row text-light justify-content-around mx-1 ">
+                            <div class="col-12 mt-2">
+                                <div class="alert alert-danger text-center">
+                                    Abgabe ist nicht mehr möglich
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center  my-1">
-                    <h2 class="font-weight-bold">
-                        Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                    </h2>
+
+
+            <div class="container bg-light rounded shadow "
+                 style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+                <div class="row border-bottom  mx-1 my-1">
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="icono-calendar"></i>
+                                <span class="text-success">&nbsp;13.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-time-clock.png"
+                                     th:src="@{/icons/icon-time-clock.png}" style="width: 32px;height: 28px;">
+                                <span>&nbsp;Abgabefrist</span>
+                                <span>&nbsp;13.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4  my-1">
+                        <div class="row ">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-credit-points.png"
+                                     th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
+                                <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row border-bottom  mx-1 my-1 align-content-center">
+                    <div class="col-12 text-secondary text-center  my-1">
+                        <h2 class="font-weight-bold">
+                            Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        </h2>
+                    </div>
+                </div>
+                <div class="row text-light justify-content-around mx-1 ">
+                    <div class="col-12 mt-2">
+                        <a class="btn btn-outline-success btn-block" href="/rheinjug2/student/reportsubmit"
+                           role="button">
+                            Zusammenfassung abgeben
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="row text-light justify-content-around mx-1 ">
-                <div class="col-12 mt-2">
-                    <a class="btn btn-outline-success btn-block"
-                       th:href="@{/rheinjug2/student/reportsubmit(eventId=${eventId})}" href="#" role="button">
-                        Zusammenfassung abgeben
-                    </a>
+
+            <div class="container bg-light rounded shadow "
+                 style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+                <div class="row border-bottom  mx-1 my-1">
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="icono-calendar"></i>
+                                <span class="text-danger">&nbsp;13.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-time-clock.png"
+                                     th:src="@{/icons/icon-time-clock.png}" style="width: 32px;height: 28px;">
+                                <span>&nbsp;Abgabefrist</span>
+                                <span>&nbsp;13.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4  my-1">
+                        <div class="row ">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-credit-points.png"
+                                     th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
+                                <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row border-bottom  mx-1 my-1 align-content-center">
+                    <div class="col-12 text-secondary text-center  my-1">
+                        <h2 class="font-weight-bold">
+                            Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        </h2>
+                    </div>
+                </div>
+                <div class="row text-light justify-content-around mx-1 ">
+                    <div class="col-12 mt-2">
+                        <div class="alert alert-danger text-center">
+                            Zusammenfassung abgebe ist noch nicht möglich
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container bg-light rounded shadow "
+                 style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+                <div class="row border-bottom  mx-1 my-1">
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="icono-calendar"></i>
+                                <span>&nbsp;13.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-time-clock.png"
+                                     th:src="@{/icons/icon-time-clock.png}" style="width: 32px;height: 28px;">
+                                <span>&nbsp;Abgabefrist</span>
+                                <span class="text-danger">&nbsp;05.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4  my-1">
+                        <div class="row ">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-credit-points.png"
+                                     th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
+                                <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row border-bottom  mx-1 my-1 align-content-center">
+                    <div class="col-12 text-secondary text-center  my-1">
+                        <h2 class="font-weight-bold">
+                            Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        </h2>
+                    </div>
+                </div>
+                <div class="row text-light justify-content-around mx-1 ">
+                    <div class="col-12 mt-2">
+                        <div class="alert alert-danger text-center">
+                            Zusammenfassung abgebe ist nicht mehr möglich
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container bg-light rounded shadow "
+                 style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+                <div class="row border-bottom  mx-1 my-1">
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="icono-calendar"></i>
+                                <span>&nbsp;13.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-time-clock.png"
+                                     th:src="@{/icons/icon-time-clock.png}" style="width: 32px;height: 28px;">
+                                <span>&nbsp;Abgabefrist</span>
+                                <span>&nbsp;05.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4  my-1">
+                        <div class="row ">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-credit-points.png"
+                                     th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
+                                <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row border-bottom  mx-1 my-1 align-content-center">
+                    <div class="col-12 text-secondary text-center  my-1">
+                        <h2 class="font-weight-bold">
+                            Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        </h2>
+                    </div>
+                </div>
+                <div class="row text-light justify-content-around mx-1 ">
+                    <div class="col-12 mt-2">
+                        <div class="alert alert-info text-center">
+                            Zusammenfassung wird bewertet
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container bg-light rounded shadow "
+                 style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+                <div class="row border-bottom  mx-1 my-1">
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="icono-calendar"></i>
+                                <span>&nbsp;13.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4 border-right text-secondary my-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-time-clock.png"
+                                     th:src="@{/icons/icon-time-clock.png}" style="width: 32px;height: 28px;">
+                                <span>&nbsp;Abgabefrist</span>
+                                <span>&nbsp;05.03.2020</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4  my-1">
+                        <div class="row ">
+                            <div class="col-12">
+                                <img src="../../static/icons/icon-credit-points.png"
+                                     th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
+                                <span class="text-success">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row border-bottom  mx-1 my-1 align-content-center">
+                    <div class="col-12 text-secondary text-center  my-1">
+                        <h2 class="font-weight-bold">
+                            Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        </h2>
+                    </div>
+                </div>
+                <div class="row text-light justify-content-around mx-1 ">
+                    <div class="col-12 mt-2">
+                        <div class="alert alert-success text-center">
+                            Zusammenfassung wurde genehmigt
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
-            <div class="row border-bottom  mx-1 my-1">
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <i class="icono-calendar"></i>
-                            <span class="text-danger">&nbsp;13.03.2020</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <img src="/icons/icon-time-clock.png" style="width: 32px;height: 28px;">
-                            <span>&nbsp;Abgabefrist</span>
-                            <span>&nbsp;13.03.2020</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-4  my-1">
-                    <div class="row ">
-                        <div class="col-12">
-                            <img src="/icons/icon-credit-points.png" style="width: 32px;height: 28px;">
-                            <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center  my-1">
-                    <h2 class="font-weight-bold">
-                        Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                    </h2>
-                </div>
-            </div>
-            <div class="row text-light justify-content-around mx-1 ">
-                <div class="col-12 mt-2">
-                    <div class="alert alert-danger text-center">
-                        Zusammenfassung abgebe ist noch nicht möglich
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
-            <div class="row border-bottom  mx-1 my-1">
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <i class="icono-calendar"></i>
-                            <span>&nbsp;13.03.2020</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <img src="/icons/icon-time-clock.png" style="width: 32px;height: 28px;">
-                            <span>&nbsp;Abgabefrist</span>
-                            <span class="text-danger">&nbsp;05.03.2020</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-4  my-1">
-                    <div class="row ">
-                        <div class="col-12">
-                            <img src="/icons/icon-credit-points.png" style="width: 32px;height: 28px;">
-                            <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center  my-1">
-                    <h2 class="font-weight-bold">
-                        Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                    </h2>
-                </div>
-            </div>
-            <div class="row text-light justify-content-around mx-1 ">
-                <div class="col-12 mt-2">
-                    <div class="alert alert-danger text-center">
-                        Zusammenfassung abgebe ist nicht mehr möglich
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
-            <div class="row border-bottom  mx-1 my-1">
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <i class="icono-calendar"></i>
-                            <span>&nbsp;13.03.2020</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <img src="/icons/icon-time-clock.png" style="width: 32px;height: 28px;">
-                            <span>&nbsp;Abgabefrist</span>
-                            <span>&nbsp;05.03.2020</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-4  my-1">
-                    <div class="row ">
-                        <div class="col-12">
-                            <img src="/icons/icon-credit-points.png" style="width: 32px;height: 28px;">
-                            <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center  my-1">
-                    <h2 class="font-weight-bold">
-                        Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                    </h2>
-                </div>
-            </div>
-            <div class="row text-light justify-content-around mx-1 ">
-                <div class="col-12 mt-2">
-                    <div class="alert alert-info text-center">
-                        Zusammenfassung wird bewertet
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
-            <div class="row border-bottom  mx-1 my-1">
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <i class="icono-calendar"></i>
-                            <span>&nbsp;13.03.2020</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-4 border-right text-secondary my-1">
-                    <div class="row">
-                        <div class="col-12">
-                            <img src="/icons/icon-time-clock.png" style="width: 32px;height: 28px;">
-                            <span>&nbsp;Abgabefrist</span>
-                            <span>&nbsp;05.03.2020</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-4  my-1">
-                    <div class="row ">
-                        <div class="col-12">
-                            <img src="/icons/icon-credit-points.png" style="width: 32px;height: 28px;">
-                            <span class="text-success">&nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row border-bottom  mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center  my-1">
-                    <h2 class="font-weight-bold">
-                        Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
-                    </h2>
-                </div>
-            </div>
-            <div class="row text-light justify-content-around mx-1 ">
-                <div class="col-12 mt-2">
-                    <div class="alert alert-success text-center">
-                        Zusammenfassung wurde genehmigt
-                    </div>
-                </div>
-            </div>
+    </div>
+    <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px"
+         th:unless="${exists}">
+        <div class="row border-bottom  mx-1 my-md-5 justify-content-center">
+            <p class="font-weight-bold text-dark"> Sie haben sich für keine Veranstaltungen
+                angemeldet! </p>
         </div>
     </div>
 </main>
