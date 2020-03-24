@@ -30,28 +30,28 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 class StudentControllerTest {
   @Autowired
-  private MockMvc mvc;
-  
+  private transient MockMvc mvc;
+
   @MockBean
-  private FileService fileService;
-  
+  private transient FileService fileService;
+
   @MockBean
-  private ModelService modelService;
-  
+  private transient ModelService modelService;
+
   @Autowired
-  private WebApplicationContext context;
-  
+  private transient WebApplicationContext context;
+
   @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
   MeterRegistry registry;
-  
+
   @BeforeEach
-  public void setup() {
+  public void setUp() {
     mvc = MockMvcBuilders
         .webAppContextSetup(context)
         .apply(springSecurity())
         .build();
   }
-  
+
   @Test
   void testReportsubmitAdmisionStudent() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -59,16 +59,16 @@ class StudentControllerTest {
     final Account account = new Account("name", "User@email.de", "image", roles,
         "givenname", "familyname");
     setupTokenMock(account);
-    
+
     final Event event = new Event();
     when(modelService.loadEventById(anyLong())).thenReturn(event);
-    
+
     final String eventId = "123";
     mvc.perform(get("/rheinjug2/student/reportsubmit").param("eventId", eventId))
         .andExpect(status().isOk())
         .andExpect(view().name("report_submit"));
   }
-  
+
   @Test
   void testReportsubmitNoAdmisionOrga() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -76,7 +76,7 @@ class StudentControllerTest {
     final Account account = new Account("name", "User@email.de", "image", roles,
         "givenname", "familyname");
     setupTokenMock(account);
-    
+
     final String eventId = "123";
     mvc.perform(get("/rheinjug2/student/reportsubmit").param("eventId", eventId))
         .andExpect(status().isForbidden());
