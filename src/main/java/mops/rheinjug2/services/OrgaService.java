@@ -92,7 +92,7 @@ public class OrgaService {
                     unacceptedSummary.getEvent())
             ));
       } catch (final Exception e) {
-        e.printStackTrace();
+        throw new RuntimeException(e.getMessage());
       }
     });
     return result.stream()
@@ -128,7 +128,8 @@ public class OrgaService {
                 summariesIDs.getStudent(),
                 summariesIDs.getEvent(),
                 getSummaryStudent(summariesIDs.getStudent()).getName(),
-                getSummaryEvent(summariesIDs.getEvent()).getTitle()
+                getSummaryEvent(summariesIDs.getEvent()).getTitle(),
+                null
             )
         );
       }
@@ -143,8 +144,8 @@ public class OrgaService {
    * @return boolean
    */
   private boolean summaryIsDelayd(final Long eventId) {
-    final LocalDateTime submissionDeadline = getSummaryEvent(eventId).getDate().plusDays(7);
-    return submissionDeadline.isAfter(LocalDateTime.now());
+    final LocalDateTime submissionDeadline = getSummaryEvent(eventId).getDeadline();
+    return submissionDeadline.isBefore(LocalDateTime.now());
   }
 
   /**
@@ -180,7 +181,7 @@ public class OrgaService {
     return studentRepository.getStudentById(studentId);
   }
 
-  public void setSummaryAcception(final Long studentid, final Long eventid) {
+  public void setSummaryAsAccepted(final Long studentid, final Long eventid) {
     eventRepository.updateSummaryToAccepted(studentid, eventid);
   }
 
@@ -191,7 +192,7 @@ public class OrgaService {
    * @param eventid   eventid
    * @return true, wenn ein der student an der Veranstaltung angemeldet ist.
    */
-  public boolean summaryExist(final Long studentid, final Long eventid) {
+  public boolean studentIsRegistred(final Long studentid, final Long eventid) {
     final Optional<SummariesIDs> summariesIDsOption =
         eventRepository.checkSummary(studentid, eventid);
     if (summariesIDsOption.isPresent()) {
@@ -207,5 +208,16 @@ public class OrgaService {
    */
   public int getnumberOfEvaluationRequests() {
     return eventRepository.getNumberOfSubmittedAndUnacceptedSummaries();
+  }
+
+  public void summaryupload(final String studentName,
+                            final Long eventId,
+                            final String summaryContent) throws IOException {
+    fileService.uploadContentConvertToMd(summaryContent, studentName + "_" + eventId);
+  }
+
+  public void setSummaryAsSubmittedAndAccepted(final Long studentId, final Long eventId) {
+    eventRepository.updateSummaryToSubmittedAndAccepted(studentId, eventId);
+
   }
 }

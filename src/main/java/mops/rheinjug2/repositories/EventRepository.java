@@ -67,4 +67,11 @@ public interface EventRepository extends CrudRepository<Event, Long> {
   @Query(value = "SELECT COUNT(*) FROM student_event WHERE"
       + " submitted_summary = TRUE AND accepted = FALSE")
   int getNumberOfSubmittedAndUnacceptedSummaries();
+
+  @Modifying
+  @Query(value = "UPDATE student_event SET student_event.submitted_summary = TRUE,"
+      + " student_event.accepted = TRUE "
+      + "WHERE student_event.student = :studentid AND student_event.event = :eventid")
+  void updateSummaryToSubmittedAndAccepted(@Param("studentid") Long studentid,
+                                           @Param("eventid") Long eventid);
 }
