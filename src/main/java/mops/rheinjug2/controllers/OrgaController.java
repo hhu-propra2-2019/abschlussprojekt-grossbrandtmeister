@@ -117,7 +117,8 @@ public class OrgaController {
   @PostMapping("/summaryupload")
   public String summaryUpload(@ModelAttribute final DelayedSubmission delayedSubmission)
       throws IOException {
-    if (orgaService.studentIsRegistred(delayedSubmission.getStudentId(), delayedSubmission.getEventId())) {
+    if (orgaService.studentIsRegistred(delayedSubmission.getStudentId(),
+        delayedSubmission.getEventId())) {
       try {
         orgaService.summaryupload(delayedSubmission.getStudentName(),
             delayedSubmission.getEventId(),
