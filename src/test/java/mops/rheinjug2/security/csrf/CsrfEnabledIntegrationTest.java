@@ -25,10 +25,10 @@ public class CsrfEnabledIntegrationTest {
   private transient MockMvc mvc;
 
   @Autowired
-  WebApplicationContext context;
+  private transient WebApplicationContext context;
 
   @BeforeEach
-  public void setup() {
+  void setUp() {
     mvc = MockMvcBuilders
         .webAppContextSetup(context)
         .apply(springSecurity())
