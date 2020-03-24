@@ -2,12 +2,13 @@ package mops.rheinjug2;
 
 import com.github.javafaker.Faker;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Random;
 import java.util.stream.IntStream;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
@@ -43,7 +44,7 @@ public class DatabaseInitializer implements ServletContextInitializer {
   }
 
   @Override
-  public void onStartup(final ServletContext servletContext) throws ServletException {
+  public void onStartup(final ServletContext servletContext) {
     final Faker faker = new Faker(Locale.GERMAN);
     fakeEvent(faker);
     fakeStudent(faker);
@@ -55,7 +56,7 @@ public class DatabaseInitializer implements ServletContextInitializer {
       final Long eventid = (long) faker.number().numberBetween(1, 30);
       modelService.addStudentToEvent(student.getLogin(), student.getEmail(), eventid);
       if (random.nextBoolean()) {
-        modelService.submitSummary(student.getLogin(), eventid, faker.internet().url());
+        modelService.submitSummary(student.getLogin(), eventid);
       }
     });
   }
@@ -70,6 +71,7 @@ public class DatabaseInitializer implements ServletContextInitializer {
     });
   }
 
+  @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
   private void fakeEvent(final Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
       final Event event = new Event();
@@ -85,7 +87,8 @@ public class DatabaseInitializer implements ServletContextInitializer {
       event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
       event.setAddress(faker.address().fullAddress());
       event.setUrl(faker.internet().url());
-      if (event.getDate().isBefore(dateNow)) {
+      event.setVenue("Universität Düsseldorf, Gebäude 25.22 U1");
+      if (event.getDate().isAfter(dateNow)) {
         event.setStatus("UPCOMING");
       } else {
         event.setStatus("PAST");
@@ -95,6 +98,18 @@ public class DatabaseInitializer implements ServletContextInitializer {
         event.setType("Entwickelbar");
       } else {
         event.setType("Abendveranstaltungen");
+      }
+
+      eventRepository.save(event);
+      if (event.getId() == 1) {
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 22), LocalTime.of(17, 30)));
+        event.setStatus("PAST");
+        event.setType("Entwickelbar");
+      }
+      if (event.getId() == 2) {
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 21), LocalTime.of(17, 30)));
+        event.setStatus("PAST");
+        event.setType("Entwickelbar");
       }
       eventRepository.save(event);
     });

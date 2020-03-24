@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.entry;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
@@ -15,6 +17,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.adapters.OidcKeycloakAccount;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.representations.AccessToken;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -32,6 +40,23 @@ public class ModelServiceTest {
 
   private transient ModelService modelService;
 
+  @Mock
+  private static KeycloakAuthenticationToken keycloakAuthenticationToken;
+
+  @Mock
+  private static OidcKeycloakAccount keycloakAccount;
+
+  @Mock
+  private static KeycloakPrincipal<KeycloakSecurityContext> keycloakPrincipal;
+
+  @Mock
+  private static KeycloakSecurityContext keycloakSecurityContext;
+
+  @Mock
+  private static AccessToken accessToken;
+
+  private static final Set<String> roles = new HashSet<>();
+
   @BeforeEach
   public void init() {
     modelService = new ModelService(studentRepository, eventRepository);
@@ -40,7 +65,10 @@ public class ModelServiceTest {
   @Test
   public void testGetAllEvents() {
     final Event event1 = createAndSaveEvent("Event 1.0");
+    event1.setDate(LocalDateTime.now());
     final Event event2 = createAndSaveEvent("Event 2.0");
+    event2.setDate(LocalDateTime.now());
+    eventRepository.saveAll(List.of(event1, event2));
     final List<Event> allEvents = modelService.getAllEvents();
     assertThat(allEvents).containsExactlyInAnyOrder(event2, event1);
   }
@@ -70,12 +98,10 @@ public class ModelServiceTest {
     event2.setDate(LocalDateTime.now());
     eventRepository.saveAll(List.of(event1, event2));
     final Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
     student.addEvent(event1);
     student.addEvent(event2);
-    student.addSummary(event1, url1);
-    student.addSummary(event2, url2);
+    student.addSummary(event1);
+    student.addSummary(event2);
     student.useEventsForCP(List.of(event1));
     studentRepository.save(student);
     modelService.acceptSummary(event2.getId(), student.getLogin());
@@ -94,11 +120,8 @@ public class ModelServiceTest {
     student.addEvent(event1);
     student.addEvent(event2);
     studentRepository.save(student);
-    final String url1 = "Test-Url 3";
-    final String url2 = "Test-Url 4";
-    modelService.submitSummary("testLogin5", event1.getId(), url1);
-    final Student savedStudent =
-        modelService.submitSummary("testLogin5", event2.getId(), url2);
+    modelService.submitSummary("testLogin5", event1.getId());
+    final Student savedStudent = modelService.submitSummary("testLogin5", event2.getId());
     assertThat(savedStudent.getEventsIdsWithSummaryNotAccepted())
         .containsExactly(event1.getId(), event2.getId());
   }
@@ -130,25 +153,45 @@ public class ModelServiceTest {
         eventWithSubmissionAccepted, eventWithSubmissionNotAccepted);
     eventRepository.saveAll(events);
 
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
-
     final Student student = createAndSaveStudent("ll100", "ll@hhu.de");
     addEventsToStudent(events, student);
-    student.addSummary(eventWithSubmissionAccepted, url1);
-    student.addSummary(eventWithSubmissionNotAccepted, url2);
+    student.addSummary(eventWithSubmissionAccepted);
+    student.addSummary(eventWithSubmissionNotAccepted);
     studentRepository.save(student);
     modelService.acceptSummary(eventWithSubmissionAccepted.getId(), "ll100");
 
-    final Map<Event, ModelService.SubmissionStatus> allEvents =
+    final Map<Event, SubmissionStatus> allEvents =
         modelService.getAllEventsPerStudent(student.getLogin());
 
-    assertThat(allEvents).containsOnly(entry(eventUpcoming, ModelService.SubmissionStatus.UPCOMING),
-        entry(eventOpen, ModelService.SubmissionStatus.OPEN_FOR_SUBMISSION),
-        entry(eventPassed, ModelService.SubmissionStatus.NO_SUBMISSION),
-        entry(eventWithSubmissionAccepted, ModelService.SubmissionStatus.SUBMITTED_ACCEPTED),
+    assertThat(allEvents).containsOnly(entry(eventUpcoming, SubmissionStatus.UPCOMING),
+        entry(eventOpen, SubmissionStatus.OPEN_FOR_SUBMISSION),
+        entry(eventPassed, SubmissionStatus.NO_SUBMISSION),
+        entry(eventWithSubmissionAccepted, SubmissionStatus.SUBMITTED_ACCEPTED),
         entry(eventWithSubmissionNotAccepted,
-            ModelService.SubmissionStatus.SUBMITTED_NOT_ACCEPTED));
+            SubmissionStatus.SUBMITTED_NOT_ACCEPTED));
+
+  }
+
+  @Test
+  public void testGetAllEventIdsPerStudent() {
+
+    final Event eventUpcoming = createAndSaveEvent("Veranstaltung Java");
+    eventUpcoming.setDate(LocalDateTime.now().plusDays(1));
+    eventUpcoming.setStatus("Upcoming");
+
+    final Event eventOpen = createAndSaveEvent("Veranstaltung Java2");
+    eventOpen.setDate(LocalDateTime.now());
+    eventOpen.setStatus("Past");
+
+    final List<Event> events = List.of(eventOpen, eventUpcoming);
+    eventRepository.saveAll(events);
+
+    final Student student = createAndSaveStudent("test120", "test120@hhu.de");
+    addEventsToStudent(events, student);
+    studentRepository.save(student);
+
+    assertThat(modelService.getAllEventIdsPerStudent(student.getLogin()))
+        .containsExactlyInAnyOrder(events.get(0).getId(), events.get(1).getId());
 
   }
 
@@ -159,12 +202,10 @@ public class ModelServiceTest {
     event1.setType("Entwickelbar");
     event2.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2));
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
     final Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     addEventsToStudent(List.of(event1, event2), student);
-    student.addSummary(event1, url1);
-    student.addSummary(event2, url2);
+    student.addSummary(event1);
+    student.addSummary(event2);
     studentRepository.save(student);
     modelService.acceptSummary(event1.getId(), student.getLogin());
     modelService.acceptSummary(event2.getId(), student.getLogin());
@@ -185,12 +226,9 @@ public class ModelServiceTest {
 
     final Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     addEventsToStudent(List.of(event1, event2, event3), student);
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
-    final String url3 = "Test-Url 3";
-    student.addSummary(event1, url1);
-    student.addSummary(event2, url2);
-    student.addSummary(event3, url3);
+    student.addSummary(event1);
+    student.addSummary(event2);
+    student.addSummary(event3);
     studentRepository.save(student);
     modelService.acceptSummary(event1.getId(), student.getLogin());
     modelService.acceptSummary(event2.getId(), student.getLogin());
@@ -206,12 +244,10 @@ public class ModelServiceTest {
     event1.setType("Normal");
     event2.setType("Normal");
     eventRepository.saveAll(List.of(event1, event2));
-    final String url1 = "Test-Url 1";
-    final String url2 = "Test-Url 2";
     final Student student = createAndSaveStudent("testLogin5", "test5@hhu.de");
     addEventsToStudent(List.of(event1, event2), student);
-    student.addSummary(event1, url1);
-    student.addSummary(event2, url2);
+    student.addSummary(event1);
+    student.addSummary(event2);
     studentRepository.save(student);
     modelService.acceptSummary(event1.getId(), student.getLogin());
     modelService.acceptSummary(event2.getId(), student.getLogin());
