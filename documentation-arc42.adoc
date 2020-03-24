@@ -1,0 +1,94 @@
+// header file for arc42-template,
+// including all help texts
+//
+// ====================================
+
+= image:documentation/images/arc42-logo.png[arc42] Java in der Praxis: Selfservice
+// toc-title definition MUST follow document title without blank line!
+:toc-title: Inhaltsverzeichnis
+
+//additional style for arc42 help callouts
+ifdef::basebackend-html[]
+++++
+<style>
+.arc42help {font-size:small; width: 14px; height: 16px; overflow: hidden; position: absolute; right: 0px; padding: 2px 0px 3px 2px;}
+.arc42help::before {content: "?";}
+.arc42help:hover {width:auto; height: auto; z-index: 100; padding: 10px;}
+.arc42help:hover::before {content: "";}
+@media print {
+	.arc42help {display:hidden;}
+}
+</style>
+++++
+endif::basebackend-html[]
+
+// configure DE settings for asciidoc
+include::documentation/config.adoc[]
+
+
+include::documentation/about-arc42.adoc[]
+
+// horizontal line
+***
+
+[role="arc42help"]
+****
+[NOTE]
+====
+Diese Version des Templates enthält Hilfen und Erläuterungen.
+Sie dient der Einarbeitung in arc42 sowie dem Verständnis der Konzepte.
+Für die Dokumentation eigener System verwenden Sie besser die _plain_ Version.
+====
+****
+
+
+// numbering from here on
+:numbered:
+
+<<<<
+// 1. Anforderungen und Ziele
+include::documentation/01_introduction_and_goals.adoc[]
+
+<<<<
+// 2. Randbedingungen
+include::documentation/02_architecture_constraints.adoc[]
+
+<<<<
+// 3. Kontextabgrenzung
+include::documentation/03_system_scope_and_context.adoc[]
+
+<<<<
+// 4. Lösungsstrategie
+include::documentation/04_solution_strategy.adoc[]
+
+<<<<
+// 5. Bausteinsicht
+include::documentation/05_building_block_view.adoc[]
+
+<<<<
+// 6. Laufzeitsicht
+include::documentation/06_runtime_view.adoc[]
+
+<<<<
+// 7. Verteilungssicht
+include::documentation/07_deployment_view.adoc[]
+
+<<<<
+// 8. Querschnittliche Konzepte
+include::documentation/08_concepts.adoc[]
+
+<<<<
+// 9. Entscheidungen
+include::documentation/09_design_decisions.adoc[]
+
+<<<<
+// 10. Qualität...
+include::documentation/10_quality_scenarios.adoc[]
+
+<<<<
+// 11. Risiken
+include::documentation/11_technical_risks.adoc[]
+
+<<<<
+// 12. Glossar
+include::documentation/12_glossary.adoc[]

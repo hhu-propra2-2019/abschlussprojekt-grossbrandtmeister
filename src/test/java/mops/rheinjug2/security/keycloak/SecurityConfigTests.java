@@ -57,11 +57,11 @@ public class SecurityConfigTests {
       "studentin, /rheinjug2/student/events, 200",
       "studentin, /rheinjug2/student/visitedevents, 200",
       "studentin, /rheinjug2/student/creditpoints, 200",
-      "studentin, /rheinjug2/student/reportsubmit, 200",
+      "studentin, /rheinjug2/student/reportsubmit, 302",
+      "studentin, /rheinjug2/student/reportsubmit?eventId=1, 200",
       "orga, /rheinjug2/orga/events, 200",
       "orga, /rheinjug2/orga/delayedSubmission, 200",
       "orga, /rheinjug2/orga/reports, 200",
-
 
       ", /actuator, 302",
       ", /rheinjug2/student/events, 302",
@@ -122,4 +122,5 @@ public class SecurityConfigTests {
             .withEmail(role + "@non.existent")
             .build());
   }
+
 }
