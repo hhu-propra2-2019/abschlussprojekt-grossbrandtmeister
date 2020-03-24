@@ -14,6 +14,7 @@ import mops.rheinjug2.orgamodels.DelayedSubmission;
 import mops.rheinjug2.services.EventService;
 import mops.rheinjug2.services.OrgaService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +27,6 @@ import org.springframework.web.context.annotation.SessionScope;
 
 @Log4j2
 @Controller
-@Secured({"ROLE_orga"})
 @RequestMapping("/rheinjug2/orga")
 @SessionScope
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -42,6 +42,7 @@ public class OrgaController {
   /**
    * Injected unsere Services und den Counter.
    */
+
   public OrgaController(final MeterRegistry registry,
                         final EventService eventService, final OrgaService orgaService) {
     authenticatedAccess = registry.counter("access.authenticated");
@@ -50,6 +51,7 @@ public class OrgaController {
     numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
   }
 
+  @Secured({"ROLE_orga"})
   @GetMapping("/")
   public String orgaBase() {
     return "redirect:/rheinjug2/orga/events";
@@ -76,6 +78,7 @@ public class OrgaController {
    * @param model model
    * @return liste der Veranstaltungen.
    */
+  @Secured({"ROLE_orga"})
   @GetMapping("/delayedSubmission")
   public String getDelayedSubmission(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
@@ -91,6 +94,7 @@ public class OrgaController {
   /**
    * Mapping der Annahme von Zussamenfassungen.
    */
+  @Secured({"ROLE_orga"})
   @PostMapping("/summaryaccepting")
   public String summaryAccepting(@RequestParam final Long eventid,
                                  @RequestParam final Long studentid,
@@ -114,6 +118,7 @@ public class OrgaController {
    * @return .
    * @throws IOException .
    */
+  @Secured({"ROLE_orga"})
   @PostMapping("/summaryupload")
   public String summaryUpload(@ModelAttribute final DelayedSubmission delayedSubmission)
       throws IOException {
@@ -138,6 +143,7 @@ public class OrgaController {
   /**
    * Übersicht der noch unbewerteten Abgaben.
    */
+  @Secured({"ROLE_orga"})
   @GetMapping("/reports")
   public String getReports(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
@@ -152,6 +158,7 @@ public class OrgaController {
   /**
    * Ruft die rheinjug Events manuell ab und speichert diese in die Datenbank.
    */
+  @Secured({"ROLE_orga"})
   @PostMapping("/events")
   public String getEventsFromApi(final KeycloakAuthenticationToken token) {
     final Account user = AccountCreator.createAccountFromPrincipal(token);
@@ -160,4 +167,8 @@ public class OrgaController {
     return "redirect:/rheinjug2/orga/events";
   }
 
+  @Scheduled(fixedDelayString = "${application.api-pump.delay}")
+  public void refreshNumberOfEvaluationRequests() {
+    numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
+  }
 }
