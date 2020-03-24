@@ -123,7 +123,7 @@ public class FileService {
         minioClient.makeBucket(defaultBucketName);
       }
       minioClient.putObject(defaultBucketName, filename, inputStream,
-          (long) content.length(), null, null, "text/plain");
+          null, null, null, "text/plain");
     } catch (final Exception e) {
       throw new RuntimeException(e.getMessage());
     } finally {

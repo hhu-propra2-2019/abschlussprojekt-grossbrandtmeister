@@ -1,31 +1,41 @@
 package mops.rheinjug2.fileupload;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testcontainers.Testcontainers.exposeHostPorts;
 
 
 import io.minio.MinioClient;
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidArgumentException;
+import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidPortException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.NoResponseException;
+import io.minio.errors.RegionConflictException;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.Base58;
+import org.xmlpull.v1.XmlPullParserException;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -39,6 +49,8 @@ class FileServiceTest {
 
   private transient MinioClient minioClient;
 
+  private static final String BUCKETMANE = "grossbrandtmeiser";
+
   @Container
   static GenericContainer minioServer = new GenericContainer<>("minio/minio")
       .withEnv("MINIO_ACCESS_KEY", ACCESS_KEY)
@@ -48,16 +60,24 @@ class FileServiceTest {
 
   private transient FileService fileService;
 
-
+  /**
+   * Startet den MinioServer und initialisiert den Fileservice  und den
+   * MinioClient mit Defaultbucketname grossbrandtmeister".
+   */
   @BeforeAll
-  void setUp() throws InvalidPortException, InvalidEndpointException {
+  void setUp() throws InvalidPortException, InvalidEndpointException, IOException,
+      InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException,
+      InvalidResponseException, ErrorResponseException, NoResponseException,
+      InvalidBucketNameException, XmlPullParserException, InternalException, RegionConflictException {
     minioServer.start();
     final Integer mappedPort = minioServer.getMappedPort(9000);
     exposeHostPorts(mappedPort);
     minioServerUrl = String.format("http://%s:%s", minioServer.getContainerIpAddress(), mappedPort);
 
+
     minioClient = new MinioClient(minioServerUrl, ACCESS_KEY, SECRET_KEY);
-    fileService = new FileService(minioClient, "grossbrandtmeiser", "/");
+    minioClient.makeBucket(BUCKETMANE);
+    fileService = new FileService(minioClient, BUCKETMANE, "/");
   }
 
   @Test
@@ -79,19 +99,16 @@ class FileServiceTest {
     assertTrue(minioClient.bucketExists(bucketName));
   }
 
-  /*
   @Test
-  void testIfUploadedFileIsStored() throws IOException, InvalidKeyException,
-      NoSuchAlgorithmException, InsufficientDataException, InvalidResponseException,
-      InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException,
-      ErrorResponseException, InvalidArgumentException {
+  void testIfUploadedFileIsStored() throws IOException, InvalidKeyException, NoSuchAlgorithmException,
+      InsufficientDataException, InvalidArgumentException, InvalidResponseException, InternalException,
+      NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
     final MockMultipartFile testFile = new MockMultipartFile("file",
         "file.md", "text/plain", "testdata".getBytes());
     final String filename = "filenametestIfUploadedFileIsStored";
     fileService.uploadFile(testFile, filename);
-    minioClient.statObject("grossbrandtmeister", filename);
+    minioClient.statObject(BUCKETMANE, filename);
   }
-
 
   @Test
   void testIfUploadedFileContentIsSameAsDownloadedFileContent() throws
@@ -115,7 +132,7 @@ class FileServiceTest {
     final String content = "Ich denke mir einen schönen Satz aus";
     final String filename = "filenameUploadStringContentIsStored";
     fileService.uploadContentConvertToMd(content, filename);
-    minioClient.statObject("grossbrandmeister", filename);
+    minioClient.statObject(BUCKETMANE, filename);
   }
 
   @Test
@@ -126,84 +143,27 @@ class FileServiceTest {
     final String testContent = "Ich denke mir einen schönen Satz aus";
     final String filename = "filenameUploadStringContentIsStored";
     fileService.uploadContentConvertToMd(testContent, filename);
-    final InputStream inputStream = minioClient.getObject("grossbrandmeister", filename);
-    final String miniocontent = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-    assertEquals(testContent, miniocontent);
+    final InputStream inputStream = minioClient.getObject(BUCKETMANE, filename);
+    final String storedContent = IOUtils.toString(inputStream, Charset.forName("UTF-8"));
+    assertEquals(testContent, storedContent);
     inputStream.close();
   }
 
   @Test
-  void testIfInputstreamIsSame() throws IOException, XmlPullParserException,
+  void testIfInputstreamGivesTheSameContentBack() throws IOException, XmlPullParserException,
       NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException,
       InvalidResponseException, ErrorResponseException, NoResponseException,
       InvalidBucketNameException, InsufficientDataException, InternalException {
-    final InputStream testInputStream = new ByteArrayInputStream("testcontent".getBytes(
+    final String content = "ICh denke mir einen schönen Satz aus";
+    final InputStream testInputStream = new ByteArrayInputStream(content.getBytes(
         Charset.forName("UTF-8")));
     final String filename = "filenameInputstreamIsSame";
-    minioClient.putObject("großbrandmeister", filename,
+    minioClient.putObject(BUCKETMANE, filename,
         testInputStream, null, null, null, null);
-    final InputStream minioInputsream = fileService.getFileInputStream(filename);
-    assertEquals(testInputStream, minioInputsream);
-    minioInputsream.close();
-    testInputStream.close();
+    final InputStream minioInputstream = fileService.getFileInputStream(filename);
+    final String storedContent = IOUtils.toString(minioInputstream, Charset.forName("UTF-8"));
+    assertEquals(content, storedContent);
   }
-
-  @Test
-  void testMarkdownToPdfConervion() throws IOException {
-    final String filename = "filenameMarkdownToPdfConervion";
-    final String testcontentinMd = "# Sample Markdown\n"
-        + "\n"
-        + "This is some basic, sample markdown.\n"
-        + "\n"
-        + "## Second Heading\n"
-        + "\n"
-        + " * Unordered lists, and:\n"
-        + "  1. One\n"
-        + "  1. Two\n"
-        + "  1. Three\n"
-        + " * More\n"
-        + "\n"
-        + "> Blockquote\n"
-        + "\n"
-        + "And **bold**, *italics*, and even *italics and later **bold***. Even ~~strikethrough~~. [A link](https://markdowntohtml.com) to somewhere.\n"
-        + "And code highlighting:\n"
-        + "```js\n"
-        + "var foo = 'bar';\n"
-        + "\n"
-        + "function baz(s) {\n"
-        + "   return foo + ':' + s;\n"
-        + "}\n"
-        + "```\n"
-        + "Or inline code like `var foo = 'bar';`.\n"
-        + "The end ...\n";
-    final String testContentInHtml = "<h1 id=\"sample-markdown\">Sample Markdown</h1>\n"
-        + "<p>This is some basic, sample markdown.</p>\n"
-        + "<h2 id=\"second-heading\">Second Heading</h2>\n"
-        + "<ul>\n"
-        + "<li>Unordered lists, and:<ol>\n"
-        + "<li>One</li>\n"
-        + "<li>Two</li>\n"
-        + "<li>Three</li>\n"
-        + "</ol>\n"
-        + "</li>\n"
-        + "<li>More</li>\n"
-        + "</ul>\n"
-        + "<blockquote>\n"
-        + "<p>Blockquote</p>\n"
-        + "</blockquote>\n"
-        + "<p>And <strong>bold</strong>, <em>italics</em>, and even <em>italics and later <strong>bold</strong></em>. Even <del>strikethrough</del>. <a href=\"https://markdowntohtml.com\">A link</a> to somewhere.\n"
-        + "And code highlighting:</p>\n"
-        + "<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> foo = <span class=\"hljs-string\">'bar'</span>;\n"
-        + "\n"
-        + "<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> <span class=\"hljs-title\">baz</span><span class=\"hljs-params\">(s)</span> </span>{\n"
-        + "   <span class=\"hljs-keyword\">return</span> foo + <span class=\"hljs-string\">':'</span> + s;\n"
-        + "}\n"
-        + "</code></pre>\n"
-        + "<p>Or inline code like <code>var foo = &#39;bar&#39;;</code>.\n"
-        + "The end ...</p>\n";
-    fileService.uploadContentConvertToMd(testcontentinMd, filename);
-    final String testString = fileService.getFileAsHtmlString(filename);
-    assertEquals(testContentInHtml, testString);
-  }
-  */
 }
+
+
