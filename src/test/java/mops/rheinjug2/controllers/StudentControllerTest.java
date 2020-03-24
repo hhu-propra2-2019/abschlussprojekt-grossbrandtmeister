@@ -10,11 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import java.time.LocalDate;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.entities.Event;
@@ -59,7 +60,7 @@ class StudentControllerTest {
   }
 
   @Test
-  void testGetPersonal() throws Exception {
+  void testGetPersonalStudent() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
     final Account account = new Account("name", "User@email.de", "image", roles,
@@ -83,7 +84,6 @@ class StudentControllerTest {
   }
 
   @Test
-  void testReportsubmitAdmisionStudent() throws Exception {
   void testReportsubmitAdmissionStudent() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
@@ -114,31 +114,6 @@ class StudentControllerTest {
   }
 
   @Test
-  void testGetPersonal() throws Exception {
-    final Set<String> roles = new HashSet<>();
-    roles.add("studentin");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
-    setupTokenMock(account);
-
-    final Event event1 = new Event();
-    event1.setDate(LocalDateTime.now());
-    event1.setType("Entwickelbar");
-    event1.setTitle("Entwickelbar");
-    event1.setDuration(Duration.ofHours(1));
-    final Map<Event, SubmissionStatus> map = new HashMap<>();
-    map.put(event1, SubmissionStatus.UPCOMING);
-    when(modelService.studentExists(anyString())).thenReturn(true);
-    when(modelService.getAllEventsPerStudent(anyString())).thenReturn(map);
-
-    final String eventId = "123";
-    mvc.perform(get("/rheinjug2/student/visitedevents"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("personalView"));
-  }
-
-
-  @Test
   void testStudentEventsOverviewAdmissionStudent() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
@@ -164,10 +139,8 @@ class StudentControllerTest {
     when(modelService.getAllEventIdsPerStudent(anyString())).thenReturn(List.of(event1.getId()));
 
     mvc.perform(get("/rheinjug2/student/events"))
-       .andExpect(status().isOk()).andExpect(view()
-       .name("student_events_overview"));
+        .andExpect(status().isOk()).andExpect(view()
+        .name("student_events_overview"));
 
   }
-
-
 }
