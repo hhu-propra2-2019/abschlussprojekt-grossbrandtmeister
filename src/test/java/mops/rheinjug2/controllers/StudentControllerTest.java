@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-
 import io.micrometer.core.instrument.MeterRegistry;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,19 +31,19 @@ import org.springframework.web.context.WebApplicationContext;
 class StudentControllerTest {
   @Autowired
   private MockMvc mvc;
-
+  
   @MockBean
   private FileService fileService;
-
+  
   @MockBean
   private ModelService modelService;
-
+  
   @Autowired
   private WebApplicationContext context;
-
+  
   @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
   MeterRegistry registry;
-
+  
   @BeforeEach
   public void setup() {
     mvc = MockMvcBuilders
@@ -52,7 +51,7 @@ class StudentControllerTest {
         .apply(springSecurity())
         .build();
   }
-
+  
   @Test
   void testReportsubmitAdmisionStudent() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -60,16 +59,16 @@ class StudentControllerTest {
     final Account account = new Account("name", "User@email.de", "image", roles,
         "givenname", "familyname");
     setupTokenMock(account);
-
+    
     final Event event = new Event();
     when(modelService.loadEventById(anyLong())).thenReturn(event);
-
+    
     final String eventId = "123";
     mvc.perform(get("/rheinjug2/student/reportsubmit").param("eventId", eventId))
         .andExpect(status().isOk())
         .andExpect(view().name("report_submit"));
   }
-
+  
   @Test
   void testReportsubmitNoAdmisionOrga() throws Exception {
     final Set<String> roles = new HashSet<>();
@@ -77,7 +76,7 @@ class StudentControllerTest {
     final Account account = new Account("name", "User@email.de", "image", roles,
         "givenname", "familyname");
     setupTokenMock(account);
-
+    
     final String eventId = "123";
     mvc.perform(get("/rheinjug2/student/reportsubmit").param("eventId", eventId))
         .andExpect(status().isForbidden());

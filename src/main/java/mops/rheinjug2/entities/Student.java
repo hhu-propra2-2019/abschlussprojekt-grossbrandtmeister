@@ -17,36 +17,32 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Student {
   @Id
   private Long id;
-
+  
   private String login;
   private String name;
   private String email;
-
+  
   private Set<EventRef> events = new HashSet<>();
-
+  
   public Student(final String login, final String email) {
     this.login = login;
     this.email = email;
   }
-
+  
   /**
    * Event hinzufügen.
    */
   public void addEvent(final Event event) {
-    // FOR DEMO ONLY!
-    events.removeIf(eRef -> eRef.getEvent().equals(event.getId()));
-    ///
-
     events.add(new EventRef(event.getId()));
   }
-
+  
   /**
    * Gibt alle Id's der Veranstaltungen eines Students zurück.
    */
   public Set<Long> getEventsIds() {
     return events.stream().map(EventRef::getEvent).collect(Collectors.toSet());
   }
-
+  
   /**
    * Entfernt eine Veranstaltung.
    */
@@ -54,11 +50,11 @@ public class Student {
     final EventRef ref = findEventRef(event);
     events.remove(ref);
   }
-
+  
   /**
    * Eine Zusammenfassung hinzufügen.
    */
-
+  
   public boolean addSummary(final Event event) {
     if (event.isOpenForSubmission()) {
       final EventRef ref = findEventRef(event);
@@ -70,12 +66,12 @@ public class Student {
     log.info("For this event there is a submission.");
     return false;
   }
-
+  
   public void useEventsForCP(final List<Event> events) {
     events.stream().map(this::findEventRef)
         .forEach(eventRef -> eventRef.setUsedForCertificate(true));
   }
-
+  
   /**
    * Gibt alle IDs der Veranstaltungen mit Zusammenfassungen, die akzeptiert, aber
    * nicht für einen Schein verwendet wurden.
@@ -84,27 +80,27 @@ public class Student {
     return events.stream().filter(EventRef::isSubmittedAndAcceptedButNotUsed)
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
-
+  
   public Set<Long> getEventsIdsWithSummaryNotAccepted() {
     return events.stream().filter(EventRef::isSubmittedAndNotAccepted)
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
-
+  
   public Set<Long> getEventsIdsWithSummaryAccepted() {
     return events.stream().filter(EventRef::isSubmittedAndAccepted)
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
-
+  
   public Set<Long> getEventsIdsWithNoSummary() {
     return events.stream().filter(x -> !x.isSubmittedSummary())
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
-
+  
   private EventRef findEventRef(final Event event) {
     return events.stream().filter(x -> x.getEvent()
         .equals(event.getId())).findAny().orElse(null);
   }
-
+  
   public void setAccepted(final boolean value, final Event event) {
     final EventRef ref = findEventRef(event);
     ref.setAccepted(value);
