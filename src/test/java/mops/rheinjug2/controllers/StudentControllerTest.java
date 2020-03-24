@@ -177,7 +177,7 @@ class StudentControllerTest {
         "givenname", "familyname");
     setupTokenMock(account);
 
-    mvc.perform(post("/events"))
+    mvc.perform(post("/rheinjug2/student/events"))
         .andExpect(status().isForbidden());
   }
 }
