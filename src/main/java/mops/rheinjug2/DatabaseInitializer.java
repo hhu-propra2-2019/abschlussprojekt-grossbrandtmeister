@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.stream.IntStream;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
@@ -44,15 +43,11 @@ public class DatabaseInitializer implements ServletContextInitializer {
   }
 
   @Override
-  public void onStartup(final ServletContext servletContext) throws ServletException {
-    // FOR DEMO ONLY -- since we actually load all events from meetupcom
-    if (false) {
-
-      final Faker faker = new Faker(Locale.GERMAN);
-      fakeEvent(faker);
-      fakeStudent(faker);
-      fakeEventRef(faker);
-    }
+  public void onStartup(final ServletContext servletContext) {
+    final Faker faker = new Faker(Locale.GERMAN);
+    fakeEvent(faker);
+    fakeStudent(faker);
+    fakeEventRef(faker);
   }
 
   private void fakeEventRef(final Faker faker) {
@@ -103,12 +98,12 @@ public class DatabaseInitializer implements ServletContextInitializer {
 
       eventRepository.save(event);
       if (event.getId() == 1) {
-        event.setDate(LocalDateTime.of(LocalDate.of(2020, 03, 22), LocalTime.of(17, 30)));
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 22), LocalTime.of(17, 30)));
         event.setStatus("PAST");
         event.setType("Entwickelbar");
       }
       if (event.getId() == 2) {
-        event.setDate(LocalDateTime.of(LocalDate.of(2020, 03, 21), LocalTime.of(17, 30)));
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 21), LocalTime.of(17, 30)));
         event.setStatus("PAST");
         event.setType("Entwickelbar");
       }
