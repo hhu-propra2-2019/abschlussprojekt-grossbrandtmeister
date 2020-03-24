@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -166,5 +167,17 @@ class StudentControllerTest {
     mvc.perform(get("/rheinjug2/student/events"))
         .andExpect(status().isForbidden());
 
+  }
+
+  @Test
+  void testAddStudentToEventOrga() throws Exception {
+    final Set<String> roles = new HashSet<>();
+    roles.add("orga");
+    final Account account = new Account("name", "User@email.de", "image", roles,
+        "givenname", "familyname");
+    setupTokenMock(account);
+
+    mvc.perform(post("/events"))
+        .andExpect(status().isForbidden());
   }
 }
