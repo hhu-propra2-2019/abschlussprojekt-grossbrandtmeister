@@ -33,6 +33,10 @@ public class Student {
    * Event hinzufügen.
    */
   public void addEvent(final Event event) {
+    // FOR DEMO ONLY!
+    events.removeIf(eRef -> eRef.getEvent().equals(event.getId()));
+    ///
+
     events.add(new EventRef(event.getId()));
   }
 

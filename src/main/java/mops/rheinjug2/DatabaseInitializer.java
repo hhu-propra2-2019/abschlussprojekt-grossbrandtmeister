@@ -45,10 +45,14 @@ public class DatabaseInitializer implements ServletContextInitializer {
 
   @Override
   public void onStartup(final ServletContext servletContext) throws ServletException {
-    final Faker faker = new Faker(Locale.GERMAN);
-    fakeEvent(faker);
-    fakeStudent(faker);
-    fakeEventRef(faker);
+    // FOR DEMO ONLY -- since we actually load all events from meetupcom
+    if (false) {
+
+      final Faker faker = new Faker(Locale.GERMAN);
+      fakeEvent(faker);
+      fakeStudent(faker);
+      fakeEventRef(faker);
+    }
   }
 
   private void fakeEventRef(final Faker faker) {
