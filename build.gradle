@@ -85,6 +85,7 @@ spotbugs {
     effort = "max"
     reportLevel = "high"
 }
+spotbugsTest.enabled = false;
 
 checkstyle {
     toolVersion = "8.28"
