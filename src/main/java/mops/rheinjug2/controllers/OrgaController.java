@@ -60,6 +60,7 @@ public class OrgaController {
   /**
    * Event Übersicht für Orga Mitarbeiter.
    */
+  @Secured({"ROLE_orga"})
   @GetMapping("/events")
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));

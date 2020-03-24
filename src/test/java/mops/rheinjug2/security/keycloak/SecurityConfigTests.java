@@ -62,6 +62,7 @@ public class SecurityConfigTests {
       "orga, /rheinjug2/orga/delayedSubmission, 200",
       "orga, /rheinjug2/orga/reports, 200",
 
+
       ", /actuator, 302",
       ", /rheinjug2/student/events, 302",
       ", /rheinjug2/student/visitedevents, 302",
