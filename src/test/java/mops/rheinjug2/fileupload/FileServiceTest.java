@@ -29,7 +29,7 @@ import org.testcontainers.utility.Base58;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = {FileService.class,FileCheckService.class,FileConfiguration.class})
+@ContextConfiguration(classes = {FileConfiguration.class})
 @Testcontainers
 class FileServiceTest {
 
@@ -53,7 +53,7 @@ class FileServiceTest {
 
   @BeforeAll
   void setUp() throws InvalidPortException, InvalidEndpointException {
-
+    minioServer.start();
     final Integer mappedPort = minioServer.getMappedPort(9000);
     exposeHostPorts(mappedPort);
     minioServerUrl = String.format("http://%s:%s", minioServer.getContainerIpAddress(), mappedPort);
