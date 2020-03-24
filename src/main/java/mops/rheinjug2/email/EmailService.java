@@ -34,9 +34,7 @@ public class EmailService {
   }
 
   /**
-   * Dummy Methode die beim aufrufen von /sendEmail eine
-   * Test Email an eine angegebene Email sendet.
-   * Die Parameter beziehen sich auf die Angaben des/der Studenten/Studentin.
+   * erzeugen einer Email (+PDF) und versenden.
    */
   public void sendMail(String name, String gender, String matNr, List<Event> usedEvents)
       throws MessagingException {
