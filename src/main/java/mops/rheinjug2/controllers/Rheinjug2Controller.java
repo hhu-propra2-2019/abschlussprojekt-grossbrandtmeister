@@ -22,16 +22,22 @@ public class Rheinjug2Controller {
 
   @GetMapping("")
   public String getEventsNoMapping() {
-    return "index";
+    return "redirect:/rheinjug2/";
   }
 
   /**
-   * Startseite, übergibt den Account falls jemand eingelogt ist.
+   * Startseite, übergibt den Account falls jemand eingeloggt ist
+   * und leitet auf entsprechende Übersicht weiter.
    */
   @GetMapping("/")
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     if (token != null) {
       model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+      if (token.getAccount().getRoles().contains("orga")) {
+        return "redirect:/rheinjug2/orga/";
+      } else if (token.getAccount().getRoles().contains("studentin")) {
+        return "redirect:/rheinjug2/student/";
+      }
     }
     publicAccess.increment();
     return "index";
