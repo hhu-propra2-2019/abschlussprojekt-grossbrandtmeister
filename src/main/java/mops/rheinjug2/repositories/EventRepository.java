@@ -1,6 +1,7 @@
 package mops.rheinjug2.repositories;
 
 import java.util.List;
+import java.util.Optional;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.orgamodels.SummariesIDs;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface EventRepository extends CrudRepository<Event, Long> {
 
   @Query(value = "SELECT COUNT(*) FROM student_event WHERE student_event.event = :id")
@@ -56,4 +58,20 @@ public interface EventRepository extends CrudRepository<Event, Long> {
   @Query(value = "SELECT student,event FROM student_event WHERE"
       + " submitted_summary = FALSE")
   List<SummariesIDs> getUnSubmittedSummaries();
+
+  @Query(value = "SELECT student,event FROM student_event "
+      + "WHERE student_event.student = :studentid AND student_event.event = :eventid")
+  Optional<SummariesIDs> checkSummary(@Param("studentid") Long studentid,
+                                      @Param("eventid") Long eventid);
+
+  @Query(value = "SELECT COUNT(*) FROM student_event WHERE"
+      + " submitted_summary = TRUE AND accepted = FALSE")
+  int getNumberOfSubmittedAndUnacceptedSummaries();
+
+  @Modifying
+  @Query(value = "UPDATE student_event SET student_event.submitted_summary = TRUE,"
+      + " student_event.accepted = TRUE "
+      + "WHERE student_event.student = :studentid AND student_event.event = :eventid")
+  void updateSummaryToSubmittedAndAccepted(@Param("studentid") Long studentid,
+                                           @Param("eventid") Long eventid);
 }

@@ -10,4 +10,5 @@ public class DelayedSubmission {
   private long eventId;
   private String studentName;
   private String eventTitle;
+  private String summaryContent;
 }
