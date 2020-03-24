@@ -97,6 +97,3 @@ pmd {
     toolVersion = "6.21.0"
     ignoreFailures = true
 }
-
-project.tasks.check.dependsOn(spotbugsMain)
-project.tasks.check.dependsOn(spotbugsTest)
