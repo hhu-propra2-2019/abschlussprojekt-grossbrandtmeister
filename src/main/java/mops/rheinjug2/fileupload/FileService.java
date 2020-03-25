@@ -13,7 +13,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -117,13 +116,13 @@ public class FileService {
   public void uploadContentConvertToMd(final String content, final String filename)
       throws IOException {
     final InputStream inputStream = new ByteArrayInputStream(content.getBytes(
-        Charset.forName("UTF-8")));
+        StandardCharsets.UTF_8));
     try {
       if (!minioClient.bucketExists(defaultBucketName)) {
         minioClient.makeBucket(defaultBucketName);
       }
       minioClient.putObject(defaultBucketName, filename, inputStream,
-          (long) content.length(), null, null, "text/markdown");
+          null, null, null, "text/plain");
     } catch (final Exception e) {
       throw new RuntimeException(e.getMessage());
     } finally {

@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import java.util.HashSet;
 import java.util.Set;
 import mops.rheinjug2.Account;
@@ -17,7 +16,6 @@ import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.services.ModelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Answers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,9 +39,6 @@ class StudentControllerTest {
   @Autowired
   private transient WebApplicationContext context;
 
-  @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
-  MeterRegistry registry;
-
   @BeforeEach
   public void setUp() {
     mvc = MockMvcBuilders
@@ -56,6 +51,7 @@ class StudentControllerTest {
   void testReportsubmitAdmisionStudent() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
+
     final Account account = new Account("name", "User@email.de", "image", roles,
         "givenname", "familyname");
     setupTokenMock(account);
@@ -73,6 +69,7 @@ class StudentControllerTest {
   void testReportsubmitNoAdmisionOrga() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("orga");
+
     final Account account = new Account("name", "User@email.de", "image", roles,
         "givenname", "familyname");
     setupTokenMock(account);

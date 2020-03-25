@@ -52,6 +52,7 @@ dependencies {
     implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
     implementation 'org.keycloak.bom:keycloak-adapter-bom:3.3.0.Final'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile group: 'com.playtika.testcontainers', name: 'embedded-minio', version: '1.43'
     compile 'org.asciidoctor:asciidoctorj:2.2.0'
     compile 'org.springframework:spring-context-support'
     compile 'javax.mail:mail:1.4.1'
@@ -69,6 +70,8 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.tngtech.keycloakmock:mock-junit5:0.2.0'
     testCompile 'com.tngtech.archunit:archunit-junit5:0.13.1'
+    testCompile "org.testcontainers:testcontainers:1.13.0"
+    testCompile "org.testcontainers:junit-jupiter:1.13.0"
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.19'
     compile group: 'com.sun.istack', name: 'istack-commons-runtime', version: '3.0.10'
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.14.0'
@@ -93,6 +96,3 @@ checkstyle {
 pmd {
     toolVersion = "6.21.0"
 }
-
-project.tasks.check.dependsOn(spotbugsMain)
-project.tasks.check.dependsOn(spotbugsTest)

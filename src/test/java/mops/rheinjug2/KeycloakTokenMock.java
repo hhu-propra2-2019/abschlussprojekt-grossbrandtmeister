@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 
 public class KeycloakTokenMock {
-  
+
   /**
    * Erstellt einen Mock Token.
    */
@@ -32,5 +32,6 @@ public class KeycloakTokenMock {
     final SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authenticationToken);
   }
-  
+
 }
+
