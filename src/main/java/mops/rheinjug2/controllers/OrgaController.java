@@ -5,12 +5,12 @@ import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.orgamodels.DelayedSubmission;
+import mops.rheinjug2.orgamodels.SearchForm;
 import mops.rheinjug2.services.EventService;
 import mops.rheinjug2.services.OrgaService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Log4j2
 @Controller
@@ -84,10 +85,14 @@ public class OrgaController {
   public String getDelayedSubmission(final KeycloakAuthenticationToken token, final Model model) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
-    model.addAttribute("delayedsubmissions", orgaService.getDelayedSubmission());
+    if (!model.containsAttribute("delayedsubmissions")) {
+      model.addAttribute("delayedsubmissions", orgaService.getDelayedSubmission());
+      System.out.println("2");
+    }
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     model.addAttribute("successmessage", successMessage);
     model.addAttribute("errormessage", errorMessage);
+    model.addAttribute("searchForm", new SearchForm(""));
     successMessage = "";
     return "orga_delayed_submission";
   }
@@ -99,15 +104,14 @@ public class OrgaController {
   @PostMapping("/summaryaccepting")
   public String summaryAccepting(@RequestParam final Long eventid,
                                  @RequestParam final Long studentid,
-                                 final Model model, final KeycloakAuthenticationToken token,
-                                 final HttpServletRequest request) throws ServletException {
+                                 final Model model, final KeycloakAuthenticationToken token) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
-    if (orgaService.studentIsRegistred(studentid, eventid)) {
-      orgaService.setSummaryAsAccepted(studentid, eventid);
+    if (orgaService.setSummaryAsAccepted(studentid, eventid)) {
       numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
       successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert gespeichert.";
     }
+    errorMessage = "Fehler.. Zusammenfassung wurde nicht gespeichert ";
     return "redirect:/rheinjug2/orga/reports";
   }
 
@@ -123,22 +127,18 @@ public class OrgaController {
   @PostMapping("/summaryupload")
   public String summaryUpload(@ModelAttribute final DelayedSubmission delayedSubmission)
       throws IOException {
-    if (orgaService.studentIsRegistred(delayedSubmission.getStudentId(),
-        delayedSubmission.getEventId())) {
-      try {
-        orgaService.summaryupload(delayedSubmission.getStudentName(),
-            delayedSubmission.getEventId(),
-            delayedSubmission.getSummaryContent());
-      } catch (final RuntimeException e) {
-        errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
-        return "redirect:/rheinjug2/orga/delayedSubmission";
-      }
-      orgaService.setSummaryAsSubmittedAndAccepted(delayedSubmission.getStudentId(),
-          delayedSubmission.getEventId());
-      successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
+    try {
+      orgaService.summaryupload(
+          delayedSubmission.getStudentId(),
+          delayedSubmission.getEventId(),
+          delayedSubmission.getStudentName(),
+          delayedSubmission.getSummaryContent());
+    } catch (final RuntimeException e) {
+      errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
+      return "redirect:/rheinjug2/orga/delayedSubmission";
     }
+    successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
     return "redirect:/rheinjug2/orga/delayedSubmission";
-
   }
 
   /**
@@ -166,6 +166,41 @@ public class OrgaController {
     log.info("User '" + user.getName() + "' requested event refresh");
     eventService.refreshRheinjugEvents(LocalDateTime.now(ZoneId.of("Europe/Berlin")));
     return "redirect:/rheinjug2/orga/events";
+  }
+
+  /**
+   * Die methode gibt der gesuchte Student zuruck.
+   *
+   * @param searchForm         .
+   * @param redirectAttributes .
+   * @return .
+   */
+  @Secured({"ROLE_orga"})
+  @PostMapping("/searchstudent")
+  public String searchstudent(@ModelAttribute final SearchForm searchForm,
+                              final RedirectAttributes redirectAttributes) {
+    final List<DelayedSubmission> delayedsubmissions =
+        orgaService.getDelayedSubmissionsForStudent(searchForm.getSearchedName());
+    System.out.println(searchForm.toString());
+    redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
+    return "redirect:/rheinjug2/orga/delayedSubmission";
+  }
+
+  /**
+   * Die Methode gibt die gesuchte Veranstaltung zuruck.
+   *
+   * @param searchForm         .
+   * @param redirectAttributes .
+   * @return .
+   */
+  @Secured({"ROLE_orga"})
+  @PostMapping("/searchevent")
+  public String searchevent(@ModelAttribute final SearchForm searchForm,
+                            final RedirectAttributes redirectAttributes) {
+    final List<DelayedSubmission> delayedsubmissions =
+        orgaService.getDelayedSubmissionsForEvent(searchForm.getSearchedName());
+    redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
+    return "redirect:/rheinjug2/orga/delayedSubmission";
   }
 
   @Scheduled(fixedDelayString = "${application.api-pump.delay}")
