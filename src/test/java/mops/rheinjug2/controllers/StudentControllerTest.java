@@ -44,6 +44,7 @@ class StudentControllerTest {
   void testReportsubmitAdmisionStudent() throws Exception {
     setupMockUserWithRole("studentin");
 
+
     final Event event = new Event();
     when(modelService.loadEventById(anyLong())).thenReturn(event);
 
@@ -56,6 +57,7 @@ class StudentControllerTest {
   @Test
   void testReportsubmitNoAdmisionOrga() throws Exception {
     setupMockUserWithRole("orga");
+
 
     final String eventId = "123";
     mvc.perform(get("/rheinjug2/student/reportsubmit").param("eventId", eventId))
