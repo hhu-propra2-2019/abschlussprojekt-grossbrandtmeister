@@ -37,6 +37,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 class StudentControllerTest {
   @Autowired
   private transient MockMvc mvc;

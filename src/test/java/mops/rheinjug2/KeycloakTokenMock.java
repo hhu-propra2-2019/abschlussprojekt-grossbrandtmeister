@@ -4,7 +4,6 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
 import java.util.Set;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
@@ -28,7 +27,8 @@ public class KeycloakTokenMock {
     when(principal.getKeycloakSecurityContext().getIdToken().getEmail()).thenReturn(userEmail);
     final SimpleKeycloakAccount keyaccount = new SimpleKeycloakAccount(principal, roles,
         mock(RefreshableKeycloakSecurityContext.class));
-    final KeycloakAuthenticationToken authenticationToken = new KeycloakAuthenticationToken(keyaccount, true);
+    final KeycloakAuthenticationToken authenticationToken =
+        new KeycloakAuthenticationToken(keyaccount, true);
     final SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authenticationToken);
   }
