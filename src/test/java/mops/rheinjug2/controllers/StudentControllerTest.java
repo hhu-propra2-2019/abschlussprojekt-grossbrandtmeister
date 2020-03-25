@@ -4,6 +4,7 @@ import static mops.rheinjug2.KeycloakTokenMock.setupTokenMock;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -190,8 +191,10 @@ class StudentControllerTest {
         "givenname", "familyname");
     setupTokenMock(account);
     final String eventId = "123";
-    mvc.perform(post("/rheinjug2/student/events").param("eventId", eventId))
-        .andExpect(status().isOk())
+    mvc.perform(post("/rheinjug2/student/events")
+        .param("eventId", eventId)
+        .with(csrf()))
+        .andExpect(status().isFound())
         .andExpect(redirectedUrl("/rheinjug2/student/visitedevents"));
   }
 
