@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -180,4 +181,18 @@ class StudentControllerTest {
     mvc.perform(post("/rheinjug2/student/events"))
         .andExpect(status().isForbidden());
   }
+
+  @Test
+  void testAddStudentToEventStudent() throws Exception {
+    final Set<String> roles = new HashSet<>();
+    roles.add("ROLE_studentin");
+    final Account account = new Account("name", "User@email.de", "image", roles,
+        "givenname", "familyname");
+    setupTokenMock(account);
+    final String eventId = "123";
+    mvc.perform(post("/rheinjug2/student/events").param("eventId", eventId))
+        .andExpect(status().isOk())
+        .andExpect(redirectedUrl("/rheinjug2/student/visitedevents"));
+  }
+
 }
