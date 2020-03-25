@@ -34,7 +34,7 @@ public class OrgaSummary {
     studentName = student.getName();
     studentEmail = student.getEmail();
     eventTitle = event.getTitle();
-    submissionDeadline = event.getDate().plusDays(7);
+    submissionDeadline = event.getDeadline();
   }
 }
 
