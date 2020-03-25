@@ -134,8 +134,6 @@ public class FileUploadController {
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     final String username = principal.getName();
 
-
-
     if (!username.isEmpty()) {
       final String filename = username + "_" + eventId;
       try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
