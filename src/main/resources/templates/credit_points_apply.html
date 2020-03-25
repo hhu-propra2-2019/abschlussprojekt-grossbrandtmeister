@@ -55,12 +55,23 @@
             </tr>
             </tbody>
         </table>
-        <form action="/rheinjug2/student/creditpoints/certificateform" method="GET" id="getForm">
+        <div th:if="${!disabled}">
+            <form action="/rheinjug2/student/creditpoints/certificateform" method="GET" id="getForm">
+                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+                <button type="submit" class="btn col-12 btn-outline-success" name="second"
+                        th:disabled="${disabled}"> CP Beantragen
+                </button>
+            </form>
+        </div>
+
+        <div th:if="${disabled}">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
-            <button type="submit" class="btn col-12 btn-outline-success" name="second"
-                    th:disabled="${disabled}">CP Beantragen
+            <button type="submit" class="btn col-12 btn-outline-secondary" name="second"
+                    th:disabled="${disabled}"> Nicht genügend Veranstaltungen zum einlösen.
             </button>
-        </form>
+        </div>
+
+
     </div>
     <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px"
          th:if="${!exists  || !eventsExist}">
