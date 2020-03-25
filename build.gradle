@@ -95,5 +95,4 @@ checkstyle {
 
 pmd {
     toolVersion = "6.21.0"
-    ignoreFailures = true
 }
