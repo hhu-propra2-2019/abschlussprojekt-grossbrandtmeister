@@ -68,7 +68,6 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'com.tngtech.keycloakmock:mock-junit5:0.2.0'
     testCompile 'com.tngtech.archunit:archunit-junit5:0.13.1'
     testCompile "org.testcontainers:testcontainers:1.13.0"
     testCompile "org.testcontainers:junit-jupiter:1.13.0"
