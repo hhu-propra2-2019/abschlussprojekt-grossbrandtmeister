@@ -36,6 +36,8 @@ public class Rheinjug2ControllerTests {
   @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
   MeterRegistry registry;
 
+  private static final String BASE_URL = "/rheinjug2/";
+
   /**
    * Setzt den mvc mock auf.
    */
@@ -49,7 +51,7 @@ public class Rheinjug2ControllerTests {
 
   @Test
   public void accessIndexPageNoAccount() throws Exception {
-    mvc.perform(get("/rheinjug2/"))
+    mvc.perform(get(BASE_URL))
         .andExpect(status().isOk())
         .andExpect(view().name("index"));
   }
@@ -57,11 +59,10 @@ public class Rheinjug2ControllerTests {
   @Test
   public void accessIndexPageNoRole() throws Exception {
     final Set<String> roles = new HashSet<>();
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
+    final Account account = getAccountWithRoles(roles);
     setupTokenMock(account);
 
-    mvc.perform(get("/rheinjug2/"))
+    mvc.perform(get(BASE_URL))
         .andExpect(status().isOk())
         .andExpect(view().name("index"));
   }
@@ -70,11 +71,10 @@ public class Rheinjug2ControllerTests {
   public void accessIndexPageOrgaRole() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("orga");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
+    final Account account = getAccountWithRoles(roles);
     setupTokenMock(account);
 
-    mvc.perform(get("/rheinjug2/"))
+    mvc.perform(get(BASE_URL))
         .andExpect(status().isFound())
         .andExpect(view().name("redirect:/rheinjug2/orga/"));
   }
@@ -83,11 +83,10 @@ public class Rheinjug2ControllerTests {
   public void accessIndexPageStudentinRole() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
+    final Account account = getAccountWithRoles(roles);
     setupTokenMock(account);
 
-    mvc.perform(get("/rheinjug2/"))
+    mvc.perform(get(BASE_URL))
         .andExpect(status().isFound())
         .andExpect(view().name("redirect:/rheinjug2/student/"));
   }
@@ -97,11 +96,10 @@ public class Rheinjug2ControllerTests {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
     roles.add("orga");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
+    final Account account = getAccountWithRoles(roles);
     setupTokenMock(account);
 
-    mvc.perform(get("/rheinjug2/"))
+    mvc.perform(get(BASE_URL))
         .andExpect(status().isFound())
         .andExpect(view().name("redirect:/rheinjug2/orga/"));
   }
@@ -110,11 +108,10 @@ public class Rheinjug2ControllerTests {
   public void accessIndexPageOtherRole() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("actuator");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
+    final Account account = getAccountWithRoles(roles);
     setupTokenMock(account);
 
-    mvc.perform(get("/rheinjug2/"))
+    mvc.perform(get(BASE_URL))
         .andExpect(status().isOk())
         .andExpect(view().name("index"));
   }
@@ -128,8 +125,13 @@ public class Rheinjug2ControllerTests {
 
   @Test
   public void accessLogoutAndGetRedirected() throws Exception {
-    mvc.perform(get("/rheinjug2/logout"))
+    mvc.perform(get(BASE_URL + "logout"))
         .andExpect(status().isFound())
         .andExpect(view().name("redirect:/rheinjug2/"));
+  }
+
+  private static Account getAccountWithRoles(final Set<String> roles) {
+    return new Account("name", "User@email.de", "image", roles,
+        "givenname", "familyname");
   }
 }
