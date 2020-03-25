@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testcontainers.Testcontainers.exposeHostPorts;
 
-
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -21,7 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import org.apache.commons.io.IOUtils;
@@ -68,7 +67,8 @@ class FileServiceTest {
   void setUp() throws InvalidPortException, InvalidEndpointException, IOException,
       InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException,
       InvalidResponseException, ErrorResponseException, NoResponseException,
-      InvalidBucketNameException, XmlPullParserException, InternalException, RegionConflictException {
+      InvalidBucketNameException, XmlPullParserException, InternalException,
+      RegionConflictException {
     minioServer.start();
     final Integer mappedPort = minioServer.getMappedPort(9000);
     exposeHostPorts(mappedPort);
@@ -100,9 +100,10 @@ class FileServiceTest {
   }
 
   @Test
-  void testIfUploadedFileIsStored() throws IOException, InvalidKeyException, NoSuchAlgorithmException,
-      InsufficientDataException, InvalidArgumentException, InvalidResponseException, InternalException,
-      NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
+  void testIfUploadedFileIsStored() throws IOException, InvalidKeyException,
+      NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException,
+      InvalidResponseException, InternalException, NoResponseException, InvalidBucketNameException,
+      XmlPullParserException, ErrorResponseException {
     final MockMultipartFile testFile = new MockMultipartFile("file",
         "file.md", "text/plain", "testdata".getBytes());
     final String filename = "filenametestIfUploadedFileIsStored";
@@ -112,7 +113,10 @@ class FileServiceTest {
 
   @Test
   void testIfUploadedFileContentIsSameAsDownloadedFileContent() throws
-      IOException, XmlPullParserException, NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException, InvalidResponseException, ErrorResponseException, NoResponseException, InvalidBucketNameException, InsufficientDataException, InternalException {
+      IOException, XmlPullParserException, NoSuchAlgorithmException, InvalidKeyException,
+      InvalidArgumentException, InvalidResponseException, ErrorResponseException,
+      NoResponseException, InvalidBucketNameException, InsufficientDataException,
+      InternalException {
     final String filename = "filenameUploadedFileIsSameAsDownloadedFile";
     final MockMultipartFile testFile = new MockMultipartFile("file",
         "file.md", "text/plain", "testdata".getBytes());
@@ -136,6 +140,7 @@ class FileServiceTest {
   }
 
   @Test
+  @SuppressWarnings("PMD.CloseResource")
   void testIfUploadStringContentIsRightSentence() throws IOException, InvalidKeyException,
       NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException,
       InvalidResponseException, InternalException, NoResponseException, InvalidBucketNameException,
@@ -144,24 +149,25 @@ class FileServiceTest {
     final String filename = "filenameUploadStringContentIsStored";
     fileService.uploadContentConvertToMd(testContent, filename);
     final InputStream inputStream = minioClient.getObject(BUCKETMANE, filename);
-    final String storedContent = IOUtils.toString(inputStream, Charset.forName("UTF-8"));
+    final String storedContent = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
     assertEquals(testContent, storedContent);
     inputStream.close();
   }
 
   @Test
+  @SuppressWarnings("PMD.CloseResource")
   void testIfInputstreamGivesTheSameContentBack() throws IOException, XmlPullParserException,
       NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException,
       InvalidResponseException, ErrorResponseException, NoResponseException,
       InvalidBucketNameException, InsufficientDataException, InternalException {
     final String content = "ICh denke mir einen schönen Satz aus";
     final InputStream testInputStream = new ByteArrayInputStream(content.getBytes(
-        Charset.forName("UTF-8")));
+        StandardCharsets.UTF_8));
     final String filename = "filenameInputstreamIsSame";
     minioClient.putObject(BUCKETMANE, filename,
         testInputStream, null, null, null, null);
     final InputStream minioInputstream = fileService.getFileInputStream(filename);
-    final String storedContent = IOUtils.toString(minioInputstream, Charset.forName("UTF-8"));
+    final String storedContent = IOUtils.toString(minioInputstream, StandardCharsets.UTF_8);
     assertEquals(content, storedContent);
   }
 }
