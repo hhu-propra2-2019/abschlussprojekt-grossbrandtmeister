@@ -58,10 +58,11 @@ public class FileUploadController {
                            final Long eventId) {
     if (eventId == null) {
       attributes.addFlashAttribute("message", "You did not choose an event."
-          + "Go to your personal event side and choose which event you want to handle your summary in");
+          + "Go to your personal event side and choose which"
+          + " event you want to handle your summary in");
       return "redirect:/rheinjug2/student/reportsubmit";
     }
-    if (FileCheckService.checkIfIsMarkdown(file)) {
+    if (FileCheckService.isMarkdown(file)) {
       try {
         final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
         final String username = principal.getName();
@@ -156,7 +157,8 @@ public class FileUploadController {
   @RequestMapping("/download/presentation")
   @ResponseBody
   public void downloadPresentationForSummary(final KeycloakAuthenticationToken token,
-                                             final HttpServletResponse response) throws IOException {
+                                             final HttpServletResponse response)
+      throws IOException {
 
     final String filename = "VorlageZusammenfassung.md";
     try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
