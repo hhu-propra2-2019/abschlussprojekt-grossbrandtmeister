@@ -61,7 +61,7 @@
 
         <div th:if="${disabled}">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
-            <button type="submit" class="container bg-light rounded shadow-lg " name="second"
+            <button type="submit" class="btn col-12 btn-outline-secondary" name="second"
                     th:disabled="${disabled}"> Nicht genügend Veranstaltungen zum einlösen.
             </button>
         </div>
