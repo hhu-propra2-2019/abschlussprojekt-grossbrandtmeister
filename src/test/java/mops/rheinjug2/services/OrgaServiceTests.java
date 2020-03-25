@@ -164,7 +164,6 @@ public class OrgaServiceTests {
 
     verify(studentRepository, times(1)).findAll();
 
-
     Assertions.assertThat(orgaSummaries).hasSize(3);
     //1->1
     Assertions.assertThat(orgaSummaries.get(2).getStudentName()).isEqualTo(student1.getName());
@@ -217,7 +216,6 @@ public class OrgaServiceTests {
     Assertions.assertThat(orgaSummaries).hasSize(1);
     verify(fileService, times(1))
         .getContentOfFileAsString(student1.getLogin() + "_" + event1.getId());
-
   }
 
 }

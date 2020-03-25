@@ -24,6 +24,7 @@ import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.orgamodels.DelayedSubmission;
 import mops.rheinjug2.orgamodels.OrgaEvent;
 import mops.rheinjug2.orgamodels.OrgaSummary;
+import mops.rheinjug2.orgamodels.SummariesIDs;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -132,6 +133,7 @@ public class OrgaService {
    * @throws ErrorResponseException     .
    */
   private String getSummaryContentFromFileservice(final String studentName, final Long eventId)
+
       throws IOException, InvalidKeyException, NoSuchAlgorithmException,
       XmlPullParserException, InvalidArgumentException, InvalidResponseException,
       InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException,
@@ -256,5 +258,41 @@ public class OrgaService {
         .filter(delayedSubmission ->
             searchedName.equalsIgnoreCase(delayedSubmission.getEventTitle()))
         .collect(Collectors.toList());
+  }
+
+  /**
+   * Oberprügen, ob der Student an der Veranstaltung angemeldet ist.
+   *
+   * @param studentid studentid
+   * @param eventid   eventid
+   * @return true, wenn ein der student an der Veranstaltung angemeldet ist.
+   */
+  public boolean studentIsRegistred(final Long studentid, final Long eventid) {
+    final Optional<SummariesIDs> summariesIDsOption =
+        eventRepository.checkSummary(studentid, eventid);
+    if (summariesIDsOption.isPresent()) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Gibt der Anzahl alle Bewertungsanfragen.
+   *
+   * @return Anzahl der Anfragen
+   */
+  public int getnumberOfEvaluationRequests() {
+    return eventRepository.getNumberOfSubmittedAndUnacceptedSummaries();
+  }
+
+  public void summaryupload(final String studentName,
+                            final Long eventId,
+                            final String summaryContent) throws IOException {
+    fileService.uploadContentConvertToMd(summaryContent, studentName + "_" + eventId);
+  }
+
+  public void setSummaryAsSubmittedAndAccepted(final Long studentId, final Long eventId) {
+    eventRepository.updateSummaryToSubmittedAndAccepted(studentId, eventId);
+
   }
 }

@@ -1,6 +1,7 @@
 package mops.rheinjug2.repositories;
 
 import java.util.List;
+import java.util.Optional;
 import mops.rheinjug2.entities.Event;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -28,5 +29,4 @@ public interface EventRepository extends CrudRepository<Event, Long> {
   @Query(value = "SELECT COUNT(*) FROM student_event WHERE"
       + " submitted_summary = TRUE AND accepted = FALSE")
   int getNumberOfSubmittedAndUnacceptedSummaries();
-
 }
