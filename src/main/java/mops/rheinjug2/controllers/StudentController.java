@@ -111,9 +111,11 @@ public class StudentController {
    * Fügt einen Studenten einem Event hinzu.
    */
   @PostMapping("/events")
-  public String addStudentToEvent(final String name, final String email, final Long eventId) {
-    modelService.addStudentToEvent(name, email, eventId);
+  public String addStudentToEvent(final KeycloakAuthenticationToken token,
+                                  final Model model, final Long eventId) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    modelService.addStudentToEvent(account.getName(), account.getEmail(), eventId);
     return "redirect:/rheinjug2/student/visitedevents";
   }
-  
 }
