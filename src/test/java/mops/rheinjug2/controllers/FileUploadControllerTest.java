@@ -50,6 +50,7 @@ class FileUploadControllerTest {
   public static final String IMAGE = "image";
   public static final String FILE = "file";
   public static final String EVENT_ID = "123";
+  public static final String NAME = "name";
   @Autowired
   private transient MockMvc mvc;
 
@@ -101,7 +102,7 @@ class FileUploadControllerTest {
   void testUploadMulitpartfileWithRightCrfIsFound() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -121,7 +122,7 @@ class FileUploadControllerTest {
   void testSummarysubmitWithoutIdgetMessageTorReturnToVisitevents() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -138,7 +139,7 @@ class FileUploadControllerTest {
   void testSummarysubmitWithEventIdIncluded() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -154,7 +155,7 @@ class FileUploadControllerTest {
   void testUploadFileExpectedViewReportsubmitWithoutEventId() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -176,7 +177,7 @@ class FileUploadControllerTest {
   void testUploadTestRedirectWithEventId() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -199,7 +200,7 @@ class FileUploadControllerTest {
   void downloadFileByEvent_IdContenIsCorrect() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -224,8 +225,7 @@ class FileUploadControllerTest {
   void downloadFileByvent_IdFileNameIsCorrect() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final String name = "Johanna Steiner";
-    final Account account = new Account(name, USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -240,7 +240,7 @@ class FileUploadControllerTest {
         .param("eventId", eventId))
         .andExpect(status().isOk()).andReturn();
     final String resultcontent = result.getResponse().getHeader("Content-disposition");
-    final String nameOfFile = name + "_" + eventId + ".md";
+    final String nameOfFile = NAME + "_" + eventId + ".md";
 
     assertEquals("attachment;filename=" + nameOfFile, resultcontent);
 
@@ -251,7 +251,7 @@ class FileUploadControllerTest {
   void downloadPresentationFileAndCheckContent() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -274,7 +274,7 @@ class FileUploadControllerTest {
   void downloadPresentationFileCheckNameCorrect() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -298,7 +298,7 @@ class FileUploadControllerTest {
   void downloadPresentationFileStatusIsOkay() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
@@ -338,7 +338,7 @@ class FileUploadControllerTest {
   void testUploadMultitpartFileWithInvalidCrf() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add(STUDENTIN);
-    final Account account = new Account("name", USER_EMAIL_DE, IMAGE, roles,
+    final Account account = new Account(NAME, USER_EMAIL_DE, IMAGE, roles,
         GIVENNAME, FAMILYNAME);
     setupTokenMock(account);
 
