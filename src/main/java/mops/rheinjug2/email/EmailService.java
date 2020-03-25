@@ -1,7 +1,6 @@
 package mops.rheinjug2.email;
 
 import com.sun.istack.ByteArrayDataSource;
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 import javax.activation.DataHandler;
 import javax.mail.MessagingException;
@@ -19,58 +18,66 @@ import org.springframework.stereotype.Service;
 @Service
 @Log4j2
 public class EmailService {
-
+  
   private final transient CertificateService certificateService;
   private final transient JavaMailSender emailSender;
   private final transient String recipient;
-
-
+  private final transient int numberOfRequiredEntwickelbarEvents = 1;
+  private final transient int numberOfRequiredEveningEvents = 3;
+  
+  
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public EmailService(CertificateService certificateService,
-                      JavaMailSender emailSender, @Value("${email.recipient}") String recipient) {
+  public EmailService(final CertificateService certificateService,
+                      final JavaMailSender emailSender, @Value("${email.recipient}") final String recipient) {
     this.certificateService = certificateService;
     this.emailSender = emailSender;
     this.recipient = recipient;
   }
-
+  
   /**
    * erzeugen einer Email (+PDF) und versenden.
    */
-  public void sendMail(String name, String gender, String matNr, List<Event> usedEvents)
+  public void sendMail(final String name, final String gender, final String matNr, final List<Event> usedEvents)
       throws MessagingException {
-    //TODO Veranstaltungen hinzufügen
-
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    certificateService.createCertificatePdf(outputStream, name, gender, matNr, usedEvents);
-    byte[] bytes = outputStream.toByteArray();
-
-    ByteArrayDataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");
-    MimeBodyPart pdfBodyPart = new MimeBodyPart();
+    
+    final byte[] bytes = certificateService.createCertificatePdf(name, gender, matNr, usedEvents);
+    final ByteArrayDataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");
+    final MimeBodyPart pdfBodyPart = new MimeBodyPart();
     pdfBodyPart.setDataHandler(new DataHandler(dataSource));
     pdfBodyPart.setFileName("Schein_" + matNr + ".pdf");
-
+    
     String text = setGender(gender) + name + " (Matr: " + matNr + ") beantragt folgende "
-        + "Veranstaltung(en) gegen 0.5 CP einzutauschen:";
-
-    MimeBodyPart textBodyPart = new MimeBodyPart();
+        + "Veranstaltung(en) gegen 0.5 CP einzutauschen:\n";
+    
+    if (usedEvents.size() == numberOfRequiredEveningEvents) {
+      text = text
+          + "- " + usedEvents.get(0).getTitle() + "\n"
+          + "- " + usedEvents.get(1).getTitle() + "\n"
+          + "- " + usedEvents.get(2).getTitle() + "\n";
+    } else if (usedEvents.size() == numberOfRequiredEntwickelbarEvents) {
+      text = text
+          + "- " + usedEvents.get(0).getTitle() + "\n";
+    }
+    
+    final MimeBodyPart textBodyPart = new MimeBodyPart();
     textBodyPart.setText(text);
-
-    MimeMultipart mimeMultipart = new MimeMultipart();
+    
+    final MimeMultipart mimeMultipart = new MimeMultipart();
     mimeMultipart.addBodyPart(textBodyPart);
     mimeMultipart.addBodyPart(pdfBodyPart);
-
-    String subject = "Java in der Praxis: Scheinbeantragung von " + name;
-
-    MimeMessage mimeMessage = emailSender.createMimeMessage();
-    MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+    
+    final String subject = "Java in der Praxis: Scheinbeantragung von " + name;
+    
+    final MimeMessage mimeMessage = emailSender.createMimeMessage();
+    final MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
     mimeMessageHelper.setSubject(subject);
     mimeMessageHelper.setTo(recipient);
     mimeMessage.setContent(mimeMultipart);
-
+    
     emailSender.send(mimeMessage);
   }
-
-  private static String setGender(String gender) {
+  
+  private static String setGender(final String gender) {
     switch (gender) {
       case "male":
         return "Der Student ";
@@ -80,5 +87,5 @@ public class EmailService {
         return "";
     }
   }
-
+  
 }

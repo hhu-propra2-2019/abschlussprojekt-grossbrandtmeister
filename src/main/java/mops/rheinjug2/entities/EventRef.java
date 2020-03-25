@@ -33,8 +33,12 @@ public class EventRef {
     return submittedSummary && accepted && (!usedForCertificate);
   }
 
-  boolean isSubmittedAndNotAccepted() {
+  public boolean isSubmittedAndNotAccepted() {
     return submittedSummary && !accepted;
+  }
+
+  public boolean isDelayed() {
+    return !submittedSummary && deadline.isBefore(LocalDateTime.now());
   }
 
   boolean isSubmittedAndAccepted() {
