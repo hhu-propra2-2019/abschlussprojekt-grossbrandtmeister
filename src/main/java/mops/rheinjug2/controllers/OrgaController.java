@@ -88,7 +88,6 @@ public class OrgaController {
     authenticatedAccess.increment();
     if (!model.containsAttribute("delayedsubmissions")) {
       model.addAttribute("delayedsubmissions", orgaService.getDelayedSubmission());
-      System.out.println("2");
     }
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     model.addAttribute("successmessage", successMessage);
@@ -105,8 +104,7 @@ public class OrgaController {
   @PostMapping("/summaryaccepting")
   public String summaryAccepting(@RequestParam final Long eventid,
                                  @RequestParam final Long studentid,
-                                 final Model model, final KeycloakAuthenticationToken token,
-                                 final HttpServletRequest request) throws ServletException {
+                                 final Model model, final KeycloakAuthenticationToken token) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     if (orgaService.setSummaryAsAccepted(studentid, eventid)) {
@@ -183,7 +181,6 @@ public class OrgaController {
                               final RedirectAttributes redirectAttributes) {
     final List<DelayedSubmission> delayedsubmissions =
         orgaService.getDelayedSubmissionsForStudent(searchForm.getSearchedName());
-    System.out.println(searchForm.toString());
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }
@@ -204,6 +201,7 @@ public class OrgaController {
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }
+
   @Scheduled(fixedDelayString = "${application.api-pump.delay}")
   public void refreshNumberOfEvaluationRequests() {
     numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();

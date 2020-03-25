@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
@@ -24,13 +25,13 @@ import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.orgamodels.DelayedSubmission;
 import mops.rheinjug2.orgamodels.OrgaEvent;
 import mops.rheinjug2.orgamodels.OrgaSummary;
-import mops.rheinjug2.orgamodels.SummariesIDs;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
 
 @Service
+@Log4j2
 @AllArgsConstructor
 public class OrgaService {
   private final EventRepository eventRepository;
@@ -104,7 +105,7 @@ public class OrgaService {
                       notYetAcceptedSummary.getEvent())
               ));
             } catch (final Exception e) {
-              e.printStackTrace();
+              log.catching(e);
             }
           });
     });
@@ -133,7 +134,6 @@ public class OrgaService {
    * @throws ErrorResponseException     .
    */
   private String getSummaryContentFromFileservice(final String studentName, final Long eventId)
-
       throws IOException, InvalidKeyException, NoSuchAlgorithmException,
       XmlPullParserException, InvalidArgumentException, InvalidResponseException,
       InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException,
@@ -258,41 +258,5 @@ public class OrgaService {
         .filter(delayedSubmission ->
             searchedName.equalsIgnoreCase(delayedSubmission.getEventTitle()))
         .collect(Collectors.toList());
-  }
-
-  /**
-   * Oberprügen, ob der Student an der Veranstaltung angemeldet ist.
-   *
-   * @param studentid studentid
-   * @param eventid   eventid
-   * @return true, wenn ein der student an der Veranstaltung angemeldet ist.
-   */
-  public boolean studentIsRegistred(final Long studentid, final Long eventid) {
-    final Optional<SummariesIDs> summariesIDsOption =
-        eventRepository.checkSummary(studentid, eventid);
-    if (summariesIDsOption.isPresent()) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Gibt der Anzahl alle Bewertungsanfragen.
-   *
-   * @return Anzahl der Anfragen
-   */
-  public int getnumberOfEvaluationRequests() {
-    return eventRepository.getNumberOfSubmittedAndUnacceptedSummaries();
-  }
-
-  public void summaryupload(final String studentName,
-                            final Long eventId,
-                            final String summaryContent) throws IOException {
-    fileService.uploadContentConvertToMd(summaryContent, studentName + "_" + eventId);
-  }
-
-  public void setSummaryAsSubmittedAndAccepted(final Long studentId, final Long eventId) {
-    eventRepository.updateSummaryToSubmittedAndAccepted(studentId, eventId);
-
   }
 }
