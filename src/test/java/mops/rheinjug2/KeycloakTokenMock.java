@@ -54,9 +54,4 @@ public class KeycloakTokenMock {
     setupTokenMock(account);
   }
 
-  public static void setupMockEmptyToken() {
-    final SecurityContext securityContext = SecurityContextHolder.getContext();
-    securityContext.setAuthentication(null);
-  }
-
 }

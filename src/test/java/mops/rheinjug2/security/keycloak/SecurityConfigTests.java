@@ -1,14 +1,11 @@
 package mops.rheinjug2.security.keycloak;
 
-import static mops.rheinjug2.KeycloakTokenMock.setupMockEmptyToken;
 import static mops.rheinjug2.KeycloakTokenMock.setupMockUserWithRole;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,22 +85,6 @@ public class SecurityConfigTests {
     }
     mvc.perform(get(mapping))
         .andExpect(status().is(status));
-  }
-
-  @Test
-  @Disabled("man kann den token nicht zwischen den Aufrufen wechseln")
-  public void differentUsersHaveIndependentAccessRights() throws Exception {
-    setupMockUserWithRole("monitoring");
-    mvc.perform(get("/actuator"))
-        .andExpect(status().isOk());
-
-    setupMockEmptyToken();
-    mvc.perform(get("/actuator"))
-        .andExpect(status().isFound());
-
-    setupMockUserWithRole("invalid");
-    mvc.perform(get("/actuator"))
-        .andExpect(status().isForbidden());
   }
 
 }
