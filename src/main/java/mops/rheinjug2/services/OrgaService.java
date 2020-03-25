@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -19,12 +18,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import mops.rheinjug2.entities.Event;
+import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.orgamodels.DelayedSubmission;
 import mops.rheinjug2.orgamodels.OrgaEvent;
 import mops.rheinjug2.orgamodels.OrgaSummary;
-import mops.rheinjug2.orgamodels.SummariesIDs;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -42,11 +41,14 @@ public class OrgaService {
    *
    * @return Liste alle events
    */
+  @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
   public List<OrgaEvent> getEvents() {
     final List<OrgaEvent> result = new ArrayList<>();
-    eventRepository.findAll().forEach(event -> result.add(new OrgaEvent(event,
-        getNumberOfStudent(event.getId()),
-        getnumberOfSubmition(event.getId())
+    final List<Student> allStudents = (List<Student>) studentRepository.findAll();
+    eventRepository.findAll().forEach(event -> result.add(new OrgaEvent(
+        event,
+        getNumberOfRegisteredStudent(event.getId(), allStudents),
+        getnumberOfSubmittedSummaries(event.getId(), allStudents)
     )));
     return result.stream()
         .sorted(Comparator.comparing(OrgaEvent::getDate).reversed())
@@ -56,44 +58,54 @@ public class OrgaService {
   /**
    * Gibt Anzahl der abgegebene Zusammenfassungen eiener Veranstaltung.
    *
-   * @param id einer Veranstaltung
+   * @param eventId     einer Veranstaltung
+   * @param allStudents alle Studenten
    * @return Anzahl der Abgegebene Zusammenfassungen
    */
-  private int getnumberOfSubmition(final Long id) {
-    return eventRepository.countSubmittedSummaryPerEventById(id);
+  private static int getnumberOfSubmittedSummaries(final Long eventId,
+                                                   final List<Student> allStudents) {
+    return (int) allStudents.stream()
+        .filter(student -> student.isEventSubmitted(eventId))
+        .count();
   }
 
   /**
    * Gibt der Anzahl der angemeldte Stundenten einer Veranstaltung.
    *
-   * @param id einer Veranstaltung
+   * @param eventId     einer Veranstaltung
+   * @param allStudents alle Studenten
    * @return Anzahl der Studenten
    */
-  private int getNumberOfStudent(final Long id) {
-    return eventRepository.countStudentsPerEventById(id);
+  private static int getNumberOfRegisteredStudent(final Long eventId,
+                                                  final List<Student> allStudents) {
+    return (int) allStudents.stream()
+        .filter(student -> student.isRegiteredForEvent(eventId)).count();
   }
 
   /**
-   * Gibt alle noch nicht bewetete Zusammenfassungen.
+   * Gibt alle , noch nicht bewertete Bewertunganfragen.
    *
    * @return liste alle Bewertungsanfrage.
    */
   public List<OrgaSummary> getSummaries() {
     final List<OrgaSummary> result = new ArrayList<>();
-    eventRepository.getSubmittedAndUnacceptedSummaries().forEach(unacceptedSummary -> {
-      try {
-        result.add(
-            new OrgaSummary(
-                getSummarySubmissionDate(unacceptedSummary.getStudent(),
-                    unacceptedSummary.getEvent()),
-                getSummaryStudent(unacceptedSummary.getStudent()),
-                getSummaryEvent(unacceptedSummary.getEvent()),
-                getSummaryContentFromFileservice(unacceptedSummary.getStudent(),
-                    unacceptedSummary.getEvent())
-            ));
-      } catch (final Exception e) {
-        throw new RuntimeException(e.getMessage());
-      }
+    studentRepository.findAll().forEach(student -> {
+      student.getEvents()
+          .stream()
+          .filter(EventRef::isSubmittedAndNotAccepted)
+          .forEach(notYetAcceptedSummary -> {
+            try {
+              result.add(new OrgaSummary(
+                  notYetAcceptedSummary.getTimeOfSubmission(),
+                  student,
+                  getSummaryEvent(notYetAcceptedSummary.getEvent()),
+                  getSummaryContentFromFileservice(student.getLogin(),
+                      notYetAcceptedSummary.getEvent())
+              ));
+            } catch (final Exception e) {
+              e.printStackTrace();
+            }
+          });
     });
     return result.stream()
         .sorted(Comparator.comparing(OrgaSummary::getTimeOfSubmission).reversed()
@@ -101,12 +113,30 @@ public class OrgaService {
         .collect(Collectors.toList());
   }
 
-  private String getSummaryContentFromFileservice(final Long studentid, final Long eventid)
+  /**
+   * Die Mithode dient zur Abholung von Zusammenfassung einem Student über einer Veranstaltung.
+   *
+   * @param studentName .
+   * @param eventId     .
+   * @return Inhalt der Zusammenfassung.
+   * @throws IOException                .
+   * @throws InvalidKeyException        .
+   * @throws NoSuchAlgorithmException   .
+   * @throws XmlPullParserException     .
+   * @throws InvalidArgumentException   .
+   * @throws InvalidResponseException   .
+   * @throws InternalException          .
+   * @throws NoResponseException        .
+   * @throws InvalidBucketNameException .
+   * @throws InsufficientDataException  .
+   * @throws ErrorResponseException     .
+   */
+  private String getSummaryContentFromFileservice(final String studentName, final Long eventId)
       throws IOException, InvalidKeyException, NoSuchAlgorithmException,
       XmlPullParserException, InvalidArgumentException, InvalidResponseException,
       InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException,
       ErrorResponseException {
-    final String fileName = getSummaryStudent(studentid).getName() + "_" + eventid;
+    final String fileName = studentName + "_" + eventId;
     try {
       return fileService.getContentOfFileAsString(fileName);
     } catch (final ConnectException e) {
@@ -116,49 +146,31 @@ public class OrgaService {
 
   /**
    * Die Methode gibt eine Liste alle angemeldte veranstaltungen
-   * deren Zusammenfassung noch nicht abgegeben worde.
+   *    deren Zusammenfassung noch nicht abgegeben worde
+   *    (mögliche verspätete abgaben).
    *
-   * @return liste der Veranstaltungen.
+   * @return liste der Abgaben, die der Orga als versätete Abgaben hochladen kann.
    */
   public List<DelayedSubmission> getDelayedSubmission() {
     final List<DelayedSubmission> result = new ArrayList<>();
-    eventRepository.getUnSubmittedSummaries().forEach(summariesIDs -> {
-      if (summaryIsDelayd(summariesIDs.getEvent())) {
-        result.add(new DelayedSubmission(
-                summariesIDs.getStudent(),
-                summariesIDs.getEvent(),
-                getSummaryStudent(summariesIDs.getStudent()).getName(),
-                getSummaryEvent(summariesIDs.getEvent()).getTitle(),
-                null
-            )
+    studentRepository.findAll().forEach(student -> {
+      student.getEvents()
+          .stream()
+          .filter(EventRef::isDelayed)
+          .forEach(delayedSubmision ->
+              result.add(new DelayedSubmission(
+                  student.getId(),
+                  delayedSubmision.getEvent(),
+                  student.getLogin(),
+                  getSummaryEvent(delayedSubmision.getEvent()).getTitle(),
+                  delayedSubmision.getDeadline(),
+                  null
+              ))
         );
-      }
     });
-    return result;
-  }
-
-  /**
-   * Oberprüfen, ob die Abgabe zeit überschritten wurde.
-   *
-   * @param eventId id einer Veranstaltung
-   * @return boolean
-   */
-  private boolean summaryIsDelayd(final Long eventId) {
-    final LocalDateTime submissionDeadline = getSummaryEvent(eventId).getDeadline();
-    return submissionDeadline.isBefore(LocalDateTime.now());
-  }
-
-  /**
-   * BeziehungsObjekt laden.
-   *
-   * @param studentId id einem Student.
-   * @param eventId   id einer Veranstaltung.
-   * @return Beziehungobjekt Zwischen Student und Event
-   */
-  private LocalDateTime getSummarySubmissionDate(final Long studentId,
-                                                 final Long eventId) {
-    return eventRepository.getEventRefByStudentIdAndEventId(studentId,
-        eventId).getTimeOfSubmission();
+    return result.stream()
+        .sorted(Comparator.comparing(DelayedSubmission::getDeadLine).reversed())
+        .collect(Collectors.toList());
   }
 
   /**
@@ -168,38 +180,30 @@ public class OrgaService {
    * @return gibt Die Veranstaltung zurueck, über die, die ZUsammenfassung geschrieben wurde.
    */
   private Event getSummaryEvent(final Long eventId) {
-    return eventRepository.getEventById(eventId);
+    return eventRepository.findById(eventId).get();
   }
 
   /**
-   * Student laden.
+   * Die methode dient zu akzeptieren von abgaben.
    *
-   * @param studentId Student id
-   * @return gibt der Student zurueck, der die Zusammenfassung geschrieben hat.
+   * @param studentId studentid
+   * @param eventId   eventid
+   * @return boolean ob erfolgreich als akzeptiert gespeichert wurde.
    */
-  private Student getSummaryStudent(final Long studentId) {
-    return studentRepository.getStudentById(studentId);
-  }
-
-  public void setSummaryAsAccepted(final Long studentid, final Long eventid) {
-    eventRepository.updateSummaryToAccepted(studentid, eventid);
-  }
-
-  /**
-   * Oberprügen, ob der Student an der Veranstaltung angemeldet ist.
-   *
-   * @param studentid studentid
-   * @param eventid   eventid
-   * @return true, wenn ein der student an der Veranstaltung angemeldet ist.
-   */
-  public boolean studentIsRegistred(final Long studentid, final Long eventid) {
-    final Optional<SummariesIDs> summariesIDsOption =
-        eventRepository.checkSummary(studentid, eventid);
-    if (summariesIDsOption.isPresent()) {
-      return true;
+  public boolean setSummaryAsAccepted(final Long studentId, final Long eventId) {
+    final Optional<Student> student = studentRepository.findById(studentId);
+    final Optional<Event> event = eventRepository.findById(eventId);
+    if (event.isPresent() && student.isPresent()) {
+      if (student.get().isRegiteredForEvent(eventId)) {
+        student.get().setAccepted(true, event.get());
+        studentRepository.save(student.get());
+        return true;
+      }
+      return false;
     }
     return false;
   }
+
 
   /**
    * Gibt der Anzahl alle Bewertungsanfragen.
@@ -210,14 +214,47 @@ public class OrgaService {
     return eventRepository.getNumberOfSubmittedAndUnacceptedSummaries();
   }
 
-  public void summaryupload(final String studentName,
-                            final Long eventId,
+  /**
+   * Die Methode lädt die von Orga abgegebene Zusammenfassung auf MinIO hoch.
+   *
+   * @param studentId      .
+   * @param eventId        .
+   * @param studentName    .
+   * @param summaryContent .
+   * @throws IOException .
+   */
+  public void summaryupload(final Long studentId, final Long eventId,
+                            final String studentName,
                             final String summaryContent) throws IOException {
     fileService.uploadContentConvertToMd(summaryContent, studentName + "_" + eventId);
+    final Optional<Student> student = studentRepository.findById(studentId);
+    final Optional<Event> event = eventRepository.findById(eventId);
+    student.get().getEvents()
+        .stream()
+        .filter(eventRef -> eventRef.getEvent().equals(eventId))
+        .forEach(eventRef -> eventRef.setSubmittedSummary(true));
+    student.get().setAccepted(true, event.get());
   }
 
-  public void setSummaryAsSubmittedAndAccepted(final Long studentId, final Long eventId) {
-    eventRepository.updateSummaryToSubmittedAndAccepted(studentId, eventId);
+  /**Gibt Verspätete abgaben einer Student.
+   * @param searchedName student Name
+   * @return liste der verspätete Abgaben.
+   */
+  public List<DelayedSubmission> getDelayedSubmissionsForStudent(final String searchedName) {
+    return getDelayedSubmission().stream()
+        .filter(delayedSubmission ->
+            searchedName.equalsIgnoreCase(delayedSubmission.getStudentName()))
+        .collect(Collectors.toList());
+  }
 
+  /**Gibt versätete Abgabe einer Veranstaltung.
+   * @param searchedName Veranstaltungsname.
+   * @return .
+   */
+  public List<DelayedSubmission> getDelayedSubmissionsForEvent(final String searchedName) {
+    return getDelayedSubmission().stream()
+        .filter(delayedSubmission ->
+            searchedName.equalsIgnoreCase(delayedSubmission.getEventTitle()))
+        .collect(Collectors.toList());
   }
 }
