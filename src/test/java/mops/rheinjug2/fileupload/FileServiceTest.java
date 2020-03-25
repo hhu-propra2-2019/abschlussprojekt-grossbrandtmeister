@@ -105,7 +105,8 @@ class FileServiceTest {
       InvalidResponseException, InternalException, NoResponseException, InvalidBucketNameException,
       XmlPullParserException, ErrorResponseException {
     final MockMultipartFile testFile = new MockMultipartFile("file",
-        "file.md", "text/plain", "testdata".getBytes());
+        "file.md", "text/plain", "testdata"
+        .getBytes(StandardCharsets.UTF_8));
     final String filename = "filenametestIfUploadedFileIsStored";
     fileService.uploadFile(testFile, filename);
     minioClient.statObject(BUCKETMANE, filename);
@@ -119,7 +120,8 @@ class FileServiceTest {
       InternalException {
     final String filename = "filenameUploadedFileIsSameAsDownloadedFile";
     final MockMultipartFile testFile = new MockMultipartFile("file",
-        "file.md", "text/plain", "testdata".getBytes());
+        "file.md", "text/plain",
+        "testdata".getBytes(StandardCharsets.UTF_8));
     final File compareFile = new File(filename);
     testFile.transferTo(compareFile);
     fileService.uploadFile(testFile, filename);

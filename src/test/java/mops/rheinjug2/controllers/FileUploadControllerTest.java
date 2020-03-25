@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 import mops.rheinjug2.Account;
@@ -83,7 +83,7 @@ class FileUploadControllerTest {
     setupTokenMock(account);
 
     final MockMultipartFile testFile = new MockMultipartFile(FILE,
-        "file.md", "text/plain", "testdata".getBytes());
+        "file.md", "text/plain", "testdata".getBytes(StandardCharsets.UTF_8));
 
     doNothing().when(fileService).uploadContentConvertToMd(anyString(), anyString());
 
@@ -106,7 +106,7 @@ class FileUploadControllerTest {
     setupTokenMock(account);
 
     final MockMultipartFile testFile = new MockMultipartFile(FILE,
-        "file.md", "text/plain", "testdata".getBytes());
+        "file.md", "text/plain", "testdata".getBytes(StandardCharsets.UTF_8));
 
     doNothing().when(fileService).uploadContentConvertToMd(anyString(), anyString());
 
@@ -159,7 +159,8 @@ class FileUploadControllerTest {
     setupTokenMock(account);
 
     final MockMultipartFile testFile = new MockMultipartFile(FILE,
-        "file.pdf", "text/plain", "testdata".getBytes());
+        "file.pdf", "text/plain", "testdata"
+        .getBytes(StandardCharsets.UTF_8));
 
     doNothing().when(fileService).uploadContentConvertToMd(anyString(), anyString());
 
@@ -180,7 +181,8 @@ class FileUploadControllerTest {
     setupTokenMock(account);
 
     final MockMultipartFile testFile = new MockMultipartFile(FILE,
-        "file.md", "text/plain", "testdata".getBytes());
+        "file.md", "text/plain", "testdata"
+        .getBytes(StandardCharsets.UTF_8));
 
     doNothing().when(fileService).uploadContentConvertToMd(anyString(), anyString());
 
@@ -203,7 +205,7 @@ class FileUploadControllerTest {
 
     final String content = "Versuche diesen Text downzuloaden";
     final InputStream inputStream = new ByteArrayInputStream(content.getBytes(
-        Charset.forName("UTF-8")));
+        StandardCharsets.UTF_8));
 
     when(fileService.getFileInputStream(anyString())).thenReturn(inputStream);
 
@@ -229,7 +231,7 @@ class FileUploadControllerTest {
 
     final String content = "Versuche diesen Text downzuloaden";
     final InputStream inputStream = new ByteArrayInputStream(content.getBytes(
-        Charset.forName("UTF-8")));
+        StandardCharsets.UTF_8));
 
     when(fileService.getFileInputStream(anyString())).thenReturn(inputStream);
 
@@ -255,7 +257,7 @@ class FileUploadControllerTest {
 
     final String content = "Versuche diesen Text downzuloaden";
     final InputStream inputStream = new ByteArrayInputStream(content.getBytes(
-        Charset.forName("UTF-8")));
+        StandardCharsets.UTF_8));
 
     when(fileService.getFileInputStream(anyString())).thenReturn(inputStream);
 
@@ -278,7 +280,7 @@ class FileUploadControllerTest {
 
     final String nameOfFile = "VorlageZusammenfassung.md";
     final InputStream inputStream = new ByteArrayInputStream("content".getBytes(
-        Charset.forName("UTF-8")));
+        StandardCharsets.UTF_8));
 
     when(fileService.getFileInputStream(nameOfFile)).thenReturn(inputStream);
 
@@ -301,7 +303,7 @@ class FileUploadControllerTest {
     setupTokenMock(account);
 
     final InputStream testInputStream = new ByteArrayInputStream("testcontent".getBytes(
-        Charset.forName("UTF-8")));
+        StandardCharsets.UTF_8));
 
     when(fileService.getFileInputStream(anyString())).thenReturn(testInputStream);
 
@@ -341,7 +343,8 @@ class FileUploadControllerTest {
     setupTokenMock(account);
 
     final MockMultipartFile testFile = new MockMultipartFile(FILE,
-        "file.md", "text/plain", "testdata".getBytes());
+        "file.md", "text/plain",
+        "testdata".getBytes(StandardCharsets.UTF_8));
 
     doNothing().when(fileService).uploadContentConvertToMd(anyString(), anyString());
 
