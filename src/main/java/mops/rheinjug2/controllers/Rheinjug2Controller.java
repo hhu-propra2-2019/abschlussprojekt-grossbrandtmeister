@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import javax.servlet.http.HttpServletRequest;
 import mops.rheinjug2.AccountCreator;
+import mops.rheinjug2.services.ModelService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class Rheinjug2Controller {
 
   private final transient Counter publicAccess;
+  private final transient ModelService modelService;
 
-  public Rheinjug2Controller(final MeterRegistry registry) {
+  public Rheinjug2Controller(final MeterRegistry registry, final ModelService modelService) {
     publicAccess = registry.counter("access.public");
+    this.modelService = modelService;
   }
 
   @GetMapping("")
@@ -39,6 +42,7 @@ public class Rheinjug2Controller {
         return "redirect:/rheinjug2/student/";
       }
     }
+    model.addAttribute("events", modelService.getAllEvents());
     publicAccess.increment();
     return "index";
   }
