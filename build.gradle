@@ -85,12 +85,11 @@ spotbugs {
     effort = "max"
     reportLevel = "high"
 }
-spotbugsTest.enabled = false;
 
 checkstyle {
     toolVersion = "8.28"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-    ignoreFailures = true
+    ignoreFailures = false
     maxWarnings = 0
 }
 
