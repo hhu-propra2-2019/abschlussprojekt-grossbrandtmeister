@@ -41,8 +41,8 @@ public class FileUploadController {
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   @Autowired
-  public FileUploadController(FileService fileService,
-                              MeterRegistry registry, ModelService modelService) {
+  public FileUploadController(final FileService fileService,
+                              final MeterRegistry registry, final ModelService modelService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
     this.modelService = modelService;
@@ -61,18 +61,18 @@ public class FileUploadController {
           + "Go to your personal event side and choose which event you want to handle your summary in");
       return "redirect:/rheinjug2/student/reportsubmit";
     }
-    if (fileCheckService.checkIfIsMarkdown(file)) {
+    if (FileCheckService.checkIfIsMarkdown(file)) {
       try {
-        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-        String username = principal.getName();
+        final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        final String username = principal.getName();
         if (!username.isEmpty()) {
           modelService.submitSummary(username, eventId);
-          String filename = username + "_" + eventId;
+          final String filename = username + "_" + eventId;
           fileService.uploadFile(file, filename);
           attributes.addFlashAttribute("message",
               "You successfully uploaded " + filename + '!');
         }
-      } catch (Exception e) {
+      } catch (final Exception e) {
         log.catching(e);
         attributes.addFlashAttribute("message",
             "Your file was not able to be uploaded ");
@@ -91,9 +91,9 @@ public class FileUploadController {
    */
   @PostMapping(path = "/student/summarysubmit")
 
-  public String useForm(KeycloakAuthenticationToken token,
-                        RedirectAttributes attributes, Summary summary,
-                        Long eventId) {
+  public String useForm(final KeycloakAuthenticationToken token,
+                        final RedirectAttributes attributes, final Summary summary,
+                        final Long eventId) {
     if (eventId == null) {
       attributes.addFlashAttribute("message", "You did not choose an event."
           + "Go to your personal event side and choose for which event "
@@ -101,17 +101,17 @@ public class FileUploadController {
       return "redirect:/rheinjug2/student/reportsubmit";
     }
     try {
-      KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-      String username = principal.getName();
+      final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+      final String username = principal.getName();
       if (!username.isEmpty()) {
         modelService.submitSummary(username, eventId);
-        String filename = username + "_" + eventId;
+        final String filename = username + "_" + eventId;
         fileService.uploadContentConvertToMd(summary.getContent(), filename);
         attributes.addFlashAttribute("message",
             "You successfully uploaded the form !");
       }
 
-    } catch (Exception e) {
+    } catch (final Exception e) {
       log.catching(e);
       attributes.addFlashAttribute("message",
           "Your file was not able to be uploaded ");
@@ -126,21 +126,21 @@ public class FileUploadController {
    */
   @RequestMapping("/download/file")
   @ResponseBody
-  public void downloadFilebyToken(KeycloakAuthenticationToken token,
-                                  HttpServletResponse response, Long eventId)
+  public void downloadFileByToken(final KeycloakAuthenticationToken token,
+                                  final HttpServletResponse response, final Long eventId)
       throws IOException {
 
-    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    String username = principal.getName();
+    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    final String username = principal.getName();
 
     if (!username.isEmpty()) {
-      String filename = username + "_" + eventId;
-      try (InputStream inputStream = fileService.getFileInputStream(filename)) {
+      final String filename = username + "_" + eventId;
+      try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
         response.addHeader("Content-disposition", "attachment;filename=" + filename + ".md");
         response.setContentType(URLConnection.guessContentTypeFromName(filename));
         IOUtils.copy(inputStream, response.getOutputStream());
         response.flushBuffer();
-      } catch (Exception e) {
+      } catch (final Exception e) {
         log.catching(e);
       }
     } else {
@@ -155,16 +155,16 @@ public class FileUploadController {
    */
   @RequestMapping("/download/presentation")
   @ResponseBody
-      public void downloadPResentationforSummary(KeycloakAuthenticationToken token,
-                                             HttpServletResponse response) throws IOException {
+  public void downloadPresentationForSummary(final KeycloakAuthenticationToken token,
+                                             final HttpServletResponse response) throws IOException {
 
     final String filename = "VorlageZusammenfassung.md";
-    try (InputStream inputStream = fileService.getFileInputStream(filename)) {
+    try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
       response.addHeader("Content-disposition", "attachment;filename=" + filename);
       response.setContentType("text/plain");
       IOUtils.copy(inputStream, response.getOutputStream());
       response.flushBuffer();
-    } catch (Exception e) {
+    } catch (final Exception e) {
       response.sendError(404, "File not found");
     }
     authenticatedAccess.increment();
