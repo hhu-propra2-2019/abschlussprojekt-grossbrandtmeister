@@ -20,7 +20,7 @@ public class KeycloakTokenMock {
   /**
    * Erstellt einen Mock Token.
    */
-  private static void setupTokenMock(final Account account) {
+  public static void setupTokenMock(final Account account) {
     final String userName = account.getName();
     final String userEmail = account.getEmail();
     final Set<String> roles = account.getRoles();
