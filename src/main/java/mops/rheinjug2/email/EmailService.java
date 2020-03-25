@@ -1,7 +1,6 @@
 package mops.rheinjug2.email;
 
 import com.sun.istack.ByteArrayDataSource;
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 import javax.activation.DataHandler;
 import javax.mail.MessagingException;
@@ -41,10 +40,7 @@ public class EmailService {
   public void sendMail(final String name, final String gender, final String matNr, final List<Event> usedEvents)
       throws MessagingException {
     
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    certificateService.createCertificatePdf(outputStream, name, gender, matNr, usedEvents);
-    final byte[] bytes = outputStream.toByteArray();
-    
+    final byte[] bytes = certificateService.createCertificatePdf(name, gender, matNr, usedEvents);
     final ByteArrayDataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");
     final MimeBodyPart pdfBodyPart = new MimeBodyPart();
     pdfBodyPart.setDataHandler(new DataHandler(dataSource));

@@ -19,20 +19,19 @@ public class CertificateService {
   private final transient int numberOfRequiredEntwickelbarEvents = 1;
   private final transient int numberOfRequiredEveningEvents = 3;
   
-  transient PDDocument pdfForm;
+  private transient PDDocument pdfForm;
+  private transient ByteArrayOutputStream outputStream;
   
   /**
    * Füllt den Schein mit den Informationen des/der Studenten/Studentin.
    *
-   * @param outputStream zum Speichern der befüllten PdfForm
-   * @param name         des Studenten/der Studentin
-   * @param gender       Geschlecht des Studenten/der Studentin
-   * @param matnr        Matrikelnummer des Studenten/der Studentin
-   * @param usedEvents   Liste der Events die für das PDF verbraucht werden.
+   * @param name       des Studenten/der Studentin
+   * @param gender     Geschlecht des Studenten/der Studentin
+   * @param matnr      Matrikelnummer des Studenten/der Studentin
+   * @param usedEvents Liste der Events die für das PDF verbraucht werden.
    */
-  public void createCertificatePdf(final ByteArrayOutputStream outputStream,
-                                   final String name, final String gender,
-                                   final String matnr, final List<Event> usedEvents) {
+  public byte[] createCertificatePdf(final String name, final String gender,
+                                     final String matnr, final List<Event> usedEvents) {
     final File pdf = new File("./rheinjug_schein.pdf");
     try {
       pdfForm = PDDocument.load(pdf);
@@ -58,12 +57,13 @@ public class CertificateService {
         acroForm.getField("Veranstaltung 2").setValue("");
         acroForm.getField("Veranstaltung 3").setValue("");
       } else {
-        return;
+        return null;
       }
       
       acroForm.getField("Datum 1").setValue(setCertificateDate());
       acroForm.getField("Datum 2").setValue(setCertificateDate());
       
+      outputStream = new ByteArrayOutputStream();
       pdfForm.save(outputStream);
     } catch (final IOException e) {
       log.catching(e);
@@ -74,6 +74,7 @@ public class CertificateService {
         log.catching(e);
       }
     }
+    return outputStream.toByteArray();
   }
   
   /**
