@@ -2,39 +2,27 @@ package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.minio.errors.ErrorResponseException;
-import io.minio.errors.InsufficientDataException;
-import io.minio.errors.InternalException;
-import io.minio.errors.InvalidArgumentException;
-import io.minio.errors.InvalidBucketNameException;
-import io.minio.errors.InvalidResponseException;
-import io.minio.errors.NoResponseException;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileCheckService;
 import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.fileupload.Summary;
+import mops.rheinjug2.services.ModelService;
 import org.apache.commons.io.IOUtils;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.xmlpull.v1.XmlPullParserException;
 
 @Controller
 @Secured({"ROLE_studentin"})
@@ -45,16 +33,19 @@ public class FileUploadController {
 
   transient FileService fileService;
   transient FileCheckService fileCheckService;
+  transient ModelService modelService;
 
   private final transient Counter authenticatedAccess;
 
   static final String Veranstaltung = "Veranstaltung";
 
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
   @Autowired
   public FileUploadController(final FileService fileService,
                               final MeterRegistry registry, final ModelService modelService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
+    this.modelService = modelService;
   }
 
   /**
@@ -130,31 +121,6 @@ public class FileUploadController {
     return "redirect:/rheinjug2/student/reportsubmit?eventId=" + eventId;
   }
 
-  /**
-   * füge das File auf einer eigenen Website hinzu. Evtl in späteren versionen zu ändern.
-   *
-   * @param model thymeleaf.
-   * @return String
-   */
-  @RequestMapping("/download")
-  public String downloadFile(final KeycloakAuthenticationToken token, final Model model)
-      throws IOException, XmlPullParserException,
-      NoSuchAlgorithmException, InvalidKeyException, InvalidArgumentException,
-      InvalidResponseException, ErrorResponseException, NoResponseException,
-      InvalidBucketNameException, InsufficientDataException, InternalException {
-    final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    final String username = principal.getName();
-    if (!username.isEmpty()) {
-      final String filename = username + "_" + Veranstaltung;
-      final File file = fileService.getFile(filename);
-      model.addAttribute("file", file);
-    } else {
-      model.addAttribute("file", null);
-    }
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
-    authenticatedAccess.increment();
-    return "download";
-  }
 
   /**
    * Die Methode lädt die passende Datei des Studenten aus dem Fileserver herunter.
@@ -167,6 +133,8 @@ public class FileUploadController {
 
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     final String username = principal.getName();
+
+
 
     if (!username.isEmpty()) {
       final String filename = username + "_" + eventId;
