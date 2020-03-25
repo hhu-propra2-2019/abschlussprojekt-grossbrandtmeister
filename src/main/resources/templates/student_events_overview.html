@@ -86,13 +86,13 @@
                                  th:src="@{/icons/icon-credit-points.png}"
                                  style="width: 32px;height: 28px;">
                             <span class="text-secondary">
-                                <span th:if="${event.type == 'Abendveranstaltungen'}">
+                                <span th:if="${event.type == 'Abendveranstaltung'}">
                                     <sup>1</sup>/<sub>6</sub> CP
                                 </span>
-                                <span th:if="${event.type == 'Entwickelbar'}">
+                                <span th:if="${event.type == 'EntwickelBar'}">
                                     <sup>1</sup>/<sub>2</sub> CP
                                 </span>
-                                <span th:if="${event.type != 'Abendveranstaltungen' and event.type != 'Entwickelbar'}"> <sup>1</sup>/<sub>2</sub> CP </span>
+                                <span th:if="${event.type != 'Abendveranstaltung' and event.type != 'EntwickelBar'}"> <sup>1</sup>/<sub>2</sub> CP </span>
                             </span>
                         </div>
                     </div>
@@ -264,7 +264,7 @@
                         </h3>
                     </div>
                     <div class="text-secondary">
-                        <div id="description-3" class="collapse partial-collapse" aria-expanded="false">
+                        <div id="description-2" class="collapse partial-collapse" aria-expanded="false">
                             <p>
                                 Bisher wird die Java Enterprise Welt von zwei Frontendtechnologien beherrscht: Java
                                 Server Pages (JSP)

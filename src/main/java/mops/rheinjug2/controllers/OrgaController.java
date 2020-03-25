@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 @Log4j2
 @Controller
 @RequestMapping("/rheinjug2/orga")
@@ -104,7 +105,8 @@ public class OrgaController {
   @PostMapping("/summaryaccepting")
   public String summaryAccepting(@RequestParam final Long eventid,
                                  @RequestParam final Long studentid,
-                                 final Model model, final KeycloakAuthenticationToken token) {
+                                 final Model model, final KeycloakAuthenticationToken token,
+                                 {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
     if (orgaService.setSummaryAsAccepted(studentid, eventid)) {
