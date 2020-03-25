@@ -31,7 +31,7 @@ class CertificateServiceTest {
     final PDDocumentCatalog docCatalog = pdf.getDocumentCatalog();
     final PDAcroForm acroForm = docCatalog.getAcroForm();
     assertThat(acroForm.getField("Veranstaltung 1").getValueAsString())
-        .isEqualTo(entwickelbar.getTitle());
+        .isEqualTo("- " + entwickelbar.getTitle());
     assertThat(acroForm.getField("Veranstaltung 2").getValueAsString())
         .isEqualTo("");
     assertThat(acroForm.getField("Veranstaltung 3").getValueAsString())
@@ -55,11 +55,11 @@ class CertificateServiceTest {
     final PDDocumentCatalog docCatalog = pdf.getDocumentCatalog();
     final PDAcroForm acroForm = docCatalog.getAcroForm();
     assertThat(acroForm.getField("Veranstaltung 1").getValueAsString())
-        .isEqualTo(event1.getTitle());
+        .isEqualTo("- " + event1.getTitle());
     assertThat(acroForm.getField("Veranstaltung 2").getValueAsString())
-        .isEqualTo(event2.getTitle());
+        .isEqualTo("- " + event2.getTitle());
     assertThat(acroForm.getField("Veranstaltung 3").getValueAsString())
-        .isEqualTo(event3.getTitle());
+        .isEqualTo("- " + event3.getTitle());
   }
   
   
