@@ -12,11 +12,9 @@ public class FileCheckService {
    * @param file zu überprüfende Datei
    * @return boolean
    */
-  public static boolean checkIfIsMarkdown(final MultipartFile file) {
+  public static boolean isMarkdown(final MultipartFile file) {
     if (!file.isEmpty()) {
-      if (file.getOriginalFilename().endsWith(".md")) {
-        return true;
-      }
+      return file.getOriginalFilename().endsWith(".md");
     }
     return false;
   }

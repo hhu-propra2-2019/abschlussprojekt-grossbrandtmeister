@@ -52,7 +52,7 @@ public class FileUploadController {
 
   @Autowired
   public FileUploadController(final FileService fileService,
-                              final MeterRegistry registry) {
+                              final MeterRegistry registry, final ModelService modelService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.fileService = fileService;
   }
@@ -67,15 +67,16 @@ public class FileUploadController {
                            final Long eventId) {
     if (eventId == null) {
       attributes.addFlashAttribute("message", "You did not choose an event."
-          + "Go to your personal event side and choose for which event "
-          + "you want to handle your summary in");
+          + "Go to your personal event side and choose which"
+          + " event you want to handle your summary in");
       return "redirect:/rheinjug2/student/reportsubmit";
     }
-    if (fileCheckService.checkIfIsMarkdown(file)) {
+    if (FileCheckService.isMarkdown(file)) {
       try {
         final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
         final String username = principal.getName();
         if (!username.isEmpty()) {
+          modelService.submitSummary(username, eventId);
           final String filename = username + "_" + eventId;
           fileService.uploadFile(file, filename);
           attributes.addFlashAttribute("message",
@@ -99,6 +100,7 @@ public class FileUploadController {
    * um das File zu speichern.
    */
   @PostMapping(path = "/student/summarysubmit")
+
   public String useForm(final KeycloakAuthenticationToken token,
                         final RedirectAttributes attributes, final Summary summary,
                         final Long eventId) {
@@ -112,6 +114,7 @@ public class FileUploadController {
       final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
       final String username = principal.getName();
       if (!username.isEmpty()) {
+        modelService.submitSummary(username, eventId);
         final String filename = username + "_" + eventId;
         fileService.uploadContentConvertToMd(summary.getContent(), filename);
         attributes.addFlashAttribute("message",
@@ -158,13 +161,13 @@ public class FileUploadController {
    */
   @RequestMapping("/download/file")
   @ResponseBody
-  public void downloadFilebyToken(final KeycloakAuthenticationToken token,
+  public void downloadFileByToken(final KeycloakAuthenticationToken token,
                                   final HttpServletResponse response, final Long eventId)
       throws IOException {
 
-
     final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     final String username = principal.getName();
+
     if (!username.isEmpty()) {
       final String filename = username + "_" + eventId;
       try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
@@ -187,14 +190,14 @@ public class FileUploadController {
    */
   @RequestMapping("/download/presentation")
   @ResponseBody
-  public void downloadPResentationforSummary(final KeycloakAuthenticationToken token,
+  public void downloadPresentationForSummary(final KeycloakAuthenticationToken token,
                                              final HttpServletResponse response)
       throws IOException {
 
     final String filename = "VorlageZusammenfassung.md";
     try (final InputStream inputStream = fileService.getFileInputStream(filename)) {
       response.addHeader("Content-disposition", "attachment;filename=" + filename);
-      response.setContentType(URLConnection.guessContentTypeFromName(filename));
+      response.setContentType("text/plain");
       IOUtils.copy(inputStream, response.getOutputStream());
       response.flushBuffer();
     } catch (final Exception e) {

@@ -27,7 +27,6 @@ import mops.rheinjug2.services.ModelService;
 import mops.rheinjug2.services.SubmissionStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Answers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,9 +49,6 @@ class StudentControllerTest {
 
   @Autowired
   private transient WebApplicationContext context;
-
-  @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
-  MeterRegistry registry;
 
   @BeforeEach
   public void setUp() {
@@ -101,6 +97,7 @@ class StudentControllerTest {
   void testReportsubmitAdmissionStudent() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("studentin");
+
     final Account account = new Account("name", "User@email.de", "image", roles,
         "givenname", "familyname");
     setupTokenMock(account);
@@ -118,6 +115,7 @@ class StudentControllerTest {
   void testReportsubmitNoAdmissionOrga() throws Exception {
     final Set<String> roles = new HashSet<>();
     roles.add("orga");
+
     final Account account = new Account("name", "User@email.de", "image", roles,
         "givenname", "familyname");
     setupTokenMock(account);
