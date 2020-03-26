@@ -56,7 +56,8 @@
                     </div>
                     <div class="col-12 col-sm-6">
                         <label for="eventsdate">Datum der Veranstaltung</label>
-                        <input type="text" class="form-control" id="eventsdate" th:field="${event.date}" value="15.03.2020"
+                        <input type="text" class="form-control" id="eventsdate" th:field="*{date}"
+                               value="15.03.2020"
                                readonly>
                     </div>
                 </div>
@@ -67,23 +68,26 @@
                           placeholder="Zusammenfassung hier schreiben..." th:field="*{content}"
                           form="mysubmit"></textarea>
             </div>
-            <div class="form-group secondary">
-                <label class="" for="Todaysdate">Heutiges Datum</label>
-                <input th:value="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}" type="text" class="form-control "
-                       id="Todaysdate" value="01.04.2020" readonly>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button>
-                <img src="../../static/icons/upload.png" class="ml-3"
-                     th:src="@{/icons/upload.png}"
-                     style="width: 32px;height: 28px;">
+            <div class="form-group secondary row">
+                <div class="col-md-3 text-left">
+                    <label class="" for="Todaysdate">Heutiges Datum</label>
+                    <input th:value="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}" type="text"
+                           class="form-control "
+                           id="Todaysdate" value="01.04.2020" readonly>
+                </div>
+                <div class="d-flex flex-column-reverse">
+                    <button type="submit" class="btn btn-outline-success">Abgabe</button>
+                </div>
             </div>
             <input type="hidden" name="eventId" th:value="${summary.getEventId()}">
         </form>
-        <div>
+        <div class="d-flex flex-row-reverse">
             <a th:href="@{/rheinjug2/download/presentation}">
                 <p th:text="${noPresentation}" th:if="${noPresentation ne null}" class="alert alert-primary"></p>
-                <button class="btn btn-outline-success">Downloade die Vorlage</button>
+                <button class="btn btn-outline-dark">Downloade die Vorlage <img
+                        src="../../static/icons/vorlage.png" class="ml-3" th:src="@{/icons/vorlage.png}"
+                        style="width: 32px;height: 28px;">
+                </button>
             </a>
         </div>
     </div>
@@ -106,9 +110,9 @@
                         <!-- <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button> -->
                     </form>
                 </div>
-                <div class="col-12 col-sm-6">
+                <div class="col-12 col-sm-6 d-flex flex-column-reverse text-right">
                     <a th:href="@{/rheinjug2/download/file(eventId=${summary.getEventId()})}">
-                        <button class="btn btn-outline-success">Downloade deine momentane Zusammenfassung</button>
+                        <button class="btn btn-outline-dark">Downloade deine momentane Zusammenfassung</button>
                     </a>
                 </div>
             </div>
