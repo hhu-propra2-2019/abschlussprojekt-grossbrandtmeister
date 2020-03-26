@@ -1,6 +1,7 @@
 package mops.rheinjug2.controllers;
 
 import static mops.rheinjug2.KeycloakTokenMock.setupMockUserWithRole;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -83,6 +84,7 @@ class StudentControllerTest {
     setupMockUserWithRole("studentin");
 
     final Event event = new Event();
+    when(modelService.getDeadline(anyString(), any())).thenReturn(LocalDateTime.MAX);
     when(modelService.loadEventById(anyLong())).thenReturn(event);
 
     final String eventId = "123";

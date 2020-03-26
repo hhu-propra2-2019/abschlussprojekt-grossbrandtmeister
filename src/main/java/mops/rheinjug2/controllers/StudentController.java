@@ -88,12 +88,12 @@ public class StudentController {
     final LocalDateTime today = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final Event event = modelService.loadEventById(eventId);
-    final LocalDateTime deadline = modelService.getDeadline(account.getName(), eventId);
-    if (deadline.isBefore(LocalDateTime.now())) {
-      return "redirect:rheinjug2/student/visitedevents";
-    }
     if (event == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event ID not found!");
+    }
+    final LocalDateTime deadline = modelService.getDeadline(account.getName(), event);
+    if (deadline.isBefore(LocalDateTime.now())) {
+      return "redirect:rheinjug2/student/visitedevents";
     }
     final String eventname = event.getTitle();
     String content;

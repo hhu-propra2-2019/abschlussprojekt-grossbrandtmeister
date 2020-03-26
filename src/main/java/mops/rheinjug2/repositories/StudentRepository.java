@@ -1,6 +1,5 @@
 package mops.rheinjug2.repositories;
 
-import java.time.LocalDateTime;
 import mops.rheinjug2.entities.Student;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -22,7 +21,4 @@ public interface StudentRepository extends CrudRepository<Student, Long> {
 
   @Query(value = "SELECT * FROM student WHERE student.id= :id")
   Student getStudentById(@Param("id") long id);
-
-  @Query(value = "SELECT deadline FROM student_event WHERE student.login= :login AND event.id=:id")
-  LocalDateTime getDeadline(@Param("login") String login, @Param("id") long id);
 }
