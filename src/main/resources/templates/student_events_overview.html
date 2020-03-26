@@ -75,7 +75,7 @@
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
-                            <span th:text="${#temporals.format(event.date.toLocalTime(), 'HH:mm')}">&nbsp;19:30pm</span>
+                            <span th:text="${#temporals.format(event.date.toLocalTime(), 'HH:mm')} +' - ' + ${#temporals.format(event.deadline.toLocalTime(), 'HH:mm')}">&nbsp;19:30pm</span>
                         </div>
                     </div>
                 </div>
