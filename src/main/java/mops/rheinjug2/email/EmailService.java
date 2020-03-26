@@ -28,7 +28,7 @@ public class EmailService {
   
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public EmailService(final CertificateService certificateService,
-                      final JavaMailSender emailSender, @Value("${email.recipient}") final String recipient) {
+                      final JavaMailSender emailSender, @Value("${application.email.recipient}") final String recipient) {
     this.certificateService = certificateService;
     this.emailSender = emailSender;
     this.recipient = recipient;
