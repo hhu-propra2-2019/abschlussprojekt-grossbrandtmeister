@@ -89,12 +89,13 @@ services:
     working_dir: /rheinjug2
     volumes:
       - ./:/rheinjug2
-    expose:
-      - "8080"
+    ports:
+      - 8080:8080
     depends_on:
       - database
       - minio1
-    command: gradle bootRun
+    command: gradle bootRun --debug
+    #command: sh -c "cd ./build/libs && java -jar rheinjug2-0.0.1-SNAPSHOT.jar"
 
 ## By default this config uses default local driver,
 ## For custom volumes replace with volume driver configuration.
