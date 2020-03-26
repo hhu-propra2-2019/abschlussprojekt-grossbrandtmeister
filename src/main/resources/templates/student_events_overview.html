@@ -75,7 +75,7 @@
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
-                            <span th:text="${#temporals.format(event.date.toLocalTime(), 'HH:mm')}">&nbsp;19:30pm</span>
+                            <span th:text="${#temporals.format(event.date.toLocalTime(), 'HH:mm')} +' - ' + ${#temporals.format(event.deadline.toLocalTime(), 'HH:mm')}">&nbsp;19:30pm</span>
                         </div>
                     </div>
                 </div>
@@ -199,13 +199,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-12 col-sm-3 col-md-4 mt-2">
-                    <form action="#" method="POST">
-                        <button class="btn btn-outline-secondary btn-block" type="submit">
-                            erinnere mich
-                        </button>
-                    </form>
-                </div>
+
             </div>
         </div>
 
@@ -305,13 +299,6 @@
                                 <span style="color: #ed1c40">Meetup</span></span>
                             </button>
                         </div>
-                    </form>
-                </div>
-                <div class="col-12 col-sm-3 col-md-4 mt-2">
-                    <form action="#" method="POST">
-                        <button class="btn btn-outline-secondary btn-block" type="submit">
-                            erinnere mich
-                        </button>
                     </form>
                 </div>
             </div>
@@ -414,13 +401,6 @@
                                 <span style="color: #ed1c40">Meetup</span>
                             </button>
                         </div>
-                    </form>
-                </div>
-                <div class="col-12 col-sm-3 col-md-4 mt-2">
-                    <form action="#" method="POST">
-                        <button class="btn btn-outline-secondary btn-block" type="submit">
-                            erinnere mich
-                        </button>
                     </form>
                 </div>
             </div>
