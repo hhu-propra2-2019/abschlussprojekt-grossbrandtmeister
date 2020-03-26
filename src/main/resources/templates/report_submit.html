@@ -74,6 +74,9 @@
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button>
+                <img src="../../static/icons/upload.png" class="ml-3"
+                     th:src="@{/icons/upload.png}"
+                     style="width: 32px;height: 28px;">
             </div>
             <input type="hidden" name="eventId" th:value="${summary.getEventId()}">
         </form>
@@ -97,6 +100,9 @@
                         <input type="hidden" name="eventId" th:value="${summary.getEventId()}">
                         <p></p>
                         <input type="submit" class="btn btn-outline-success" value="Zusammenfassung hochladen">
+                        <img src="../../static/icons/upload.png" class="ml-3"
+                             th:src="@{/icons/upload.png}"
+                             style="width: 32px;height: 28px;">
                         <!-- <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button> -->
                     </form>
                 </div>
