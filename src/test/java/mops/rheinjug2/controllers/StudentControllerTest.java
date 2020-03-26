@@ -103,7 +103,7 @@ class StudentControllerTest {
 
     final String eventId = "123";
     mvc.perform(get("/rheinjug2/student/reportsubmit").param("eventId", eventId))
-        .andExpect(redirectedUrl("rheinjug2/student/visitedevents"));
+        .andExpect(redirectedUrl("/rheinjug2/student/visitedevents"));
   }
 
 

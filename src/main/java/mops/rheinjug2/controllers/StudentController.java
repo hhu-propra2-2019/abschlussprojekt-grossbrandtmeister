@@ -83,7 +83,7 @@ public class StudentController {
   public String reportSubmit(final KeycloakAuthenticationToken token, final Model model,
                              final Long eventId) {
     if (eventId == null) {
-      return "redirect:rheinjug2/student/visitedevents";
+      return "redirect:/rheinjug2/student/visitedevents";
     }
     final LocalDateTime today = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
     final Account account = AccountCreator.createAccountFromPrincipal(token);
@@ -93,7 +93,7 @@ public class StudentController {
     }
     final LocalDateTime deadline = modelService.getDeadline(account.getName(), event);
     if (deadline.isBefore(LocalDateTime.now())) {
-      return "redirect:rheinjug2/student/visitedevents";
+      return "redirect:/rheinjug2/student/visitedevents";
     }
     final String eventname = event.getTitle();
     String content;
