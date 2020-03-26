@@ -146,12 +146,10 @@ public class FileUploadController {
         IOUtils.copy(inputStream, response.getOutputStream());
         response.flushBuffer();
       } catch (final Exception e) {
-        log.catching(e);
+        response.sendError(404, "Deine Datei wurde nicht gefunden!"
+            + " Du hast noch keine Zusammenfassung abgegeben für diese Veranstaltung");
       }
-    } else {
-      response.sendError(404);
     }
-
     authenticatedAccess.increment();
   }
 
@@ -171,7 +169,8 @@ public class FileUploadController {
       IOUtils.copy(inputStream, response.getOutputStream());
       response.flushBuffer();
     } catch (final Exception e) {
-      response.sendError(404, "File not found");
+      response.sendError(404, "Momentan ist leider keine Vorlage vorhanden. "
+          + "Schau dir als Beispiele auf markdown.de an.");
     }
     authenticatedAccess.increment();
   }
