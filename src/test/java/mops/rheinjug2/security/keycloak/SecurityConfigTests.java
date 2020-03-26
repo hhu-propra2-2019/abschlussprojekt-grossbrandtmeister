@@ -1,21 +1,20 @@
 package mops.rheinjug2.security.keycloak;
 
-import static com.tngtech.keycloakmock.api.TokenConfig.aTokenConfig;
+import static mops.rheinjug2.KeycloakTokenMock.setupMockUserWithRole;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.tngtech.keycloakmock.junit5.KeycloakMock;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration
@@ -24,19 +23,17 @@ import org.springframework.test.web.servlet.MockMvc;
 public class SecurityConfigTests {
 
   @Autowired
-  private transient MockMvc mockMvc;
+  private transient MockMvc mvc;
 
-  private static final int keycloakMockPort = 8000;
-  private static final String keycloakMockUrl = "http://localhost:" + keycloakMockPort + "/auth";
-  @RegisterExtension
-  static KeycloakMock keycloakMock = new KeycloakMock(keycloakMockPort, "MOPS");
   @Autowired
-  private transient KeycloakSpringBootProperties keycloakSpringBootProperties;
+  private transient WebApplicationContext context;
 
   @BeforeEach
-  protected void setKeycloakConfig() {
-    keycloakSpringBootProperties
-        .setAuthServerUrl(keycloakMockUrl);
+  void setUp() {
+    mvc = MockMvcBuilders
+        .webAppContextSetup(context)
+        .apply(springSecurity())
+        .build();
   }
 
   /**
@@ -83,44 +80,11 @@ public class SecurityConfigTests {
   })
   public void userRolesProvideCorrectAccess(
       final String role, final String mapping, final int status) throws Exception {
-
-    if (role == null) {
-      mockMvc.perform(get(mapping))
-          .andExpect(status().is(status));
-    } else {
-      mockMvc.perform(get(mapping)
-          .header("Authorization",
-              "Bearer " + getAccessTokenWithRole(role)))
-          .andExpect(status().is(status));
+    if (role != null) {
+      setupMockUserWithRole(role);
     }
-  }
-
-  @Test
-  public void differentUsersHaveIndependentAccessRights() throws Exception {
-    mockMvc.perform(get("/actuator")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("monitoring")))
-        .andExpect(status().isOk());
-    mockMvc.perform(get("/actuator"))
-        .andExpect(status().isFound());
-    mockMvc.perform(get("/actuator")
-        .header("Authorization",
-            "Bearer " + getAccessTokenWithRole("invalid")))
-        .andExpect(status().isForbidden());
-  }
-
-  /**
-   * Erzeugt einen Keycloak Access Token mit vorgegebener Rolle.
-   *
-   * @param role Rollenname ohne Prefix (i.e. "orga", nicht "ROLE_orga").
-   * @return Gibt den Access Token zurück.
-   */
-  protected static String getAccessTokenWithRole(final String role) {
-    return keycloakMock
-        .getAccessToken(aTokenConfig()
-            .withRealmRole("ROLE_" + role)
-            .withEmail(role + "@non.existent")
-            .build());
+    mvc.perform(get(mapping))
+        .andExpect(status().is(status));
   }
 
 }
