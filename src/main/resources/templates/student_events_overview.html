@@ -106,7 +106,25 @@
                                  style="width: 32px;height: 28px;">
                             <span class="text-success" th:if="${event.price == 0}"> kostenfrei</span>
                             <span th:if="${event.price != 0}">
-                                    <td><a th:href="'mailto: bendisposto@uni-duesseldorf.de'"> Bei Jens anmelden</a></td>
+                                    <td>
+                                        <a th:href="'mailto:bendisposto@uni-duesseldorf.de?subject=Anmeldung für '
+                                                     + ${event.getTitle()}
+                                                     + '&amp;body=Hallo Herr Bendisposto,'
+                                                     + '%0D%0A%0D%0A'
+                                                     + 'ich würde mich gerne für die Veranstaltung:'
+                                                     + ${event.getTitle()}+' bei Ihnen anmelden.'
+                                                     + '%0D%0A%0D%0A'
+                                                     + 'Meine meetupID ist : HIER_MEETUPID_EINSETZEN.'
+                                                     + '%0D%0A%0D%0A'
+                                                     + '%0D%0A'
+                                                     + 'Mit freundlichen Grüßen'
+                                                     + '%0D%0A'
+                                                     +  ${account.getFamilyName()} + ' ' + ${account.getGivenName()}">
+                                                     Bei Jens anmelden
+                                        </a>
+                                    </td>
+
+
                             </span>
                         </div>
                     </div>
@@ -204,13 +222,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-12 col-sm-3 col-md-4 mt-2">
-                    <form action="#" method="POST">
-                        <button class="btn btn-outline-secondary btn-block" type="submit">
-                            erinnere mich
-                        </button>
-                    </form>
-                </div>
+
             </div>
         </div>
 
