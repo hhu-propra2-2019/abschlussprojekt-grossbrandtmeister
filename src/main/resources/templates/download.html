@@ -23,4 +23,12 @@
 
 </main>
 </body>
-</html>
+</html><span class="text-secondary">
+                                <span th:if="${event.type == 'Abendveranstaltung'}">
+                                    Abendveranstaltung
+                                </span>
+                                <span th:if="${event.type == 'EntwickelBar'}">
+                                    EntwickelBar
+                                </span>
+                                <span th:if="${event.type != 'Abendveranstaltung' and event.type != 'EntwickelBar'}"> unbekanntes Event </span>
+                            </span>
