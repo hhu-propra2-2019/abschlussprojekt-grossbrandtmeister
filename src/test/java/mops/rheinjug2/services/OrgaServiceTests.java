@@ -22,6 +22,7 @@ import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.fileupload.FileService;
+import mops.rheinjug2.orgamodels.DelayedSubmission;
 import mops.rheinjug2.orgamodels.OrgaEvent;
 import mops.rheinjug2.orgamodels.OrgaSummary;
 import mops.rheinjug2.repositories.EventRepository;
@@ -73,6 +74,7 @@ public class OrgaServiceTests {
 
     student1 = new Student("student1login", "student1@email");
     student1.setName("student1");
+    student1.setId((long) 1);
 
     student2 = new Student("student2login", "student2@email");
     student2.setName("student2");
@@ -216,6 +218,34 @@ public class OrgaServiceTests {
     Assertions.assertThat(orgaSummaries).hasSize(1);
     verify(fileService, times(1))
         .getContentOfFileAsString(student1.getLogin() + "_" + event1.getId());
+  }
+
+  @Test
+  public void getDelayedSubmissionTset() {
+    //Student1->Event1 submitted
+    final EventRef student1ref = mock(EventRef.class);
+    when(student1ref.getEvent()).thenReturn((long) 1);
+    when(student1ref.isDelayed()).thenReturn(true);
+    when(student1ref.getDeadline()).thenReturn(LocalDateTime.now().minusDays(1));
+    student1.setEvents(Set.of(student1ref));
+    when(studentRepository.findAll()).thenReturn(List.of(student1));
+    when(eventRepository.findById((long) 1)).thenReturn(java.util.Optional.ofNullable(event1));
+
+
+    orgaService = new OrgaService(eventRepository, studentRepository, fileService);
+    final List<DelayedSubmission> delayedSubmissions = orgaService.getDelayedSubmission();
+
+    verify(studentRepository, times(1)).findAll();
+    Assertions.assertThat(delayedSubmissions).hasSize(1);
+    //1->1
+    Assertions.assertThat(delayedSubmissions.get(0).getStudentName())
+        .isEqualTo(student1.getLogin());
+    Assertions.assertThat(delayedSubmissions.get(0).getStudentId()).isEqualTo(student1.getId());
+    Assertions.assertThat(delayedSubmissions.get(0).getEventId()).isEqualTo(1);
+    Assertions.assertThat(delayedSubmissions.get(0).getEventTitle()).isEqualTo(event1.getTitle());
+    Assertions.assertThat(delayedSubmissions.get(0).getDeadLine().withNano(0)
+        .equals(student1ref.getDeadline().withNano(0))).isTrue();
+    Assertions.assertThat(delayedSubmissions.get(0).getSummaryContent()).isEqualTo(null);
   }
 
 }

@@ -46,7 +46,9 @@
                             <div class="col-12">
                                 <i class="icono-calendar"></i>
                                 <span class="text-success"
-                                      th:text="${#temporals.format(eventAndStatus.key.date.toLocalDate(), 'dd.MM.YYYY')}">&nbsp;13.03.2020</span>
+                                      th:text="${#temporals.format(eventAndStatus.key.date.toLocalDate(), 'dd.MM.yyyy')}">&nbsp;13.03.2020</span>
+                                <span class="text-success"
+                                      th:text="${#temporals.format(eventAndStatus.key.date.toLocalTime(), 'HH:mm')}">&nbsp;19:30</span>
                             </div>
                         </div>
                     </div>
@@ -68,10 +70,10 @@
                                      th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
                                 <span class="text-secondary">
                                     <span th:if="${eventAndStatus.key.type == 'Abendveranstaltung'}">
-                                    &nbsp;Abendveranstaltung
+                                    &nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span>
                                     </span>
                                 <span th:if="${eventAndStatus.key.type == 'EntwickelBar'}">
-                                    &nbsp;EntwickelBar
+                                    &nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
                                 </span>
                             </div>
                         </div>
