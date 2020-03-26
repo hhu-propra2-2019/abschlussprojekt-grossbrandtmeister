@@ -148,8 +148,8 @@ public class OrgaService {
 
   /**
    * Die Methode gibt eine Liste alle angemeldte veranstaltungen
-   *    deren Zusammenfassung noch nicht abgegeben worde
-   *    (mögliche verspätete abgaben).
+   * deren Zusammenfassung noch nicht abgegeben worde
+   * (mögliche verspätete abgaben).
    *
    * @return liste der Abgaben, die der Orga als versätete Abgaben hochladen kann.
    */
@@ -168,7 +168,7 @@ public class OrgaService {
                   delayedSubmision.getDeadline(),
                   null
               ))
-        );
+          );
     });
     return result.stream()
         .sorted(Comparator.comparing(DelayedSubmission::getDeadLine).reversed())
@@ -238,7 +238,9 @@ public class OrgaService {
     student.get().setAccepted(true, event.get());
   }
 
-  /**Gibt Verspätete abgaben einer Student.
+  /**
+   * Gibt Verspätete abgaben einer Student.
+   *
    * @param searchedName student Name
    * @return liste der verspätete Abgaben.
    */
@@ -249,7 +251,9 @@ public class OrgaService {
         .collect(Collectors.toList());
   }
 
-  /**Gibt versätete Abgabe einer Veranstaltung.
+  /**
+   * Gibt versätete Abgabe einer Veranstaltung.
+   *
    * @param searchedName Veranstaltungsname.
    * @return .
    */
