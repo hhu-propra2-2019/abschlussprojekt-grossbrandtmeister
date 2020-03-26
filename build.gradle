@@ -14,6 +14,7 @@ plugins {
     id 'com.github.spotbugs' version '4.0.2'
     id 'pmd'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 group = 'mops'
@@ -94,4 +95,16 @@ checkstyle {
 
 pmd {
     toolVersion = "6.21.0"
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination file("${buildDir}/reports/jacocoHtml")
+    }
 }

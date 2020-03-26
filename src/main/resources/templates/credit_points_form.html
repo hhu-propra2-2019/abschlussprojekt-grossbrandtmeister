@@ -59,7 +59,7 @@
                 </div>
                 <div class="col-md-3">
                     <input class="form-control border border-dark" id="matNr" name="Matrikelnummer"
-                           th:field="*{matNr}" type="text"
+                           th:field="*{matNr}" type="number" min="1000000" max="9999999"
                            required>
                 </div>
             </div>

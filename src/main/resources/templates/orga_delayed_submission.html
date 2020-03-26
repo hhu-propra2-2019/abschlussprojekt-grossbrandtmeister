@@ -15,6 +15,9 @@
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
                 integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
                 crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"
+                integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+                crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
                 integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
                 crossorigin="anonymous"></script>
@@ -67,6 +70,41 @@
          role="alert" th:text="${errormessage}"
          th:if="${errormessage != ''}">
     </div>
+    <div class="container bg-light rounded shadow-lg "
+         style=" padding: 10px; margin-top: 40px; margin-bottom: 50px">
+        <div class="row border-bottom  mx-1 my-1 align-content-center">
+            <div class="col-12 text-secondary text-center  my-1">
+                <h3 class="font-weight-bold">
+                    Verspätete Abgaben durchsuchen
+                </h3>
+            </div>
+        </div>
+        <div class="row  mx-1 my-1">
+            <div class="col-12 col-sm-6 border-right text-secondary my-1 ">
+                <form class="form-inline justify-content-center" method="POST"
+                      th:action="@{/rheinjug2/orga/searchstudent}">
+                    <div class="form-group mx-sm-3 ">
+                        <input type="text"
+                               class="form-control" th:name="searchedName"
+                               th:value="${searchForm.getSearchedName()}"
+                               placeholder="Studentenname eingeben">
+                    </div>
+                    <button type="submit" class="btn btn-primary ">suchen</button>
+                </form>
+            </div>
+            <div class="col-12 col-sm-6 border-right text-secondary my-1 ">
+                <form method="POST" th:action="@{/rheinjug2/orga/searchevent}"
+                      class="form-inline justify-content-center">
+                    <div class="form-group mx-sm-3 ">
+                        <input type="text" class="form-control" th:name="searchedName"
+                               th:value="${searchForm.getSearchedName()}"
+                               placeholder="Verantaltungsname eingeben">
+                    </div>
+                    <button type="submit" class="btn btn-primary ">suchen</button>
+                </form>
+            </div>
+        </div>
+    </div>
     <div th:each=" submission : ${delayedsubmissions}">
         <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
             <form method="POST" th:action="@{/rheinjug2/orga/summaryupload}">
@@ -84,7 +122,7 @@
                     </div>
                     <div class="col-12 col-sm-6 border-right text-secondary my-1">
                         <span>Abgabe Frist war am:</span>
-                        <span>&nbsp15.03.2020</span>
+                        <span th:text="${#temporals.format(submission.getDeadLine(), 'dd.MM.yyyy HH:mm')}">&nbsp15.03.2020</span>
                     </div>
                 </div>
                 <div class=" row mx-1 my-1 collapsebtn" style="display: none">
