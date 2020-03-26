@@ -167,8 +167,7 @@ public class OrgaService {
                   getSummaryEvent(delayedSubmision.getEvent()).getTitle(),
                   delayedSubmision.getDeadline(),
                   null
-              ))
-          );
+              )));
     });
     return result.stream()
         .sorted(Comparator.comparing(DelayedSubmission::getDeadLine).reversed())
