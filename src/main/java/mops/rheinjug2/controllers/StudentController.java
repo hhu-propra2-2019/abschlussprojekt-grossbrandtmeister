@@ -104,6 +104,7 @@ public class StudentController {
     final Summary summary = new Summary(eventname, student, content, today, eventId);
     model.addAttribute("summary", summary);
     model.addAttribute("account", account);
+    model.addAttribute("event", event);
     authenticatedAccess.increment();
     return "report_submit";
   }
