@@ -1,6 +1,6 @@
 package mops.rheinjug2.controllers;
 
-import static mops.rheinjug2.KeycloakTokenMock.setupTokenMock;
+import static mops.rheinjug2.KeycloakTokenMock.setupMockUserWithRole;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -12,17 +12,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import mops.rheinjug2.Account;
 import mops.rheinjug2.entities.Event;
-import mops.rheinjug2.fileupload.FileService;
 import mops.rheinjug2.services.ModelService;
 import mops.rheinjug2.services.SubmissionStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +38,6 @@ class StudentControllerTest {
   private transient MockMvc mvc;
 
   @MockBean
-  private transient FileService fileService;
-
-  @MockBean
   private transient ModelService modelService;
 
   @Autowired
@@ -61,11 +53,7 @@ class StudentControllerTest {
 
   @Test
   void testGetPersonalStudent() throws Exception {
-    final Set<String> roles = new HashSet<>();
-    roles.add("studentin");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
-    setupTokenMock(account);
+    setupMockUserWithRole("studentin");
 
     final Event event1 = new Event();
     event1.setDate(LocalDateTime.now());
@@ -84,11 +72,7 @@ class StudentControllerTest {
 
   @Test
   void testGetPersonalOrga() throws Exception {
-    final Set<String> roles = new HashSet<>();
-    roles.add("orga");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
-    setupTokenMock(account);
+    setupMockUserWithRole("orga");
 
     mvc.perform(get("/rheinjug2/student/visitedevents"))
         .andExpect(status().isForbidden());
@@ -96,12 +80,7 @@ class StudentControllerTest {
 
   @Test
   void testReportsubmitAdmissionStudent() throws Exception {
-    final Set<String> roles = new HashSet<>();
-    roles.add("studentin");
-
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
-    setupTokenMock(account);
+    setupMockUserWithRole("studentin");
 
     final Event event = new Event();
     when(modelService.loadEventById(anyLong())).thenReturn(event);
@@ -114,12 +93,7 @@ class StudentControllerTest {
 
   @Test
   void testReportsubmitNoAdmissionOrga() throws Exception {
-    final Set<String> roles = new HashSet<>();
-    roles.add("orga");
-
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
-    setupTokenMock(account);
+    setupMockUserWithRole("orga");
 
     final String eventId = "123";
     mvc.perform(get("/rheinjug2/student/reportsubmit").param("eventId", eventId))
@@ -128,11 +102,7 @@ class StudentControllerTest {
 
   @Test
   void testStudentEventsOverviewAdmissionStudent() throws Exception {
-    final Set<String> roles = new HashSet<>();
-    roles.add("studentin");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
-    setupTokenMock(account);
+    setupMockUserWithRole("studentin");
 
     final Event event1 = new Event();
     final Event event2 = new Event();
@@ -159,11 +129,7 @@ class StudentControllerTest {
 
   @Test
   void testStudentEventsOverviewNoAdmissionOrga() throws Exception {
-    final Set<String> roles = new HashSet<>();
-    roles.add("orga");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
-    setupTokenMock(account);
+    setupMockUserWithRole("orga");
 
     mvc.perform(get("/rheinjug2/student/events"))
         .andExpect(status().isForbidden());
@@ -172,11 +138,7 @@ class StudentControllerTest {
 
   @Test
   void testAddStudentToEventOrga() throws Exception {
-    final Set<String> roles = new HashSet<>();
-    roles.add("orga");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
-    setupTokenMock(account);
+    setupMockUserWithRole("orga");
 
     mvc.perform(post("/rheinjug2/student/events"))
         .andExpect(status().isForbidden());
@@ -184,11 +146,8 @@ class StudentControllerTest {
 
   @Test
   void testAddStudentToEventStudent() throws Exception {
-    final Set<String> roles = new HashSet<>();
-    roles.add("ROLE_studentin");
-    final Account account = new Account("name", "User@email.de", "image", roles,
-        "givenname", "familyname");
-    setupTokenMock(account);
+    setupMockUserWithRole("studentin");
+
     final String eventId = "123";
     mvc.perform(post("/rheinjug2/student/events")
         .param("eventId", eventId)
