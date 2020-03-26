@@ -2,7 +2,6 @@ package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import java.time.LocalDateTime;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
@@ -24,13 +23,13 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/rheinjug2/student")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class StudentController {
-  
+
   private final transient Counter authenticatedAccess;
   private final transient ModelService modelService;
-  
-  
+
+
   transient FileService fileService;
-  
+
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public StudentController(final MeterRegistry registry, final FileService fileService,
                            final ModelService modelService) {
@@ -38,12 +37,12 @@ public class StudentController {
     this.modelService = modelService;
     authenticatedAccess = registry.counter("access.authenticated");
   }
-  
+
   @GetMapping("/")
   public String studentBase() {
     return "redirect:/rheinjug2/student/events/";
   }
-  
+
   /**
    * Event Übersicht für Studenten.
    */
@@ -51,13 +50,15 @@ public class StudentController {
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
+    modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 1);
+    modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 2);
     model.addAttribute("events", modelService.getAllEvents());
     model.addAttribute("studentRegisteredForEvent",
         modelService.getAllEventIdsPerStudent(account.getName()));
     authenticatedAccess.increment();
     return "student_events_overview";
   }
-  
+
   /**
    * Übersicht der Events für die der aktuelle Student angemeldet war/ist.
    * Die EventId muss später durch die richtige Id aus der Datenbank ersetzt werden.
@@ -71,7 +72,7 @@ public class StudentController {
     authenticatedAccess.increment();
     return "personalView";
   }
-  
+
   /**
    * Formular zur Einreichung der Zusammenfassung.
    * Das Summary-Objekt muss noch auf die Angaben des jeweiligen Events aus
@@ -84,7 +85,6 @@ public class StudentController {
     if (eventId == null) {
       return "redirect:rheinjug2/student/visitedevents";
     }
-    final LocalDateTime today = LocalDateTime.now();
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final Event event = modelService.loadEventById(eventId);
     if (event == null) {
@@ -100,13 +100,13 @@ public class StudentController {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
     final String student = account.getGivenName() + " " + account.getFamilyName();
-    final Summary summary = new Summary(eventname, student, content, today, eventId);
+    final Summary summary = new Summary(eventname, student, content, event.getDate(), eventId);
     model.addAttribute("summary", summary);
     model.addAttribute("account", account);
     authenticatedAccess.increment();
     return "report_submit";
   }
-  
+
   /**
    * Fügt einen Studenten einem Event hinzu.
    */
