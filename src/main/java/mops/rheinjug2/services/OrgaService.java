@@ -136,20 +136,22 @@ public class OrgaService {
   private String getSummaryContentFromFileservice(final String studentName, final Long eventId)
       throws IOException, InvalidKeyException, NoSuchAlgorithmException,
       XmlPullParserException, InvalidArgumentException, InvalidResponseException,
-      InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException,
-      ErrorResponseException {
+      InternalException, NoResponseException, InvalidBucketNameException,
+      InsufficientDataException {
     final String fileName = studentName + "_" + eventId;
     try {
       return fileService.getContentOfFileAsString(fileName);
     } catch (final ConnectException e) {
-      return "MinIO " + e.getMessage();
+      return "MinIO error: " + e.getMessage();
+    } catch (final ErrorResponseException e) {
+      return "MinIO error: " + e.getMessage();
     }
   }
 
   /**
    * Die Methode gibt eine Liste alle angemeldte veranstaltungen
-   *    deren Zusammenfassung noch nicht abgegeben worde
-   *    (mögliche verspätete abgaben).
+   * deren Zusammenfassung noch nicht abgegeben worde
+   * (mögliche verspätete abgaben).
    *
    * @return liste der Abgaben, die der Orga als versätete Abgaben hochladen kann.
    */
@@ -223,7 +225,6 @@ public class OrgaService {
    * @param eventId        .
    * @param studentName    .
    * @param summaryContent .
-   * @throws IOException .
    */
   public void summaryupload(final Long studentId, final Long eventId,
                             final String studentName,
@@ -231,14 +232,13 @@ public class OrgaService {
     fileService.uploadContentConvertToMd(summaryContent, studentName + "_" + eventId);
     final Optional<Student> student = studentRepository.findById(studentId);
     final Optional<Event> event = eventRepository.findById(eventId);
-    student.get().getEvents()
-        .stream()
-        .filter(eventRef -> eventRef.getEvent().equals(eventId))
-        .forEach(eventRef -> eventRef.setSubmittedSummary(true));
-    student.get().setAccepted(true, event.get());
+    student.get().setSubmittedAndAccepted(event.get());
+    studentRepository.save(student.get());
   }
 
-  /**Gibt Verspätete abgaben einer Student.
+  /**
+   * Gibt Verspätete abgaben einer Student.
+   *
    * @param searchedName student Name
    * @return liste der verspätete Abgaben.
    */
@@ -249,7 +249,9 @@ public class OrgaService {
         .collect(Collectors.toList());
   }
 
-  /**Gibt versätete Abgabe einer Veranstaltung.
+  /**
+   * Gibt versätete Abgabe einer Veranstaltung.
+   *
    * @param searchedName Veranstaltungsname.
    * @return .
    */
