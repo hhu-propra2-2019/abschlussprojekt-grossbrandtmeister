@@ -90,10 +90,10 @@ public class StudentController {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final Event event = modelService.loadEventById(eventId);
     if (event == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event ID not found!");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found!");
     }
     final LocalDateTime deadline = modelService.getDeadline(account.getName(), event);
-    if (deadline.isBefore(LocalDateTime.now())) {
+    if (deadline.isBefore(today)) {
       return "redirect:/rheinjug2/student/visitedevents";
     }
     final String eventname = event.getTitle();
