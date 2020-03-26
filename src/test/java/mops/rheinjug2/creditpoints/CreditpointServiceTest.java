@@ -16,12 +16,13 @@ import mops.rheinjug2.services.ModelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 class CreditpointServiceTest {
   
-  ModelService modelMock;
-  EmailService emailMock;
+  private transient ModelService modelMock;
+  private transient EmailService emailMock;
   
-  CreditpointService creditpointService;
+  private transient CreditpointService creditpointService;
   
   @BeforeEach
   public void setUp() {
