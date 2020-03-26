@@ -11,6 +11,21 @@
               crossorigin="anonymous"
               th:remove="all">
         <link rel="stylesheet" href="https://icono-49d6.kxcdn.com/icono.min.css" th:remove="all">
+        <style>
+            .wmd-input {
+                height: 400px;
+                width: 100%;
+                border: 1px solid DarkGray;
+            }
+
+            .wmd-preview {
+                margin-left: 4%;
+                width: 85%;
+            }
+        </style>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
     </th:block>
 </head>
 <body>
@@ -62,10 +77,17 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="Inhalt">Inhalt</label>
-                <textarea class="form-control" id="Inhalt" name="Inhalt" rows="20"
+                <label for="wmd-input">Inhalt</label>
+                <textarea class="wmd-input" id="wmd-input" name="Inhalt"
                           placeholder="Zusammenfassung hier schreiben..." th:field="*{content}"
-                          form="mysubmit"></textarea>
+                          form="mysubmit"> </textarea>
+                <p></p>
+                <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+                <script type="text/javascript">
+                    var converter = Markdown.getSanitizingConverter();
+                    var editor = new Markdown.Editor(converter);
+                    editor.run();
+                </script>
             </div>
             <div class="form-group secondary">
                 <label class="" for="Todaysdate">Heutiges Datum</label>
