@@ -147,7 +147,7 @@ class StudentControllerTest {
   @Test
   void testAddStudentToEventStudent() throws Exception {
     setupMockUserWithRole("studentin");
-    
+
     final String eventId = "123";
     mvc.perform(post("/rheinjug2/student/events")
         .param("eventId", eventId)
