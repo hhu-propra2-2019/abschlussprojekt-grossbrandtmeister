@@ -49,14 +49,30 @@ public class Event {
     return getStatus().equalsIgnoreCase("Upcoming");
   }
 
+  /**
+   * Gibt das Datum zurück zu dem das Event endet.
+   */
   public String getEndDate() {
-    final LocalDateTime endDateTime = date.plus(duration);
-    return endDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    final String endDate;
+    if (duration != null) {
+      endDate = date.plus(duration).toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    } else {
+      endDate = "unbekannt";
+    }
+    return endDate;
   }
 
+  /**
+   * Gibt die Zeit zurück zu der das Event endet.
+   */
   public String getEndTime() {
-    final LocalDateTime endDateTime = date.plus(duration);
-    return endDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+    final String endTime;
+    if (duration != null) {
+      endTime = date.plus(duration).toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+    } else {
+      endTime = "unbekannt";
+    }
+    return endTime;
   }
 
   public String getDeadlineDate() {
