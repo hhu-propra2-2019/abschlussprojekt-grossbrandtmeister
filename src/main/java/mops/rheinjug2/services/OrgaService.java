@@ -131,7 +131,6 @@ public class OrgaService {
    * @throws NoResponseException        .
    * @throws InvalidBucketNameException .
    * @throws InsufficientDataException  .
-   * @throws ErrorResponseException     .
    */
   private String getSummaryContentFromFileservice(final String studentName, final Long eventId)
       throws IOException, InvalidKeyException, NoSuchAlgorithmException,

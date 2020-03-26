@@ -179,7 +179,6 @@ public class OrgaServiceTests {
     //3->2
     Assertions.assertThat(orgaSummaries.get(0).getStudentId()).isEqualTo(student3.getId());
     Assertions.assertThat(orgaSummaries.get(0).getEventId()).isEqualTo(event2.getId());
-
   }
 
   /**
@@ -246,6 +245,57 @@ public class OrgaServiceTests {
     Assertions.assertThat(delayedSubmissions.get(0).getDeadLine().withNano(0)
         .equals(student1ref.getDeadline().withNano(0))).isTrue();
     Assertions.assertThat(delayedSubmissions.get(0).getSummaryContent()).isEqualTo(null);
+
+    final List<DelayedSubmission> delayedSubmissionsForStudent1 =
+        orgaService.getDelayedSubmissionsForStudent("student1login");
+    Assertions.assertThat(delayedSubmissionsForStudent1).hasSize(1);
+
+    final List<DelayedSubmission> delayedSubmissionsForEvent1 =
+        orgaService.getDelayedSubmissionsForEvent("Event1");
+    Assertions.assertThat(delayedSubmissionsForStudent1).hasSize(1);
+
   }
+
+  @Test
+  public void setSummaryAsAcceptedTest(){
+    when(studentRepository.findById((long) 1)).thenReturn(java.util.Optional.ofNullable(student1));
+    when(eventRepository.findById((long) 1)).thenReturn(java.util.Optional.ofNullable(event1));
+    //1->1
+    final EventRef student1ref = mock(EventRef.class);
+    when(student1ref.getEvent()).thenReturn((long) 1);
+    student1.setEvents(Set.of(student1ref));
+
+    orgaService = new OrgaService(eventRepository, studentRepository, fileService);
+    boolean result = orgaService.setSummaryAsAccepted((long)1,(long)1);
+
+    verify(studentRepository,times(1)).findById((long)1);
+    verify(eventRepository,times(1)).findById((long)1);
+    verify(student1ref,times(1)).setAccepted(true);
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
+  public void summaryuploadTset() throws IOException {
+    when(studentRepository.findById((long) 1)).thenReturn(java.util.Optional.ofNullable(student1));
+    when(eventRepository.findById((long) 1)).thenReturn(java.util.Optional.ofNullable(event1));
+
+    //1->1
+    final EventRef student1ref = mock(EventRef.class);
+    when(student1ref.getEvent()).thenReturn((long) 1);
+    student1.setEvents(Set.of(student1ref));
+
+    orgaService = new OrgaService(eventRepository, studentRepository, fileService);
+    orgaService.summaryupload((long)1,(long)1,"student1",
+        "summaryContent");
+
+    verify(fileService,times(1))
+        .uploadContentConvertToMd("summaryContent","student1_1");
+    verify(student1ref,times(1)).setSubmittedSummary(true);
+    verify(student1ref,times(1)).setAccepted(true);
+    verify(studentRepository,times(1)).save(student1);
+
+  }
+
+
 
 }
