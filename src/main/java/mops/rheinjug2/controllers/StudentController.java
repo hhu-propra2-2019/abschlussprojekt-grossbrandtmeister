@@ -3,6 +3,7 @@ package mops.rheinjug2.controllers;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
@@ -84,7 +85,7 @@ public class StudentController {
     if (eventId == null) {
       return "redirect:rheinjug2/student/visitedevents";
     }
-    final LocalDateTime today = LocalDateTime.now();
+    final LocalDateTime today = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final Event event = modelService.loadEventById(eventId);
     if (event == null) {
@@ -103,6 +104,7 @@ public class StudentController {
     final Summary summary = new Summary(eventname, student, content, today, eventId);
     model.addAttribute("summary", summary);
     model.addAttribute("account", account);
+    model.addAttribute("event", event);
     authenticatedAccess.increment();
     return "report_submit";
   }
