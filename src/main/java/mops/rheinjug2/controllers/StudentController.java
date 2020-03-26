@@ -56,12 +56,6 @@ public class StudentController {
         modelService.getAllEventIdsPerStudent(account.getName()));
     authenticatedAccess.increment();
 
-    for (int i = 1; i < 25; i++) {
-      modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) i);
-      modelService.submitSummary(account.getName(), (long) i);
-      modelService.acceptSummary((long) i, account.getName());
-    }
-
     return "student_events_overview";
   }
 
