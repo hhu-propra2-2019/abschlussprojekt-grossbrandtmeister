@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.MessagingException;
-import mops.rheinjug2.email.EmailService;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.services.ModelService;

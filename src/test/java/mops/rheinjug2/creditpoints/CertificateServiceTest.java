@@ -1,4 +1,4 @@
-package mops.rheinjug2.email;
+package mops.rheinjug2.creditpoints;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
