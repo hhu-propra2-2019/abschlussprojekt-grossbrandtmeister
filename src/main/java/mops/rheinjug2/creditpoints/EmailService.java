@@ -1,4 +1,4 @@
-package mops.rheinjug2.email;
+package mops.rheinjug2.creditpoints;
 
 import com.sun.istack.ByteArrayDataSource;
 import java.util.List;

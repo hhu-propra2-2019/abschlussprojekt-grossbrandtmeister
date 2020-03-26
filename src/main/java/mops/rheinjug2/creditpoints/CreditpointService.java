@@ -4,7 +4,6 @@ package mops.rheinjug2.creditpoints;
 import java.util.List;
 import javax.mail.MessagingException;
 import lombok.extern.log4j.Log4j2;
-import mops.rheinjug2.email.EmailService;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.services.ModelService;
 import org.springframework.stereotype.Service;
