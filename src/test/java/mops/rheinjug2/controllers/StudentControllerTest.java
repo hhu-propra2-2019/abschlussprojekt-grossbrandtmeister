@@ -94,6 +94,20 @@ class StudentControllerTest {
   }
 
   @Test
+  void testReportEventDeadlineIsPassed() throws Exception {
+    setupMockUserWithRole("studentin");
+
+    final Event event = new Event();
+    when(modelService.getDeadline(anyString(), any())).thenReturn(LocalDateTime.MIN);
+    when(modelService.loadEventById(anyLong())).thenReturn(event);
+
+    final String eventId = "123";
+    mvc.perform(get("/rheinjug2/student/reportsubmit").param("eventId", eventId))
+        .andExpect(redirectedUrl("rheinjug2/student/visitedevents"));
+  }
+
+
+  @Test
   void testReportsubmitNoAdmissionOrga() throws Exception {
     setupMockUserWithRole("orga");
 

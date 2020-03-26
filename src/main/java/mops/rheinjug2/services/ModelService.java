@@ -287,6 +287,9 @@ public class ModelService {
     }
   }
 
+  /**
+   * Die Deadline für eine belegte Veranstaltung eines Events wird hinzugefügt.
+   */
   public LocalDateTime getDeadline(final String login, final Event event) {
     final Student student = studentRepository.findByLogin(login);
     if (null == student) {
