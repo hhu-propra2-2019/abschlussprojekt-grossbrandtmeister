@@ -1,10 +1,12 @@
-package mops.rheinjug2.creditpoints;
+package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import javax.mail.MessagingException;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
+import mops.rheinjug2.creditpoints.CertificateForm;
+import mops.rheinjug2.creditpoints.CreditpointService;
 import mops.rheinjug2.services.ModelService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
