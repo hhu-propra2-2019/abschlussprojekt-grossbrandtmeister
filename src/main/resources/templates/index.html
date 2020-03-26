@@ -58,12 +58,12 @@
                                  style="width: 32px;height: 28px;">
                             <span class="text-secondary">
                                 <span th:if="${event.type == 'Abendveranstaltung'}">
-                                    <sup>1</sup>/<sub>6</sub> CP
+                                    Abendveranstaltung
                                 </span>
                                 <span th:if="${event.type == 'EntwickelBar'}">
-                                    <sup>1</sup>/<sub>2</sub> CP
+                                    EntwickelBar
                                 </span>
-                                <span th:if="${event.type != 'Abendveranstaltung' and event.type != 'EntwickelBar'}"> <sup>1</sup>/<sub>2</sub> CP </span>
+                                <span th:if="${event.type != 'Abendveranstaltung' and event.type != 'EntwickelBar'}"> unbekanntes Event </span>
                             </span>
                         </div>
                     </div>
@@ -74,8 +74,8 @@
                             <img src="../../static/icons/icon-payment.png"
                                  th:src="@{/icons/icon-payment.png}"
                                  style="width: 32px;height: 28px;">
-                            <span class="text-success" th:if="${event.price == 0}">kostenfrei</span>
-                            <span th:if="${event.price != 0}" th:text="${event.price} + ' €' "> 5.0 €</span>
+                            <span class="text-success"> kostenfrei</span>
+                            <span th:if="${event.price != 0}"> Mail an: Jens.Bendisposto@uni-duesseldorf.de</span>
                         </div>
                     </div>
                 </div>
