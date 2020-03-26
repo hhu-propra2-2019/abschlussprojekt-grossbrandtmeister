@@ -68,8 +68,9 @@
                           form="mysubmit"></textarea>
             </div>
             <div class="form-group secondary">
-                <label class="" for="Todaysdate">Datum der Abgabe</label>
-                <input type="text" class="form-control " id="Todaysdate" th:field="*{date}" value="01.04.2020" readonly>
+                <label class="" for="Todaysdate">heutige datum</label>
+                <input th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}" type="text" class="form-control "
+                       id="Todaysdate" value="01.04.2020" readonly>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button>
