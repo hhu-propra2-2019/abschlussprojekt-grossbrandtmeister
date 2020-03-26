@@ -1,6 +1,7 @@
 package mops.rheinjug2.services;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -283,5 +284,10 @@ public class ModelService {
         addToMap(events, List.of(e), SubmissionStatus.NO_SUBMISSION);
       }
     }
+  }
+
+  public LocalDateTime getDeadline(final String login, final Long eventId) {
+    final LocalDateTime deadline = studentRepository.getDeadline(login, eventId);
+    return deadline;
   }
 }

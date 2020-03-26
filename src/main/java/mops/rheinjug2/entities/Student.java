@@ -96,7 +96,7 @@ public class Student {
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
 
-  private EventRef findEventRef(final Event event) {
+  public EventRef findEventRef(final Event event) {
     return events.stream().filter(x -> x.getEvent()
         .equals(event.getId())).findAny().orElse(null);
   }
