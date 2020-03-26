@@ -136,13 +136,15 @@ public class OrgaService {
   private String getSummaryContentFromFileservice(final String studentName, final Long eventId)
       throws IOException, InvalidKeyException, NoSuchAlgorithmException,
       XmlPullParserException, InvalidArgumentException, InvalidResponseException,
-      InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException,
-      ErrorResponseException {
+      InternalException, NoResponseException, InvalidBucketNameException,
+      InsufficientDataException {
     final String fileName = studentName + "_" + eventId;
     try {
       return fileService.getContentOfFileAsString(fileName);
     } catch (final ConnectException e) {
-      return "MinIO " + e.getMessage();
+      return "MinIO error: " + e.getMessage();
+    } catch (final ErrorResponseException e) {
+      return "MinIO error: " + e.getMessage();
     }
   }
 
@@ -231,11 +233,8 @@ public class OrgaService {
     fileService.uploadContentConvertToMd(summaryContent, studentName + "_" + eventId);
     final Optional<Student> student = studentRepository.findById(studentId);
     final Optional<Event> event = eventRepository.findById(eventId);
-    student.get().getEvents()
-        .stream()
-        .filter(eventRef -> eventRef.getEvent().equals(eventId))
-        .forEach(eventRef -> eventRef.setSubmittedSummary(true));
-    student.get().setAccepted(true, event.get());
+    student.get().setSubmittedAndAccepted(event.get());
+    studentRepository.save(student.get());
   }
 
   /**Gibt Verspätete abgaben einer Student.
@@ -249,7 +248,9 @@ public class OrgaService {
         .collect(Collectors.toList());
   }
 
-  /**Gibt versätete Abgabe einer Veranstaltung.
+  /**
+   * Gibt versätete Abgabe einer Veranstaltung.
+   *
    * @param searchedName Veranstaltungsname.
    * @return .
    */
