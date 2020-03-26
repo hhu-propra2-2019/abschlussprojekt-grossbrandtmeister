@@ -150,8 +150,8 @@ public class OrgaService {
 
   /**
    * Die Methode gibt eine Liste alle angemeldte veranstaltungen
-   * deren Zusammenfassung noch nicht abgegeben worde
-   * (mögliche verspätete abgaben).
+   *    deren Zusammenfassung noch nicht abgegeben worde
+   *    (mögliche verspätete abgaben).
    *
    * @return liste der Abgaben, die der Orga als versätete Abgaben hochladen kann.
    */
@@ -225,6 +225,7 @@ public class OrgaService {
    * @param eventId        .
    * @param studentName    .
    * @param summaryContent .
+   * @throws IOException .
    */
   public void summaryupload(final Long studentId, final Long eventId,
                             final String studentName,
@@ -236,9 +237,7 @@ public class OrgaService {
     studentRepository.save(student.get());
   }
 
-  /**
-   * Gibt Verspätete abgaben einer Student.
-   *
+  /**Gibt Verspätete abgaben einer Student.
    * @param searchedName student Name
    * @return liste der verspätete Abgaben.
    */

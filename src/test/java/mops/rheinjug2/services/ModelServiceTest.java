@@ -128,11 +128,11 @@ public class ModelServiceTest {
 
   @Test
   public void testGetAllEventsPerStudent() {
-    final Event eventUpcoming = createAndSaveEvent("Veranstaltung Java");
+    final Event eventUpcoming = createAndSaveEvent("Veranstaltung Java 1");
     eventUpcoming.setDate(LocalDateTime.now().plusDays(1));
     eventUpcoming.setStatus("Upcoming");
 
-    final Event eventOpen = createAndSaveEvent("Veranstaltung Java2");
+    final Event eventOpen = createAndSaveEvent("Veranstaltung Java 2");
     eventOpen.setDate(LocalDateTime.now());
     eventOpen.setStatus("Past");
 
@@ -145,7 +145,7 @@ public class ModelServiceTest {
     eventWithSubmissionNotAccepted.setDate(LocalDateTime.now());
     eventWithSubmissionNotAccepted.setStatus("Past");
 
-    final Event eventWithSubmissionAccepted = createAndSaveEvent("Veranstaltung Java 4");
+    final Event eventWithSubmissionAccepted = createAndSaveEvent("Veranstaltung Java 5");
     eventWithSubmissionAccepted.setDate(LocalDateTime.now());
     eventWithSubmissionAccepted.setStatus("Past");
 

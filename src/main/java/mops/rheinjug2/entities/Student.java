@@ -123,5 +123,4 @@ public class Student {
     ref.setSubmittedSummary(true);
     ref.setAccepted(true);
   }
-
 }
