@@ -69,7 +69,7 @@
             </div>
             <div class="form-group secondary">
                 <label class="" for="Todaysdate">heutige datum</label>
-                <input th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}" type="text" class="form-control "
+                <input th:value="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}" type="text" class="form-control "
                        id="Todaysdate" value="01.04.2020" readonly>
             </div>
             <div class="form-group">
