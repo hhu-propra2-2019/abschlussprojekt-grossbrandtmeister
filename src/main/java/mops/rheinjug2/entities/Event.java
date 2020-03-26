@@ -49,6 +49,32 @@ public class Event {
     return getStatus().equalsIgnoreCase("Upcoming");
   }
 
+  /**
+   * Gibt das Datum zurück zu dem das Event endet.
+   */
+  public String getEndDate() {
+    final String endDate;
+    if (duration != null) {
+      endDate = date.plus(duration).toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    } else {
+      endDate = "unbekannt";
+    }
+    return endDate;
+  }
+
+  /**
+   * Gibt die Zeit zurück zu der das Event endet.
+   */
+  public String getEndTime() {
+    final String endTime;
+    if (duration != null) {
+      endTime = date.plus(duration).toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+    } else {
+      endTime = "unbekannt";
+    }
+    return endTime;
+  }
+
   public String getDeadlineDate() {
     final LocalDateTime afterOneWeek = date.plusDays(7);
     return afterOneWeek.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
