@@ -94,7 +94,7 @@ public class OrgaController {
     model.addAttribute("errormessage", errorMessage);
     model.addAttribute("searchForm", new SearchForm(""));
     successMessage = "";
-    successMessage = "";
+    errorMessage = "";
     return "orga_delayed_submission";
   }
 
@@ -155,6 +155,7 @@ public class OrgaController {
     model.addAttribute("successmessage", successMessage);
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     successMessage = "";
+    errorMessage = "";
     return "orga_reports_overview";
   }
 

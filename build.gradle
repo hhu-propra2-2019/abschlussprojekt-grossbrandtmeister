@@ -14,6 +14,7 @@ plugins {
     id 'com.github.spotbugs' version '4.0.2'
     id 'pmd'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 group = 'mops'
@@ -68,7 +69,6 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'com.tngtech.keycloakmock:mock-junit5:0.2.0'
     testCompile 'com.tngtech.archunit:archunit-junit5:0.13.1'
     testCompile "org.testcontainers:testcontainers:1.13.0"
     testCompile "org.testcontainers:junit-jupiter:1.13.0"
@@ -95,4 +95,16 @@ checkstyle {
 
 pmd {
     toolVersion = "6.21.0"
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination file("${buildDir}/reports/jacocoHtml")
+    }
 }
