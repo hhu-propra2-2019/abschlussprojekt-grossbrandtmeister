@@ -46,9 +46,9 @@
                             <div class="col-12">
                                 <i class="icono-calendar"></i>
                                 <span class="text-success"
-                                      th:text="${#temporals.format(eventAndStatus.key.date.toLocalDate(), 'dd.MM.yyyy')}">&nbsp;13.03.2020</span>
+                                      th:text="'&nbsp;'+${#temporals.format(eventAndStatus.key.date.toLocalDate(), 'dd.MM.yyyy')}">&nbsp;13.03.2020</span>
                                 <span class="text-success"
-                                      th:text="${#temporals.format(eventAndStatus.key.date.toLocalTime(), 'HH:mm')}">&nbsp;19:30</span>
+                                      th:text="'&nbsp;'+|${#temporals.format(eventAndStatus.key.date.toLocalTime(), 'HH:mm')} bis ${eventAndStatus.key.getEndTime()}|">&nbsp;19:30 bis 20:30</span>
                             </div>
                         </div>
                     </div>
@@ -58,8 +58,8 @@
                                 <img src="../../static/icons/icon-time-clock.png"
                                      th:src="@{/icons/icon-time-clock.png}" style="width: 32px;height: 28px;">
                                 <span>&nbsp;Abgabefrist</span>
-                                <span th:text="${eventAndStatus.key.getDeadlineDate()}">&nbsp;13.03.2020</span>
-                                <span th:text="${eventAndStatus.key.getDeadlineTime()}">&nbsp;19:30</span>
+                                <span th:text="'&nbsp;'+${eventAndStatus.key.getDeadlineDate()}">&nbsp;13.03.2020</span>
+                                <span th:text="'&nbsp;'+${eventAndStatus.key.getDeadlineTime()}">&nbsp;19:30</span>
                             </div>
                         </div>
                     </div>

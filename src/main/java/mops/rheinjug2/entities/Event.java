@@ -49,6 +49,16 @@ public class Event {
     return getStatus().equalsIgnoreCase("Upcoming");
   }
 
+  public String getEndDate() {
+    final LocalDateTime endDateTime = date.plus(duration);
+    return endDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+  }
+
+  public String getEndTime() {
+    final LocalDateTime endDateTime = date.plus(duration);
+    return endDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+  }
+
   public String getDeadlineDate() {
     final LocalDateTime afterOneWeek = date.plusDays(7);
     return afterOneWeek.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
