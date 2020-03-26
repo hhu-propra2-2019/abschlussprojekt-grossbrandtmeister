@@ -1,8 +1,4 @@
-DROP TABLE IF EXISTS event;
-DROP TABLE IF EXISTS student;
-DROP TABLE IF EXISTS student_event;
-
-CREATE TABLE event
+CREATE TABLE IF NOT EXISTS event
 (
     id          integer primary key auto_increment,
     meetup_id   varchar(30),
@@ -19,7 +15,7 @@ CREATE TABLE event
     type        varchar(30)
 );
 
-CREATE TABLE student
+CREATE TABLE IF NOT EXISTS student
 (
     id    integer primary key auto_increment,
     login varchar(200) unique,
@@ -27,7 +23,7 @@ CREATE TABLE student
     email varchar(100)
 );
 
-CREATE TABLE student_event
+CREATE TABLE IF NOT EXISTS student_event
 (
     student              integer,
     event                integer,
