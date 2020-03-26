@@ -8,22 +8,17 @@
         <!-- Links, Skripts, Styles hier einfügen! -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
               integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-              crossorigin="anonymous">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-                crossorigin="anonymous"></script>
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-                integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-                crossorigin="anonymous"></script>
+              crossorigin="anonymous"
+              th:remove="all">
+        <link rel="stylesheet" href="https://icono-49d6.kxcdn.com/icono.min.css" th:remove="all">
         <script src="https://code.jquery.com/jquery-3.4.1.js"
                 integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
                 crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-                integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-                crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-                integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-                crossorigin="anonymous"></script>
+                th:src="@{/js/bootstrap.min.js}"></script>
+        <link rel="stylesheet" type="text/css"
+              href="../../static/css/partial_collapse.css"
+              th:href="@{/css/partial_collapse.css}">
         <script>
             $(document).ready(function () {
                 $(".collapse.show").removeClass("show");
@@ -87,9 +82,9 @@
                         <input type="text"
                                class="form-control" th:name="searchedName"
                                th:value="${searchForm.getSearchedName()}"
-                               placeholder="Studentenname eingeben">
+                               placeholder="Studentenname">
                     </div>
-                    <button type="submit" class="btn btn-primary ">suchen</button>
+                    <button type="submit" class="btn btn-outline-secondary ">suchen</button>
                 </form>
             </div>
             <div class="col-12 col-sm-6 border-right text-secondary my-1 ">
@@ -98,9 +93,9 @@
                     <div class="form-group mx-sm-3 ">
                         <input type="text" class="form-control" th:name="searchedName"
                                th:value="${searchForm.getSearchedName()}"
-                               placeholder="Verantaltungsname eingeben">
+                               placeholder="Verantaltungsname">
                     </div>
-                    <button type="submit" class="btn btn-primary ">suchen</button>
+                    <button type="submit" class="btn btn-outline-secondary ">suchen</button>
                 </form>
             </div>
         </div>
@@ -127,7 +122,7 @@
                 </div>
                 <div class=" row mx-1 my-1 collapsebtn" style="display: none">
                     <div class="col-12 my-1">
-                        <button class="btn btn-primary btn-block" type="button" data-toggle="collapse"
+                        <button class="btn btn-outline-secondary btn-block" type="button" data-toggle="collapse"
                                 data-target="#inhalt1"
                                 th:data-target="'#inhalt_'+${submission.getStudentId()} + '_' + ${submission.getEventId()}"
                                 aria-expanded="true">
@@ -151,7 +146,8 @@
                     <input type="hidden" th:name="studentName" th:value="${submission.getStudentName()}">
                     <div class=" row mx-1 my-1 ">
                         <div class="col-12 my-1 mb-2">
-                            <button class="btn btn-success btn-block" type="submit">Zusammenfassung als akzeptiert
+                            <button class="btn btn-outline-success btn-block" type="submit">Zusammenfassung als
+                                akzeptiert
                                 hochladen
                             </button>
                         </div>

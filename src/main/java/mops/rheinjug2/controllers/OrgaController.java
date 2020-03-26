@@ -94,6 +94,7 @@ public class OrgaController {
     model.addAttribute("errormessage", errorMessage);
     model.addAttribute("searchForm", new SearchForm(""));
     successMessage = "";
+    successMessage = "";
     return "orga_delayed_submission";
   }
 
@@ -110,6 +111,7 @@ public class OrgaController {
     if (orgaService.setSummaryAsAccepted(studentid, eventid)) {
       numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
       successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert gespeichert.";
+      return "redirect:/rheinjug2/orga/reports";
     }
     errorMessage = "Fehler.. Zusammenfassung wurde nicht gespeichert ";
     return "redirect:/rheinjug2/orga/reports";
