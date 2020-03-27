@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import mops.rheinjug2.entities.Event;
+import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
@@ -286,8 +287,18 @@ public class ModelService {
     }
   }
 
-  public LocalDateTime getDeadline(final String login, final Long eventId) {
-    final LocalDateTime deadline = studentRepository.getDeadline(login, eventId);
-    return deadline;
+  /**
+   * Die Deadline für eine belegte Veranstaltung eines Events wird hinzugefügt.
+   */
+  public LocalDateTime getDeadline(final String login, final Event event) {
+    final Student student = studentRepository.findByLogin(login);
+    if (null == student) {
+      return LocalDateTime.MIN;
+    }
+    final EventRef eventRef = student.findEventRef(event);
+    if (null == eventRef) {
+      return LocalDateTime.MIN;
+    }
+    return eventRef.getDeadline();
   }
 }

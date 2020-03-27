@@ -84,7 +84,7 @@ public class StudentController {
   public String reportSubmit(final KeycloakAuthenticationToken token, final Model model,
                              final Long eventId) {
     if (eventId == null) {
-      return "redirect:rheinjug2/student/visitedevents";
+      return "redirect:/rheinjug2/student/visitedevents";
     }
     final LocalDateTime today = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
     final Account account = AccountCreator.createAccountFromPrincipal(token);
@@ -94,7 +94,11 @@ public class StudentController {
       return "redirect:rheinjug2/student/visitedevents";
     }
     if (event == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event ID not found!");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found!");
+    }
+    final LocalDateTime deadline = modelService.getDeadline(account.getName(), event);
+    if (deadline.isBefore(today)) {
+      return "redirect:/rheinjug2/student/visitedevents";
     }
     final String eventname = event.getTitle();
     String content;
