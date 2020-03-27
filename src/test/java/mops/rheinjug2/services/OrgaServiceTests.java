@@ -13,10 +13,12 @@ import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import mops.rheinjug2.entities.Event;
 import mops.rheinjug2.entities.EventRef;
@@ -29,15 +31,20 @@ import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Testing OrgaService")
+@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class OrgaServiceTests {
 
   @Mock
@@ -257,7 +264,7 @@ public class OrgaServiceTests {
   }
 
   @Test
-  public void setSummaryAsAcceptedTest(){
+  public void setSummaryAsAcceptedTest() {
     when(studentRepository.findById((long) 1)).thenReturn(java.util.Optional.ofNullable(student1));
     when(eventRepository.findById((long) 1)).thenReturn(java.util.Optional.ofNullable(event1));
     //1->1
@@ -266,11 +273,11 @@ public class OrgaServiceTests {
     student1.setEvents(Set.of(student1ref));
 
     orgaService = new OrgaService(eventRepository, studentRepository, fileService);
-    boolean result = orgaService.setSummaryAsAccepted((long)1,(long)1);
+    final boolean result = orgaService.setSummaryAsAccepted((long) 1, (long) 1);
 
-    verify(studentRepository,times(1)).findById((long)1);
-    verify(eventRepository,times(1)).findById((long)1);
-    verify(student1ref,times(1)).setAccepted(true);
+    verify(studentRepository, times(1)).findById((long) 1);
+    verify(eventRepository, times(1)).findById((long) 1);
+    verify(student1ref, times(1)).setAccepted(true);
     Assertions.assertThat(result).isTrue();
   }
 
@@ -285,17 +292,40 @@ public class OrgaServiceTests {
     student1.setEvents(Set.of(student1ref));
 
     orgaService = new OrgaService(eventRepository, studentRepository, fileService);
-    orgaService.summaryupload((long)1,(long)1,"student1",
+    orgaService.summaryuploadStringContent((long) 1, (long) 1, "student1",
         "summaryContent");
 
-    verify(fileService,times(1))
-        .uploadContentConvertToMd("summaryContent","student1_1");
-    verify(student1ref,times(1)).setSubmittedSummary(true);
-    verify(student1ref,times(1)).setAccepted(true);
-    verify(studentRepository,times(1)).save(student1);
+    verify(fileService, times(1))
+        .uploadContentConvertToMd("summaryContent", "student1_1");
+    verify(student1ref, times(1)).setSubmittedSummary(true);
+    verify(student1ref, times(1)).setAccepted(true);
+    verify(studentRepository, times(1)).save(student1);
 
   }
 
+  @Test
+  public void callTheRightSummaryContentNameFromFileServiceWithFileTest() throws
+      IOException {
+    when(studentRepository.findById((long) 1)).thenReturn(Optional.ofNullable(student1));
+    when(eventRepository.findById((long) 1)).thenReturn(java.util.Optional.ofNullable(event1));
+
+    //Student1->Event1 submitted
+    final EventRef student1ref = mock(EventRef.class);
+    when(student1ref.getEvent()).thenReturn((long) 1);
+    student1.setEvents(Set.of(student1ref));
+
+    orgaService = new OrgaService(eventRepository, studentRepository, fileService);
+    final MultipartFile file = new MockMultipartFile("file",
+        "file.md", "text/plain",
+        "testdata".getBytes(StandardCharsets.UTF_8));
+    orgaService.summaryuploadFileContent((long) 1, (long) 1, "student1login", file);
+
+    verify(fileService, times(1))
+        .uploadFile(file, student1.getLogin() + "_" + event1.getId());
+    verify(student1ref, times(1)).setSubmittedSummary(true);
+    verify(student1ref, times(1)).setAccepted(true);
+    verify(studentRepository, times(1)).save(student1);
+  }
 
 
 }

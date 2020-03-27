@@ -28,6 +28,7 @@ import mops.rheinjug2.orgamodels.OrgaSummary;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
 
 @Service
@@ -149,8 +150,8 @@ public class OrgaService {
 
   /**
    * Die Methode gibt eine Liste alle angemeldte veranstaltungen
-   *    deren Zusammenfassung noch nicht abgegeben worde
-   *    (mögliche verspätete abgaben).
+   * deren Zusammenfassung noch nicht abgegeben worde
+   * (mögliche verspätete abgaben).
    *
    * @return liste der Abgaben, die der Orga als versätete Abgaben hochladen kann.
    */
@@ -226,9 +227,9 @@ public class OrgaService {
    * @param summaryContent .
    * @throws IOException .
    */
-  public void summaryupload(final Long studentId, final Long eventId,
-                            final String studentName,
-                            final String summaryContent) throws IOException {
+  public void summaryuploadStringContent(final Long studentId, final Long eventId,
+                                         final String studentName,
+                                         final String summaryContent) throws IOException {
     fileService.uploadContentConvertToMd(summaryContent, studentName + "_" + eventId);
     final Optional<Student> student = studentRepository.findById(studentId);
     final Optional<Event> event = eventRepository.findById(eventId);
@@ -236,7 +237,9 @@ public class OrgaService {
     studentRepository.save(student.get());
   }
 
-  /**Gibt Verspätete abgaben einer Student.
+  /**
+   * Gibt Verspätete abgaben einer Student.
+   *
    * @param searchedName student Name
    * @return liste der verspätete Abgaben.
    */
@@ -258,5 +261,24 @@ public class OrgaService {
         .filter(delayedSubmission ->
             searchedName.equalsIgnoreCase(delayedSubmission.getEventTitle()))
         .collect(Collectors.toList());
+  }
+
+  /**Gibt.
+   * @param studentId .
+   * @param eventId .
+   * @param studentName .
+   * @param file .
+   * @throws IOException .
+   */
+  public void summaryuploadFileContent(final Long studentId, final Long eventId,
+                                       final String studentName,
+                                       final MultipartFile file) throws IOException {
+    final String fileName = studentName + "_" + eventId;
+    fileService.uploadFile(file, fileName);
+    final Optional<Student> student = studentRepository.findById(studentId);
+    final Optional<Event> event = eventRepository.findById(eventId);
+    student.get().setSubmittedAndAccepted(event.get());
+    studentRepository.save(student.get());
+
   }
 }
