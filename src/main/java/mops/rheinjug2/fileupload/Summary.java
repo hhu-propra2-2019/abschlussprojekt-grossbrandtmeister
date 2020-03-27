@@ -1,6 +1,6 @@
 package mops.rheinjug2.fileupload;
 
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +13,7 @@ public class Summary {
   private final String studentname;
   private final String content;
   @DateTimeFormat(pattern = "MM.dd.yyyy")
-  private final Date date;
+  private final LocalDate date;
   private final Long eventId;
 
 }

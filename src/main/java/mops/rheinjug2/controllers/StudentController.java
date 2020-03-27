@@ -2,9 +2,9 @@ package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
@@ -109,7 +109,7 @@ public class StudentController {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
     final String student = account.getGivenName() + " " + account.getFamilyName();
-    final Date date = Date.from(event.getDate().atZone(ZoneId.systemDefault()).toInstant());
+    final LocalDate date = event.getDate().toLocalDate();
     final Summary summary = new Summary(eventname, student, content, date, eventId);
     model.addAttribute("summary", summary);
     model.addAttribute("account", account);

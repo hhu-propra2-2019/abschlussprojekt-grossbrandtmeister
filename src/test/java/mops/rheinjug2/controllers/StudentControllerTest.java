@@ -84,6 +84,7 @@ class StudentControllerTest {
     setupMockUserWithRole("studentin");
 
     final Event event = new Event();
+    event.setDate(LocalDateTime.now());
     when(modelService.getDeadline(anyString(), any())).thenReturn(LocalDateTime.MAX);
     when(modelService.loadEventById(anyLong())).thenReturn(event);
 
@@ -98,6 +99,7 @@ class StudentControllerTest {
     setupMockUserWithRole("studentin");
 
     final Event event = new Event();
+    event.setDate(LocalDateTime.now());
     when(modelService.getDeadline(anyString(), any())).thenReturn(LocalDateTime.MIN);
     when(modelService.loadEventById(anyLong())).thenReturn(event);
 
