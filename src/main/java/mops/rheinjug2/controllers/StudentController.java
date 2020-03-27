@@ -102,11 +102,14 @@ public class StudentController {
       return "redirect:/rheinjug2/student/visitedevents";
     }
     final String eventname = event.getTitle();
-    String content;
+    String content = "";
     try {
       content = fileService.getContentOfFileAsString("VorlageZusammenfassung.md");
+      if (content == null) {
+        content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
+      }
     } catch (final Exception e) {
-      content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
+      e.printStackTrace();
     }
     final String student = account.getGivenName() + " " + account.getFamilyName();
     final LocalDate date = event.getDate().toLocalDate();
