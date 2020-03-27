@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("dev")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class DatabaseInitializer implements ServletContextInitializer {
   transient Random random = new Random();
   transient LocalDateTime dateNow = LocalDateTime.now();
