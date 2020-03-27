@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("dev")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class DatabaseInitializer implements ServletContextInitializer {
   transient Random random = new Random();
   transient LocalDateTime dateNow = LocalDateTime.now();
@@ -108,6 +109,13 @@ public class DatabaseInitializer implements ServletContextInitializer {
       }
       if (event.getId() == 2) {
         event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 21), LocalTime.of(17, 30)));
+        event.setStatus("PAST");
+        event.setType("Entwickelbar");
+      }
+      if (event.getId() == 3) {
+        event.setDuration(Duration.ofHours(1));
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 21), LocalTime.of(17, 30)));
+        event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
         event.setStatus("PAST");
         event.setType("Entwickelbar");
       }
