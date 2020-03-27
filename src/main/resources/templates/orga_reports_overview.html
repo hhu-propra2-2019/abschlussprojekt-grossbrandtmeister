@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Java in der Praxis', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -36,21 +36,21 @@
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungen Übersicht </a>
+                <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungsübersicht </a>
             </li>
             <li class="active">
-                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen &emsp; &emsp;
+                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Offene Bewertungen &emsp; &emsp;
                     <span class=" badge badge-primary badge-pill" th:text="${numberOfEvaluationRequests}">14</span>
                 </a>
             </li>
             <li>
-                <a th:href="@{/rheinjug2/orga/delayedSubmission}"> Verspätete Abgabe hochladen </a>
+                <a th:href="@{/rheinjug2/orga/delayedSubmission}"> Verspätete Abgaben hochladen </a>
             </li>
         </ul>
     </nav>
 </header>
 <main th:fragment="bodycontent">
-    <!-- Restlichen Inhalt hier einfügen! -->
+    <!-- Rtlichen Inhalt hier einfügen! -->
     <div id="successmessage" class=" container alert alert-success alert-dismissible"
          style="padding: 10px;"
          role="alert" th:text="${successmessage}"
@@ -66,23 +66,23 @@
             <div class="row border-bottom  mx-1 my-1 align-content-center">
                 <div class="col-12 text-secondary text-center  my-1">
                     <h3 class="font-weight-bold" th:text="${summary.getEventTitle()}">
-                        Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        Zusammenfassung der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                     </h3>
                 </div>
             </div>
             <div class="row border-bottom  mx-1 my-1">
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Student Name:</span>
+                    <span>Name:</span>
                     <span th:text="${summary.getStudentName()}">&nbsp;Ein Student</span>
                 </div>
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Email:</span>
+                    <span>E-Mail:</span>
                     <span th:text="${summary.getStudentEmail()}">&nbsp;ein.student@hhu.de</span>
                 </div>
             </div>
             <div class="row border-bottom  mx-1 my-1">
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Abgabe Frist:</span>
+                    <span>Abgabefrist:</span>
                     <span th:text="${#temporals.format(summary.getSubmissionDeadline(), 'dd.MM.yyyy HH:mm')}">&nbsp;15.03.2020</span>
                 </div>
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
@@ -101,7 +101,7 @@
                             data-target="#inhalt1"
                             th:data-target="'#inhalt_'+${summary.studentId} + '_' + ${summary.studentId}"
                             aria-expanded="true">
-                        jetzt bewerten
+                        bewerten
                     </button>
                 </div>
             </div>
@@ -140,23 +140,23 @@
             <div class="row border-bottom  mx-1 my-1 align-content-center">
                 <div class="col-12 text-secondary text-center  my-1">
                     <h3 class="font-weight-bold">
-                        Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        Zusammenfassung der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                     </h3>
                 </div>
             </div>
             <div class="row border-bottom  mx-1 my-1">
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Student Name:</span>
+                    <span>Name:</span>
                     <span>&nbsp;Ein Student</span>
                 </div>
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Email:</span>
+                    <span>E-Mail:</span>
                     <span>&nbsp;ein.student@hhu.de</span>
                 </div>
             </div>
             <div class="row border-bottom  mx-1 my-1">
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Abgabe Frist:</span>
+                    <span>Abgabefrist:</span>
                     <span>&nbsp;15.03.2020</span>
                 </div>
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
@@ -203,23 +203,23 @@
             <div class="row border-bottom  mx-1 my-1 align-content-center">
                 <div class="col-12 text-secondary text-center  my-1">
                     <h3 class="font-weight-bold">
-                        Zusammenfassun der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
+                        Zusammenfassung der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                     </h3>
                 </div>
             </div>
             <div class="row border-bottom  mx-1 my-1">
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Student Name:</span>
+                    <span>Name:</span>
                     <span>&nbsp;Ein Student</span>
                 </div>
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Email:</span>
+                    <span>E-Mail:</span>
                     <span>&nbsp;ein.student@hhu.de</span>
                 </div>
             </div>
             <div class="row border-bottom  mx-1 my-1">
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                    <span>Abgabe Frist:</span>
+                    <span>Abgabefrist:</span>
                     <span>&nbsp;15.03.2020</span>
                 </div>
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">

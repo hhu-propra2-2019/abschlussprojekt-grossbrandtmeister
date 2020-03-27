@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import lombok.Builder;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
@@ -103,8 +104,8 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/summaryaccepting")
-  public String summaryAccepting(@RequestParam final Long eventid,
-                                 @RequestParam final Long studentid,
+  public String summaryAccepting(@RequestParam(defaultValue = " ") final Long eventid,
+                                 @RequestParam(defaultValue = " ") final Long studentid,
                                  final Model model, final KeycloakAuthenticationToken token) {
     model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
     authenticatedAccess.increment();
@@ -136,6 +137,7 @@ public class OrgaController {
           delayedSubmission.getEventId(),
           delayedSubmission.getStudentName(),
           delayedSubmission.getSummaryContent());
+      System.out.println(delayedSubmission.getSummaryContent());
     } catch (final RuntimeException e) {
       errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
       return "redirect:/rheinjug2/orga/delayedSubmission";

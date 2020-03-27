@@ -21,11 +21,11 @@
               th:href="@{/css/partial_collapse.css}">
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/student/events}"><span class="icono-leftArrow icono-"></span> zurück zu
+                <a th:href="@{/rheinjug2/student/events}"><span class="icono-leftArrow icono-"></span> zurück zur
                     Übersicht</a>
             </li>
             <li>
-                <a th:href="@{/rheinjug2/student/events}"> Veranstaltungen Übersicht </a>
+                <a th:href="@{/rheinjug2/student/events}"> Veranstaltungsübersicht </a>
             </li>
             <li class="active">
                 <a th:href="@{/rheinjug2/student/visitedevents}"> belegte Veranstaltungen</a>
@@ -58,7 +58,9 @@
         </ul>
     </nav>
 </header>
-<main th:fragment="bodycontent" style="font-family: Raleway, sans-serif;">
+<main th:fragment="bodycontent"
+     th:style="'background: url(/images/back.jpg) center center fixed; font-family: Raleway, sans-serif; background-size:cover;'"
+      class="overflow-hidden">
     <!-- Restlichen Inhalt hier einfügen! -->
     <h1 class="text-center text-secondary pt-4 font-weight-bold"
         style="text-shadow: 10px 2px 20px white; font-size: 38px; color: #303535;"> Rheinjug Veranstaltungen </h1>

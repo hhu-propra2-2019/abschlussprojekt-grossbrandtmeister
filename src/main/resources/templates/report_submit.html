@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Java in der Praxis', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
               integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
@@ -34,7 +34,7 @@
          style="border-right: 1px solid #aaaaaa;">
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltugen Übersicht </a>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungsübersicht </a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal">
@@ -49,7 +49,7 @@
 <main th:fragment="bodycontent" style="font-family: Raleway, sans-serif;">
     <h1 class="text-center text-secondary pt-4 font-weight-bold"
         style="text-shadow: 10px 2px 20px white; font-size: 38px; color: #303535;">
-        Bericht Abgabe </h1>
+        Zusammenfassung Abgabe </h1>
     <div class="container bg-light rounded shadow-lg text-secondary border border-secondary"
          style=" padding: 10px; margin-top: 40px; margin-bottom: 50px">
         <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
@@ -59,7 +59,7 @@
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <div class="form-group">
                 <div>
-                    <label for="subject" class="pl-1">Betreff</label>
+                    <label for="subject" class="pl-1">Titel der Veranstaltung</label>
                     <input type="text" class="form-control " id="subject" th:field="*{eventname}" name="Title"
                            value=" Zusammenfassung der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter."
                            readonly>
@@ -104,7 +104,7 @@
         <div class="d-flex flex-row-reverse px-2 pb-2">
             <a th:href="@{/rheinjug2/download/presentation}">
                 <p th:text="${noPresentation}" th:if="${noPresentation ne null}" class="alert alert-primary"></p>
-                <button class="btn btn-outline-dark">Downloade die Vorlage <img
+                <button class="btn btn-outline-dark">Vorlage herunterladen<img
                         src="../../static/icons/vorlage.png" class="ml-3" th:src="@{/icons/vorlage.png}"
                         style="width: 32px;height: 28px;">
                 </button>
@@ -134,7 +134,7 @@
                 </div>
                 <div class="col-12 col-sm-6 d-flex flex-column-reverse text-right mt-2">
                     <a th:href="@{/rheinjug2/download/file(eventId=${summary.getEventId()})}">
-                        <button class="btn btn-outline-dark">Downloade deine momentane Zusammenfassung</button>
+                        <button class="btn btn-outline-dark">Eingereichte Zusammenfassung herunterladen</button>
                     </a>
                 </div>
             </div>
