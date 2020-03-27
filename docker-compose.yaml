@@ -19,7 +19,7 @@ services:
       - data1-1:/data1
       - data1-2:/data2
     ports:
-      - 9001:9000
+      - 9000:9000
     environment:
       - MINIO_ACCESS_KEY=minio
       - MINIO_SECRET_KEY=minio123
