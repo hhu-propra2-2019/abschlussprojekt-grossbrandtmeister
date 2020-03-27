@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
@@ -25,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Secured({"ROLE_studentin"})
 @RequestMapping("/rheinjug2/student")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@Log4j2
 public class StudentController {
 
   private final transient Counter authenticatedAccess;
@@ -109,7 +111,7 @@ public class StudentController {
         content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      log.catching(e);
     }
     final String student = account.getGivenName() + " " + account.getFamilyName();
     final LocalDate date = event.getDate().toLocalDate();
