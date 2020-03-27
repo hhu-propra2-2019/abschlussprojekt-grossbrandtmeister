@@ -67,7 +67,7 @@ Im schlimmsten Fall müssen Sie Syntax, Semantik, Protokolle, Fehlerverhalten, R
 Im besten Fall kommen Sie mit Beispielen oder einfachen Signaturen zurecht.
 ****
 
-_**<Übersichtsdiagramm>**_
+image:05_gesamtsystem.png["Diagramm Gesamtsystem"]
 
 Begründung:: _<Erläuternder Text>_
 
