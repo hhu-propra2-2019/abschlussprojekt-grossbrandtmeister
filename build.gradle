@@ -108,3 +108,8 @@ jacocoTestReport {
         html.destination file("${buildDir}/reports/jacocoHtml")
     }
 }
+
+def profiles = 'prod'
+bootRun {
+    args = ["--spring.profiles.active=" + profiles]
+}
