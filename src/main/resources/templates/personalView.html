@@ -88,7 +88,7 @@
                         </h2>
                     </div>
                 </div>
-                <div th:switch=" ${eventAndStatus.value}">
+                <div th:switch="${eventAndStatus.value}">
                     <div th:case="${T(mops.rheinjug2.services.SubmissionStatus).OPEN_FOR_SUBMISSION}">
                         <div class="row text-light justify-content-around mx-1 ">
                             <div class="col-12 mt-2">
