@@ -130,6 +130,13 @@ public class OrgaController {
                               @RequestParam final String summaryContent,
                               @RequestParam final MultipartFile file
   ) throws IOException {
+    log.debug("studentId: " + studentId
+        + "; eventId: " + eventId
+        + "; studentName: " + studentName
+        + "; summaryContent: " + summaryContent
+        + "; file.isEmpty(): " + file.isEmpty()
+    );
+
     if (file.isEmpty()) {
       try {
         orgaService.summaryuploadStringContent(studentId, eventId, studentName, summaryContent);

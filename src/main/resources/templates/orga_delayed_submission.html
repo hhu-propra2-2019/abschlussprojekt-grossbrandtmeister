@@ -103,9 +103,7 @@
     <div th:each=" submission : ${delayedsubmissions}">
         <div class="container bg-light rounded shadow-lg " style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
             <form method="POST"
-                  th:action="@{/rheinjug2/orga/summaryupload(studentId=${submission.getStudentId()},
-                   eventId=${submission.getEventId()},studentName=${submission.getStudentName()},
-                   summaryContent=${submission.getSummaryContent()})}"
+                  th:action="@{/rheinjug2/orga/summaryupload}"
                   enctype="multipart/form-data">
                 <div class="row border-bottom  mx-1 my-1 align-content-center">
                     <div class="col-12 text-secondary text-center  my-1">
@@ -152,9 +150,9 @@
                         </div>
                         <input class="col-12 my-1" type="file" name="file" multiple>
                     </div>
-                    <input type="hidden" th:name="studentId" th:value="${submission.studentId}">
-                    <input type="hidden" th:name="eventId" th:value="${submission.eventId}">
-                    <input type="hidden" th:name="studentName" th:value="${submission.studentName}">
+                    <input type="hidden" name="studentId" th:value="${submission.studentId}">
+                    <input type="hidden" name="eventId" th:value="${submission.eventId}">
+                    <input type="hidden" name="studentName" th:value="${submission.studentName}">
                     <div class=" row mx-1 my-1 ">
                         <div class="col-12 my-1 mb-2">
                             <button class="btn btn-outline-success btn-block" type="submit">Zusammenfassung als
