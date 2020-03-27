@@ -124,6 +124,6 @@ public class StudentController {
 
     authenticatedAccess.increment();
 
-    return "redirect:/rheinjug2/student/events#";
+    return "redirect:/rheinjug2/student/events";
   }
 }
