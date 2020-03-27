@@ -62,6 +62,26 @@ public class StudentController {
   }
 
   /**
+   * Fügt einen Studenten einem Event hinzu.
+   */
+  @PostMapping("/events")
+  public String addStudentToEvent(final KeycloakAuthenticationToken token,
+                                  final Model model, final Long eventId) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+
+    modelService.addStudentToEvent(account.getName(), account.getEmail(), eventId);
+
+    model.addAttribute("account", account);
+    model.addAttribute("events", modelService.getAllEvents());
+    model.addAttribute("studentRegisteredForEvent",
+        modelService.getAllEventIdsPerStudent(account.getName()));
+    authenticatedAccess.increment();
+
+
+    return "student_events_overview";
+  }
+
+  /**
    * Übersicht der Events für die der aktuelle Student angemeldet war/ist.
    * Die EventId muss später durch die richtige Id aus der Datenbank ersetzt werden.
    */
@@ -115,19 +135,4 @@ public class StudentController {
     return "report_submit";
   }
 
-  /**
-   * Fügt einen Studenten einem Event hinzu.
-   */
-  @PostMapping("/events")
-  public String addStudentToEvent(final KeycloakAuthenticationToken token,
-                                  final Model model, final Long eventId) {
-    final Account account = AccountCreator.createAccountFromPrincipal(token);
-
-    model.addAttribute("account", account);
-    modelService.addStudentToEvent(account.getName(), account.getEmail(), eventId);
-
-    authenticatedAccess.increment();
-
-    return "redirect:/rheinjug2/student/events";
-  }
 }
