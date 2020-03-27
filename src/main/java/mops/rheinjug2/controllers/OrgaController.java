@@ -108,8 +108,8 @@ public class OrgaController {
   @PostMapping("/summaryaccepting")
   public String summaryAccepting(@RequestParam final Long eventid,
                                  @RequestParam final Long studentid,
-                                 final Model model
-      , final KeycloakAuthenticationToken token) {
+                                 final Model model,
+                                 final KeycloakAuthenticationToken token) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     authenticatedAccess.increment();
     model.addAttribute("account", account);
@@ -136,8 +136,8 @@ public class OrgaController {
                               @RequestParam final String studentName,
                               @RequestParam final String summaryContent,
                               @RequestParam final MultipartFile file,
-                              final Model model
-      , final KeycloakAuthenticationToken token
+                              final Model model,
+                              final KeycloakAuthenticationToken token
   ) throws IOException {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
@@ -221,8 +221,8 @@ public class OrgaController {
   @Secured({"ROLE_orga"})
   @PostMapping("/searchstudent")
   public String searchstudent(@RequestParam final String searchedName,
-                              final RedirectAttributes redirectAttributes
-      , final KeycloakAuthenticationToken token, final Model model) {
+                              final RedirectAttributes redirectAttributes,
+                              final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     authenticatedAccess.increment();
@@ -241,8 +241,8 @@ public class OrgaController {
   @Secured({"ROLE_orga"})
   @PostMapping("/searchevent")
   public String searchevent(@RequestParam final String searchedName,
-                            final RedirectAttributes redirectAttributes
-      , final KeycloakAuthenticationToken token, final Model model) {
+                            final RedirectAttributes redirectAttributes,
+                            final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     authenticatedAccess.increment();
