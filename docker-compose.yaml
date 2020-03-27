@@ -1,8 +1,5 @@
 version: '3.7'
 
-# starts 4 docker containers running minio server instances. Each
-# minio server's web interface will be accessible on the host at port
-# 9001 through 9004.
 services:
   database:
     image: mysql
@@ -10,6 +7,8 @@ services:
       - my-db:/var/lib/mysql
     ports:
       - 3308:3306
+    expose:
+      - "3306"
     environment:
       MYSQL_ROOT_PASSWORD: geheim
       MYSQL_DATABASE: rheinjug2
@@ -26,7 +25,19 @@ services:
       - MINIO_SECRET_KEY=minio123
     command: "server /data/"
 
-
+  app:
+    image: gradle:jdk11
+    restart: always
+    working_dir: /rheinjug2
+    volumes:
+      - ./:/rheinjug2
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+      - minio
+    command: gradle bootRun --debug
+    #command: sh -c "cd ./build/libs && java -jar rheinjug2-0.0.1-SNAPSHOT.jar"
 
 ## By default this config uses default local driver,
 ## For custom volumes replace with volume driver configuration.

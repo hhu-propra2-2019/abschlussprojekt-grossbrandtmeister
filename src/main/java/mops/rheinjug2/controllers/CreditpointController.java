@@ -1,13 +1,12 @@
-package mops.rheinjug2.creditpoints;
+package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import java.util.List;
 import javax.mail.MessagingException;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
-import mops.rheinjug2.email.EmailService;
-import mops.rheinjug2.entities.Event;
+import mops.rheinjug2.creditpoints.CertificateForm;
+import mops.rheinjug2.creditpoints.CreditpointService;
 import mops.rheinjug2.services.ModelService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.access.annotation.Secured;
@@ -23,24 +22,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/rheinjug2/student/creditpoints")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class CreditpointController {
-
-
+  
+  
   private final transient Counter authenticatedAccess;
   private final transient ModelService modelService;
-  private final transient EmailService emailService;
+  private final transient CreditpointService creditpointService;
   private transient CertificateForm certificateForm = new CertificateForm();
-
-
+  
+  
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public CreditpointController(final MeterRegistry registry,
                                final ModelService modelService,
-                               final EmailService emailService) {
+                               final CreditpointService creditpointService) {
     authenticatedAccess = registry.counter("access.authenticated");
     this.modelService = modelService;
-    this.emailService = emailService;
+    this.creditpointService = creditpointService;
   }
-
-
+  
+  
   /**
    * Methode die überprüft ob der/die Student/in Zusammenfassungen bei einer EntwickelBar
    * abgegeben hat um CreditPoints zu beantragen.
@@ -50,28 +49,19 @@ public class CreditpointController {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     authenticatedAccess.increment();
-
+    
     final String login = account.getName();
     model.addAttribute("eventsExist", modelService.acceptedEventsExist(login));
     model.addAttribute("events", modelService.getAllEventsForCP(login));
     model.addAttribute("useForCP", modelService.useEventsIsPossible(login));
     model.addAttribute("exists", modelService.studentExists(login));
-
-    final boolean eventsAreUsable;
-
-    if (modelService.loadStudentByLogin(login) != null) {
-      final List<Event> allEventsForCP = modelService.getAllEventsForCP(login);
-      model.addAttribute("events", allEventsForCP);
-      eventsAreUsable = modelService.checkEventsForCertificate(login);
-    } else {
-      eventsAreUsable = false;
-    }
-    final boolean disabled = !eventsAreUsable;
+    
+    final boolean disabled = !creditpointService.checkIfButtonNeedsToBeDisabled(login);
     model.addAttribute("disabled", disabled);
-
+    
     return "credit_points_apply";
   }
-
+  
   /**
    * Post-Formular für die Scheinabgabe.
    */
@@ -84,10 +74,10 @@ public class CreditpointController {
     this.certificateForm = certificateForm;
     model.addAttribute("certificateForm", certificateForm);
     authenticatedAccess.increment();
-
+    
     return "credit_points_form";
   }
-
+  
   /**
    * Post-Mapping um PDF zu erzeugen und zu senden.
    */
@@ -100,24 +90,16 @@ public class CreditpointController {
     this.certificateForm = certificateForm;
     model.addAttribute("certificateForm", certificateForm);
     authenticatedAccess.increment();
-
+    
     final String login = account.getName();
-
-    if (modelService.loadStudentByLogin(login) != null
-        && modelService.checkEventsForCertificate(login)) {
-      final String forename = account.getGivenName();
-      final String surname = account.getFamilyName();
-      final String name = forename + " " + surname;
-
-      final List<Event> usableEvents = modelService.getEventsForCertificate(login);
-
-      modelService.useEventsForCertificate(login);
-
-      emailService.sendMail(name, certificateForm.getGender(),
-          certificateForm.getMatNr(), usableEvents);
-    }
-
+    final String forename = account.getGivenName();
+    final String surname = account.getFamilyName();
+    final String name = forename + " " + surname;
+    
+    creditpointService.sendMailIfPossible(certificateForm, login, name);
+    
     return "redirect:/rheinjug2/student/creditpoints/";
   }
-
+  
+  
 }

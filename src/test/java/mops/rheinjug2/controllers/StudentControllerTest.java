@@ -170,8 +170,9 @@ class StudentControllerTest {
     mvc.perform(post("/rheinjug2/student/events")
         .param("eventId", eventId)
         .with(csrf()))
-        .andExpect(status().isFound())
-        .andExpect(redirectedUrl("/rheinjug2/student/visitedevents"));
+        .andExpect(status().isOk())
+        .andExpect(view()
+            .name("student_events_overview"));
   }
 
 }

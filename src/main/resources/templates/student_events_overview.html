@@ -189,16 +189,14 @@
             </div>
             <div class="row text-light justify-content-around mx-1 ">
                 <div class="col-12 col-sm-3 col-md-4 mt-2">
-                    <form action="#" method="POST">
-                        <div th:switch="${event.status}">
-
-                            <form action="#" method="POST" th:action="'/personalView'">
+                    <div th:switch="${event.status}">
+                        <form action="#" method="POST" th:action="'/rheinjug2/student/events'">
                                <span th:if="${#lists.contains(studentRegisteredForEvent, event.getId())}">
                                     <button class="btn btn-outline-danger btn-block" disabled type="submit">
                                         Bereits angemeldet
                                     </button>
                                 </span>
-                                <span th:unless="${#lists.contains(studentRegisteredForEvent, event.getId())}">
+                            <span th:unless="${#lists.contains(studentRegisteredForEvent, event.getId())}">
                                     <button th:case="UPCOMING" th:value="${event.status}"
                                             class="btn btn-outline-secondary btn-block" type="submit">
                                         <input type="hidden" name="name" th:value="${account.getName()}">
@@ -213,9 +211,9 @@
                                     </button>
                                 </span>
 
-                            </form>
+                        </form>
 
-                        </div>
+                    </div>
                     </form>
                 </div>
                 <div class="col-12 col-sm-5 col-md-4 mt-2">
