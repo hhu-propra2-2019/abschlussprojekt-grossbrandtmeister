@@ -1,6 +1,7 @@
 package mops.rheinjug2.services;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import mops.rheinjug2.entities.Event;
+import mops.rheinjug2.entities.EventRef;
 import mops.rheinjug2.entities.Student;
 import mops.rheinjug2.repositories.EventRepository;
 import mops.rheinjug2.repositories.StudentRepository;
@@ -283,5 +285,20 @@ public class ModelService {
         addToMap(events, List.of(e), SubmissionStatus.NO_SUBMISSION);
       }
     }
+  }
+
+  /**
+   * Die Deadline für eine belegte Veranstaltung eines Events wird hinzugefügt.
+   */
+  public LocalDateTime getDeadline(final String login, final Event event) {
+    final Student student = studentRepository.findByLogin(login);
+    if (null == student) {
+      return LocalDateTime.MIN;
+    }
+    final EventRef eventRef = student.findEventRef(event);
+    if (null == eventRef) {
+      return LocalDateTime.MIN;
+    }
+    return eventRef.getDeadline();
   }
 }

@@ -96,7 +96,7 @@ public class Student {
         .map(EventRef::getEvent).collect(Collectors.toSet());
   }
 
-  private EventRef findEventRef(final Event event) {
+  public EventRef findEventRef(final Event event) {
     return events.stream().filter(x -> x.getEvent()
         .equals(event.getId())).findAny().orElse(null);
   }
@@ -115,4 +115,12 @@ public class Student {
         eventRef -> eventRef.getEvent().equals(eventId) && eventRef.isSubmittedSummary());
   }
 
+  /**Die mithode wird von orga gebraucht um eine verpätet Abgabe zumachen.
+   * @param event .
+   */
+  public void setSubmittedAndAccepted(final Event event) {
+    final EventRef ref = findEventRef(event);
+    ref.setSubmittedSummary(true);
+    ref.setAccepted(true);
+  }
 }

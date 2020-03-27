@@ -95,7 +95,7 @@ class FileUploadControllerTest {
         .with(csrf()).param("eventId", eventId))
         .andExpect(status().isFound())
         .andExpect(MockMvcResultMatchers.flash().attribute("message",
-            "You successfully uploaded " + filename + '!'));
+            "Deine Datei wurde unter" + filename + "erfolgreich hochgeladen!"));
   }
 
   @Test
@@ -130,8 +130,8 @@ class FileUploadControllerTest {
         .with(csrf()))
         .andExpect(status().isFound())
         .andExpect(MockMvcResultMatchers.flash().attribute("message",
-            "You did not choose an event.Go to your personal event side "
-                + "and choose for which event you want to handle your summary in"));
+            "Du hast kein Event ausgewählt, für das du eine Zusammenfassung abgeben kannst. "
+                + "Gehe zu meinen Veranstaltungen und wähle eine aus."));
   }
 
 
@@ -147,7 +147,7 @@ class FileUploadControllerTest {
         .with(csrf()).param("eventId", EVENT_ID))
         .andExpect(status().isFound())
         .andExpect(MockMvcResultMatchers.flash().attribute("message",
-            "You successfully uploaded the form !"));
+            "Du hast die Datei erfolgreich hochgeladen!"));
   }
 
 

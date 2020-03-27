@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-12 col-sm-6">
                         <label for="eventsdate">Datum der Veranstaltung</label>
-                        <input type="text" class="form-control" id="eventsdate" th:field="*{date}" value="15.03.2020"
+                        <input type="text" class="form-control" id="eventsdate" th:field="${event.date}" value="15.03.2020"
                                readonly>
                     </div>
                 </div>
@@ -68,8 +68,8 @@
                           form="mysubmit"></textarea>
             </div>
             <div class="form-group secondary">
-                <label class="" for="Todaysdate">heutige datum</label>
-                <input type="text" class="form-control " id="Todaysdate" value="01.04.2020" readonly>
+                <label class="" for="Todaysdate">Datum der Abgabe</label>
+                <input type="text" class="form-control " id="Todaysdate" th:field="*{date}" value="01.04.2020" readonly>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button>
