@@ -29,6 +29,6 @@ Durch nicht fachgerechte Überprüfung kann nicht gewährleistet werden, dass ei
 
 - Abrufen der Events über meetup.com
 - Übersicht über belegte Veranstaltungen
-- Inline-Kommentare und Bestätigung der Abgaben per Knopfdruck
+- Bestätigung der Abgaben per Knopfdruck
 
-NOTE: Obwohl aus Gründen der Lesbarkeit die männlichen Form gewählt wurde beziehen sich die Angaben auf Angehörige aller Geschlechter.
+NOTE: Obwohl aus Gründen der Lesbarkeit die männliche Form gewählt wurde, beziehen sich die Angaben auf Angehörige aller Geschlechter.
