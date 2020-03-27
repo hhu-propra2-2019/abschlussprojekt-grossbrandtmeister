@@ -2,6 +2,7 @@ package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import mops.rheinjug2.Account;
@@ -90,6 +91,7 @@ public class StudentController {
     if (eventId == null) {
       return "redirect:/rheinjug2/student/visitedevents";
     }
+    final LocalDateTime today = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final Event event = modelService.loadEventById(eventId);
     if (event == null) {
@@ -103,8 +105,6 @@ public class StudentController {
     String content;
     try {
       content = fileService.getContentOfFileAsString("VorlageZusammenfassung.md");
-      content = content.isEmpty()
-          ? "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein." : content;
     } catch (final Exception e) {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
