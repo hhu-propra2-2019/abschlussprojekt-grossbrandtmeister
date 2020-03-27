@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
+import mops.rheinjug2.fileupload.FileCheckService;
 import mops.rheinjug2.orgamodels.DelayedSubmission;
 import mops.rheinjug2.orgamodels.SearchForm;
 import mops.rheinjug2.services.EventService;
@@ -19,11 +20,11 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -54,7 +55,7 @@ public class OrgaController {
   }
 
   @Secured({"ROLE_orga"})
-  @GetMapping("/")
+  @RequestMapping(value = {"/", ""})
   public String orgaBase() {
     return "redirect:/rheinjug2/orga/events";
   }
@@ -64,9 +65,10 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @GetMapping("/events")
-  public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+  public String getEvents(final Model model, final KeycloakAuthenticationToken token) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
     authenticatedAccess.increment();
+    model.addAttribute("account", account);
     model.addAttribute("events", orgaService.getEvents());
     model.addAttribute("datenow", LocalDateTime.now());
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
@@ -77,18 +79,19 @@ public class OrgaController {
    * Gibt liste aller von Studenten angemeldte Veranstaltungen,
    * die ihre Zusammenfassung noch nicht abgegeben worde.
    *
-   * @param token token
    * @param model model
    * @return liste der Veranstaltungen.
    */
   @Secured({"ROLE_orga"})
   @GetMapping("/delayedSubmission")
-  public String getDelayedSubmission(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+  public String getDelayedSubmission(final Model model,
+                                     final KeycloakAuthenticationToken token) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
     authenticatedAccess.increment();
     if (!model.containsAttribute("delayedsubmissions")) {
       model.addAttribute("delayedsubmissions", orgaService.getDelayedSubmission());
     }
+    model.addAttribute("account", account);
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     model.addAttribute("successmessage", successMessage);
     model.addAttribute("errormessage", errorMessage);
@@ -105,14 +108,15 @@ public class OrgaController {
   @PostMapping("/summaryaccepting")
   public String summaryAccepting(@RequestParam final Long eventid,
                                  @RequestParam final Long studentid,
-                                 final Model model, final KeycloakAuthenticationToken token) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+                                 final Model model,
+                                 final KeycloakAuthenticationToken token) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
     authenticatedAccess.increment();
+    model.addAttribute("account", account);
     if (orgaService.setSummaryAsAccepted(studentid, eventid)) {
       numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
       successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert gespeichert.";
       return "redirect:/rheinjug2/orga/reports";
-
     }
     errorMessage = "Fehler.. Zusammenfassung wurde nicht gespeichert ";
     return "redirect:/rheinjug2/orga/reports";
@@ -122,25 +126,58 @@ public class OrgaController {
    * Übersicht der Veranstaltung, an denen Studenten teilgenommen haben aber
    * die zusammenfassung noch nichtabgegebn haben und Abgabefrist ist vorbei.
    *
-   * @param delayedSubmission .
    * @return .
    * @throws IOException .
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/summaryupload")
-  public String summaryUpload(@ModelAttribute final DelayedSubmission delayedSubmission)
-      throws IOException {
-    try {
-      orgaService.summaryupload(
-          delayedSubmission.getStudentId(),
-          delayedSubmission.getEventId(),
-          delayedSubmission.getStudentName(),
-          delayedSubmission.getSummaryContent());
-    } catch (final RuntimeException e) {
-      errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
+  public String summaryUpload(@RequestParam final Long studentId,
+                              @RequestParam final Long eventId,
+                              @RequestParam final String studentName,
+                              @RequestParam final String summaryContent,
+                              @RequestParam final MultipartFile file,
+                              final Model model,
+                              final KeycloakAuthenticationToken token
+  ) throws IOException {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    authenticatedAccess.increment();
+    log.debug("studentId: " + studentId
+        + "; eventId: " + eventId
+        + "; studentName: " + studentName
+        + "; summaryContent: " + summaryContent
+        + "; file.isEmpty(): " + file.isEmpty()
+    );
+    if (file.isEmpty() && summaryContent.isEmpty()) {
+      errorMessage = "Zusammenfaung Inhalt ist noch erfordelich für eine Abgabe.";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
-    successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
+    if (file.isEmpty()) {
+      try {
+        orgaService.summaryuploadStringContent(studentId, eventId, studentName, summaryContent);
+      } catch (final RuntimeException e) {
+        errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
+        return "redirect:/rheinjug2/orga/delayedSubmission";
+      }
+      successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
+      return "redirect:/rheinjug2/orga/delayedSubmission";
+    }
+    if (!file.isEmpty()) {
+      if (FileCheckService.isMarkdown(file)) {
+        try {
+          orgaService.summaryuploadFileContent(studentId, eventId, studentName, file);
+        } catch (final RuntimeException e) {
+          errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
+          return "redirect:/rheinjug2/orga/delayedSubmission";
+
+        }
+        successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
+        return "redirect:/rheinjug2/orga/delayedSubmission";
+      }
+      errorMessage = "Zusaamenfassung bitte in Markdown (.md) Format hochladen ";
+      return "redirect:/rheinjug2/orga/delayedSubmission";
+    }
+    errorMessage = "Zusammenfassung wude nicht hochgeladen.";
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }
 
@@ -149,11 +186,13 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @GetMapping("/reports")
-  public String getReports(final KeycloakAuthenticationToken token, final Model model) {
-    model.addAttribute("account", AccountCreator.createAccountFromPrincipal(token));
+  public String getReports(final Model model, final KeycloakAuthenticationToken token) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     authenticatedAccess.increment();
     model.addAttribute("summaries", orgaService.getSummaries());
     model.addAttribute("successmessage", successMessage);
+    model.addAttribute("errormessage", errorMessage);
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     successMessage = "";
     errorMessage = "";
@@ -165,8 +204,9 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/events")
-  public String getEventsFromApi(final KeycloakAuthenticationToken token) {
+  public String getEventsFromApi(final KeycloakAuthenticationToken token, final Model model) {
     final Account user = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", user);
     log.info("User '" + user.getName() + "' requested event refresh");
     eventService.refreshRheinjugEvents(LocalDateTime.now(ZoneId.of("Europe/Berlin")));
     return "redirect:/rheinjug2/orga/events";
@@ -175,16 +215,19 @@ public class OrgaController {
   /**
    * Die methode gibt der gesuchte Student zuruck.
    *
-   * @param searchForm         .
    * @param redirectAttributes .
    * @return .
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/searchstudent")
-  public String searchstudent(@ModelAttribute final SearchForm searchForm,
-                              final RedirectAttributes redirectAttributes) {
+  public String searchstudent(@RequestParam final String searchedName,
+                              final RedirectAttributes redirectAttributes,
+                              final KeycloakAuthenticationToken token, final Model model) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    authenticatedAccess.increment();
     final List<DelayedSubmission> delayedsubmissions =
-        orgaService.getDelayedSubmissionsForStudent(searchForm.getSearchedName());
+        orgaService.getDelayedSubmissionsForStudent(searchedName);
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }
@@ -192,16 +235,19 @@ public class OrgaController {
   /**
    * Die Methode gibt die gesuchte Veranstaltung zuruck.
    *
-   * @param searchForm         .
    * @param redirectAttributes .
    * @return .
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/searchevent")
-  public String searchevent(@ModelAttribute final SearchForm searchForm,
-                            final RedirectAttributes redirectAttributes) {
+  public String searchevent(@RequestParam final String searchedName,
+                            final RedirectAttributes redirectAttributes,
+                            final KeycloakAuthenticationToken token, final Model model) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    authenticatedAccess.increment();
     final List<DelayedSubmission> delayedsubmissions =
-        orgaService.getDelayedSubmissionsForEvent(searchForm.getSearchedName());
+        orgaService.getDelayedSubmissionsForEvent(searchedName);
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }
