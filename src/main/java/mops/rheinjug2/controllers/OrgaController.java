@@ -20,7 +20,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,7 +56,6 @@ public class OrgaController {
 
   @Secured({"ROLE_orga"})
   @RequestMapping(value = {"/", ""})
-  //@GetMapping("/")
   public String orgaBase() {
     return "redirect:/rheinjug2/orga/events";
   }
@@ -136,7 +134,10 @@ public class OrgaController {
         + "; summaryContent: " + summaryContent
         + "; file.isEmpty(): " + file.isEmpty()
     );
-
+    if (file.isEmpty() && summaryContent.isEmpty()) {
+      errorMessage = "Zusammenfaung Inhalt ist noch erfordelich für eine Abgabe.";
+      return "redirect:/rheinjug2/orga/delayedSubmission";
+    }
     if (file.isEmpty()) {
       try {
         orgaService.summaryuploadStringContent(studentId, eventId, studentName, summaryContent);
@@ -162,7 +163,7 @@ public class OrgaController {
       errorMessage = "Zusaamenfassung bitte in Markdown (.md) Format hochladen ";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
-    errorMessage = "Zusammenfaung bitte eingeben oder hochladen.";
+    errorMessage = "Zusammenfassung wude nicht hochgeladen.";
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }
 
@@ -175,6 +176,7 @@ public class OrgaController {
     authenticatedAccess.increment();
     model.addAttribute("summaries", orgaService.getSummaries());
     model.addAttribute("successmessage", successMessage);
+    model.addAttribute("errormessage", errorMessage);
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     successMessage = "";
     errorMessage = "";
@@ -196,17 +198,16 @@ public class OrgaController {
   /**
    * Die methode gibt der gesuchte Student zuruck.
    *
-   * @param searchForm         .
    * @param redirectAttributes .
    * @return .
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/searchstudent")
-  public String searchstudent(@ModelAttribute final SearchForm searchForm,
+  public String searchstudent(@RequestParam final String searchedName,
                               final RedirectAttributes redirectAttributes) {
     authenticatedAccess.increment();
     final List<DelayedSubmission> delayedsubmissions =
-        orgaService.getDelayedSubmissionsForStudent(searchForm.getSearchedName());
+        orgaService.getDelayedSubmissionsForStudent(searchedName);
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }
@@ -214,16 +215,15 @@ public class OrgaController {
   /**
    * Die Methode gibt die gesuchte Veranstaltung zuruck.
    *
-   * @param searchForm         .
    * @param redirectAttributes .
    * @return .
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/searchevent")
-  public String searchevent(@ModelAttribute final SearchForm searchForm,
+  public String searchevent(@RequestParam final String searchedName,
                             final RedirectAttributes redirectAttributes) {
     final List<DelayedSubmission> delayedsubmissions =
-        orgaService.getDelayedSubmissionsForEvent(searchForm.getSearchedName());
+        orgaService.getDelayedSubmissionsForEvent(searchedName);
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }

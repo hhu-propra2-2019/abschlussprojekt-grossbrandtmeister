@@ -26,6 +26,9 @@
                 setTimeout(function () {
                     $("#successmessage").hide(1000);
                 }, 4000);
+                setTimeout(function () {
+                    $("#errormessage").hide(1000);
+                }, 4000);
             });
         </script>
     </th:block>
@@ -55,6 +58,11 @@
          style="padding: 10px;"
          role="alert" th:text="${successmessage}"
          th:if="${successmessage != ''}">
+    </div>
+    <div id="errormessage" class=" container alert alert-danger alert-dismissible"
+         style="padding: 10px;"
+         role="alert" th:text="${errormessage}"
+         th:if="${errormessage != ''}">
     </div>
     <div class=" container alert alert-success alert-dismissible"
          style="padding: 10px;"
