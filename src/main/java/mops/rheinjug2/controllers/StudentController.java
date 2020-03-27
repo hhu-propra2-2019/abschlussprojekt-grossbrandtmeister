@@ -25,13 +25,13 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/rheinjug2/student")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class StudentController {
-  
+
   private final transient Counter authenticatedAccess;
   private final transient ModelService modelService;
-  
-  
+
+
   transient FileService fileService;
-  
+
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public StudentController(final MeterRegistry registry, final FileService fileService,
                            final ModelService modelService) {
@@ -39,12 +39,12 @@ public class StudentController {
     this.modelService = modelService;
     authenticatedAccess = registry.counter("access.authenticated");
   }
-  
+
   @GetMapping("/")
   public String studentBase() {
     return "redirect:/rheinjug2/student/events/";
   }
-  
+
   /**
    * Event Übersicht für Studenten.
    */
@@ -56,9 +56,10 @@ public class StudentController {
     model.addAttribute("studentRegisteredForEvent",
         modelService.getAllEventIdsPerStudent(account.getName()));
     authenticatedAccess.increment();
+
     return "student_events_overview";
   }
-  
+
   /**
    * Übersicht der Events für die der aktuelle Student angemeldet war/ist.
    * Die EventId muss später durch die richtige Id aus der Datenbank ersetzt werden.
@@ -72,7 +73,7 @@ public class StudentController {
     authenticatedAccess.increment();
     return "personalView";
   }
-  
+
   /**
    * Formular zur Einreichung der Zusammenfassung.
    * Das Summary-Objekt muss noch auf die Angaben des jeweiligen Events aus
@@ -83,13 +84,17 @@ public class StudentController {
   public String reportSubmit(final KeycloakAuthenticationToken token, final Model model,
                              final Long eventId) {
     if (eventId == null) {
-      return "redirect:rheinjug2/student/visitedevents";
+      return "redirect:/rheinjug2/student/visitedevents";
     }
     final LocalDateTime today = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     final Event event = modelService.loadEventById(eventId);
     if (event == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event ID not found!");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found!");
+    }
+    final LocalDateTime deadline = modelService.getDeadline(account.getName(), event);
+    if (deadline.isBefore(today)) {
+      return "redirect:/rheinjug2/student/visitedevents";
     }
     final String eventname = event.getTitle();
     String content;
@@ -108,7 +113,7 @@ public class StudentController {
     authenticatedAccess.increment();
     return "report_submit";
   }
-  
+
   /**
    * Fügt einen Studenten einem Event hinzu.
    */

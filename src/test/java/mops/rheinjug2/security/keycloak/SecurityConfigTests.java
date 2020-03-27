@@ -49,18 +49,18 @@ public class SecurityConfigTests {
   @CsvSource({
       ", /rheinjug2, 302",
       ", /rheinjug2/, 200",
-
-      "monitoring, /actuator, 200",
+    
+      "monitoring, /rheinjug2/actuator, 200",
       "studentin, /rheinjug2/student/events, 200",
       "studentin, /rheinjug2/student/visitedevents, 200",
       "studentin, /rheinjug2/student/creditpoints, 200",
       "studentin, /rheinjug2/student/reportsubmit, 302",
-      "studentin, /rheinjug2/student/reportsubmit?eventId=1, 200",
+      "studentin, /rheinjug2/student/reportsubmit?eventId=1, 302",
       "orga, /rheinjug2/orga/events, 200",
       "orga, /rheinjug2/orga/delayedSubmission, 200",
       "orga, /rheinjug2/orga/reports, 200",
 
-      ", /actuator, 302",
+      ", /rheinjug2/actuator, 302",
       ", /rheinjug2/student/events, 302",
       ", /rheinjug2/student/visitedevents, 302",
       ", /rheinjug2/student/creditpoints, 302",
@@ -69,7 +69,7 @@ public class SecurityConfigTests {
       ", /rheinjug2/orga/delayedSubmission, 302",
       ", /rheinjug2/orga/reports, 302",
 
-      "invalid, /actuator, 403",
+      "invalid, /rheinjug2/actuator, 403",
       "invalid, /rheinjug2/student/events, 403",
       "invalid, /rheinjug2/student/visitedevents, 403",
       "invalid, /rheinjug2/student/creditpoints, 403",
