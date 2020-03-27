@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import mops.rheinjug2.entities.Event;
@@ -86,10 +87,7 @@ public class CertificateService {
    */
   private static String setCertificateDate() {
     final LocalDate currentDate = LocalDate.now();
-    final int day = currentDate.getDayOfMonth();
-    final int month = currentDate.getMonthValue();
-    final int year = currentDate.getYear();
-    return day + "." + month + "." + year;
+    return currentDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
   }
   
   private static String setGenderFormOfAddress(final String gender) {
