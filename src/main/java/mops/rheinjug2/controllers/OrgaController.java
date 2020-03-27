@@ -65,8 +65,10 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @GetMapping("/events")
-  public String getEvents(final Model model) {
+  public String getEvents(final Model model, final KeycloakAuthenticationToken token) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
     authenticatedAccess.increment();
+    model.addAttribute("account", account);
     model.addAttribute("events", orgaService.getEvents());
     model.addAttribute("datenow", LocalDateTime.now());
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
@@ -82,11 +84,14 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @GetMapping("/delayedSubmission")
-  public String getDelayedSubmission(final Model model) {
+  public String getDelayedSubmission(final Model model,
+                                     final KeycloakAuthenticationToken token) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
     authenticatedAccess.increment();
     if (!model.containsAttribute("delayedsubmissions")) {
       model.addAttribute("delayedsubmissions", orgaService.getDelayedSubmission());
     }
+    model.addAttribute("account", account);
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     model.addAttribute("successmessage", successMessage);
     model.addAttribute("errormessage", errorMessage);
@@ -102,8 +107,12 @@ public class OrgaController {
   @Secured({"ROLE_orga"})
   @PostMapping("/summaryaccepting")
   public String summaryAccepting(@RequestParam final Long eventid,
-                                 @RequestParam final Long studentid) {
+                                 @RequestParam final Long studentid,
+                                 final Model model
+      , final KeycloakAuthenticationToken token) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
     authenticatedAccess.increment();
+    model.addAttribute("account", account);
     if (orgaService.setSummaryAsAccepted(studentid, eventid)) {
       numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
       successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert gespeichert.";
@@ -126,8 +135,13 @@ public class OrgaController {
                               @RequestParam final Long eventId,
                               @RequestParam final String studentName,
                               @RequestParam final String summaryContent,
-                              @RequestParam final MultipartFile file
+                              @RequestParam final MultipartFile file,
+                              final Model model
+      , final KeycloakAuthenticationToken token
   ) throws IOException {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    authenticatedAccess.increment();
     log.debug("studentId: " + studentId
         + "; eventId: " + eventId
         + "; studentName: " + studentName
@@ -172,7 +186,9 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @GetMapping("/reports")
-  public String getReports(final Model model) {
+  public String getReports(final Model model, final KeycloakAuthenticationToken token) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     authenticatedAccess.increment();
     model.addAttribute("summaries", orgaService.getSummaries());
     model.addAttribute("successmessage", successMessage);
@@ -188,8 +204,9 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/events")
-  public String getEventsFromApi(final KeycloakAuthenticationToken token) {
+  public String getEventsFromApi(final KeycloakAuthenticationToken token, final Model model) {
     final Account user = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", user);
     log.info("User '" + user.getName() + "' requested event refresh");
     eventService.refreshRheinjugEvents(LocalDateTime.now(ZoneId.of("Europe/Berlin")));
     return "redirect:/rheinjug2/orga/events";
@@ -204,7 +221,10 @@ public class OrgaController {
   @Secured({"ROLE_orga"})
   @PostMapping("/searchstudent")
   public String searchstudent(@RequestParam final String searchedName,
-                              final RedirectAttributes redirectAttributes) {
+                              final RedirectAttributes redirectAttributes
+      , final KeycloakAuthenticationToken token, final Model model) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     authenticatedAccess.increment();
     final List<DelayedSubmission> delayedsubmissions =
         orgaService.getDelayedSubmissionsForStudent(searchedName);
@@ -221,7 +241,11 @@ public class OrgaController {
   @Secured({"ROLE_orga"})
   @PostMapping("/searchevent")
   public String searchevent(@RequestParam final String searchedName,
-                            final RedirectAttributes redirectAttributes) {
+                            final RedirectAttributes redirectAttributes
+      , final KeycloakAuthenticationToken token, final Model model) {
+    final Account account = AccountCreator.createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+    authenticatedAccess.increment();
     final List<DelayedSubmission> delayedsubmissions =
         orgaService.getDelayedSubmissionsForEvent(searchedName);
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
