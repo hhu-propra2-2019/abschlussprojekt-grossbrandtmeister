@@ -1,11 +1,10 @@
-package mops.rheinjug2.services;
+package mops.rheinjug2.creditpoints;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import mops.rheinjug2.email.CertificateService;
 import mops.rheinjug2.entities.Event;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;

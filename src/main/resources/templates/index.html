@@ -46,7 +46,7 @@
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
-                            <span th:text="${#temporals.format(event.date.toLocalTime(), 'HH:mm')}">19:30pm</span>
+                            <span th:text="|${#temporals.format(event.date.toLocalTime(), 'HH:mm')} bis ${event.getEndTime()}|">19:30 bis 20:30</span>
                         </div>
                     </div>
                 </div>
@@ -147,7 +147,7 @@
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
-                            <span>19:30pm</span>
+                            <span>19:30 bis 20:30</span>
                         </div>
                     </div>
                 </div>
@@ -234,7 +234,7 @@
                     <div class="row">
                         <div class="col-12">
                             <span class="icono-clock"></span>
-                            <span>19:30pm</span>
+                            <span>19:30 bis 20:30</span>
                         </div>
                     </div>
                 </div>

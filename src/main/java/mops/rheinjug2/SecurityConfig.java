@@ -69,7 +69,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     super.configure(http);
     http.authorizeRequests()
         .antMatchers("/h2-console/**").permitAll()
-        .antMatchers("/actuator/**")
+        .antMatchers("/rheinjug2/actuator/**")
         .hasRole("monitoring")
         .anyRequest()
         .permitAll();
