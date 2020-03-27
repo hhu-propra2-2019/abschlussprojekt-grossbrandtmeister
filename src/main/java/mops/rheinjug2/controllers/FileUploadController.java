@@ -57,9 +57,9 @@ public class FileUploadController {
                            @RequestParam(value = "file") final MultipartFile file,
                            final Long eventId) {
     if (eventId == null) {
-      attributes.addFlashAttribute("message", "You did not choose an event."
-          + "Go to your personal event side and choose which"
-          + " event you want to handle your summary in");
+      attributes.addFlashAttribute("message", "Du hast kein Event "
+          + "ausgewählt, für das du eine Zusammenfassung abgeben kannst. "
+          + "Gehe zu meinen Veranstaltungen und wähle eine aus.");
       return "redirect:/rheinjug2/student/reportsubmit";
     }
     if (FileCheckService.isMarkdown(file)) {
@@ -71,16 +71,19 @@ public class FileUploadController {
           final String filename = username + "_" + eventId;
           fileService.uploadFile(file, filename);
           attributes.addFlashAttribute("message",
-              "You successfully uploaded " + filename + '!');
+              "Deine Datei wurde unter" + filename + "erfolgreich hochgeladen!");
         }
       } catch (final Exception e) {
         log.catching(e);
         attributes.addFlashAttribute("message",
-            "Your file was not able to be uploaded ");
+            ""
+                + "Deine Datei konnte nicht hochgeladen werden. Versuche es später noch mal.");
       }
     } else {
       attributes.addFlashAttribute("message",
-          "Your file has the wrong format. It needs to be a markdown file!");
+          "Deine Datei konnte nicht hochgeladen werden, "
+              + "da es sich nicht um ein Markdownfile (.md) handelt!"
+              + "Schreibe deine Zusammenfassung bitt in Markdown");
     }
     authenticatedAccess.increment();
     return "redirect:/rheinjug2/student/reportsubmit?eventId=" + eventId;
@@ -96,9 +99,9 @@ public class FileUploadController {
                         final RedirectAttributes attributes, final Summary summary,
                         final Long eventId) {
     if (eventId == null) {
-      attributes.addFlashAttribute("message", "You did not choose an event."
-          + "Go to your personal event side and choose for which event "
-          + "you want to handle your summary in");
+      attributes.addFlashAttribute("message", "Du hast kein Event "
+          + "ausgewählt, für das du eine Zusammenfassung abgeben kannst."
+          + " Gehe zu meinen Veranstaltungen und wähle eine aus.");
       return "redirect:/rheinjug2/student/reportsubmit";
     }
     try {
@@ -109,13 +112,14 @@ public class FileUploadController {
         final String filename = username + "_" + eventId;
         fileService.uploadContentConvertToMd(summary.getContent(), filename);
         attributes.addFlashAttribute("message",
-            "You successfully uploaded the form !");
+            "Du hast die Datei erfolgreich hochgeladen!");
       }
 
     } catch (final Exception e) {
       log.catching(e);
       attributes.addFlashAttribute("message",
-          "Your file was not able to be uploaded ");
+          "Deine Datei konnte nicht hochgeladen werden. "
+              + "Versuche es später noch mal.");
     }
     authenticatedAccess.increment();
     return "redirect:/rheinjug2/student/reportsubmit?eventId=" + eventId;
@@ -142,12 +146,10 @@ public class FileUploadController {
         IOUtils.copy(inputStream, response.getOutputStream());
         response.flushBuffer();
       } catch (final Exception e) {
-        log.catching(e);
+        response.sendError(404, "Deine Datei wurde nicht gefunden!"
+            + " Du hast noch keine Zusammenfassung abgegeben für diese Veranstaltung");
       }
-    } else {
-      response.sendError(404);
     }
-
     authenticatedAccess.increment();
   }
 
@@ -167,7 +169,8 @@ public class FileUploadController {
       IOUtils.copy(inputStream, response.getOutputStream());
       response.flushBuffer();
     } catch (final Exception e) {
-      response.sendError(404, "File not found");
+      response.sendError(404, "Momentan ist leider keine Vorlage vorhanden. "
+          + "Schau dir als Beispiele auf markdown.de an.");
     }
     authenticatedAccess.increment();
   }

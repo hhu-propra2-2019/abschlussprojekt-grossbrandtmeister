@@ -12,12 +12,14 @@
               th:remove="all">
         <link rel="stylesheet" href="https://icono-49d6.kxcdn.com/icono.min.css" th:remove="all">
         <link rel="stylesheet" href="../static/css/main.css" th:href="@{/css/main.css}">
+        <link href='https://fonts.googleapis.com/css?family=Raleway:600' rel='stylesheet'>
     </th:block>
 
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         style="border-right: 1px solid #aaaaaa;">
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
@@ -33,9 +35,12 @@
         </ul>
     </nav>
 </header>
-<main th:fragment="bodycontent">
+<main th:fragment="bodycontent"
+      th:style="'background: url(/images/back.jpg) center center fixed; font-family: Raleway, sans-serif; background-size:cover;'"
+      class="overflow-hidden mx-auto px-0">
     <!-- Restlichen Inhalt hier einfügen! -->
-    <h1 class="text-center text-secondary">Belegte Veranstaltungen</h1>
+    <h1 class="text-center text-secondary pt-4 font-weight-bold"
+        style="text-shadow: 10px 2px 20px white; font-size: 38px; color: #303535;">Belegte Veranstaltungen</h1>
     <div th:if="${exists}">
         <div th:remove="all-but-first" th:each="eventAndStatus : ${studentEvents}">
             <div class="container bg-light rounded shadow "
@@ -43,48 +48,50 @@
                 <div class="row border-bottom  mx-1 my-1">
                     <div class="col-12 col-sm-4 border-right text-secondary my-1">
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-12" style="font-size: 18px">
                                 <i class="icono-calendar"></i>
-                                <span class="text-success"
-                                      th:text="${#temporals.format(eventAndStatus.key.date.toLocalDate(), 'dd.MM.yyyy')}">&nbsp;13.03.2020</span>
+                                <span class="text-dark font-weight-bold"
+                                      th:text="'&nbsp;'+${#temporals.format(eventAndStatus.key.date.toLocalDate(), 'dd.MM.yyyy')}">&nbsp;13.03.2020</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-sm-4 border-right text-secondary my-1">
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-12" style="font-size: 18px">
                                 <img src="../../static/icons/icon-time-clock.png"
                                      th:src="@{/icons/icon-time-clock.png}" style="width: 32px;height: 28px;">
-                                <span>&nbsp;Abgabefrist</span>
-                                <span th:text="${eventAndStatus.key.getDeadlineDate()}">&nbsp;13.03.2020</span>
-                                <span th:text="${eventAndStatus.key.getDeadlineTime()}">&nbsp;19:30</span>
+                                <span class="font-weight-bold">&nbsp;Abgabefrist</span>
+                                <span th:text="${eventAndStatus.key.getDeadlineDate()}"
+                                      class="text-danger">&nbsp;13.03.2020</span>
+                                <span th:text="${' ~ '+ eventAndStatus.key.getDeadlineTime()}"
+                                      class="text-dark">&nbsp;19:30</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4  my-1">
+                    <div class="col-12 col-sm-4  my-1" style="font-size: 18px">
                         <div class="row ">
                             <div class="col-12">
                                 <img src="../../static/icons/icon-credit-points.png"
                                      th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
                                 <span class="text-secondary">
                                     <span th:if="${eventAndStatus.key.type == 'Abendveranstaltung'}">
-                                    &nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span>
+                                    Abendveranstaltung
                                     </span>
                                 <span th:if="${eventAndStatus.key.type == 'EntwickelBar'}">
-                                    &nbsp;<sup>1</sup>/<sub>2</sub>&nbsp;CP</span>
+                                    EntwickelBar
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row border-bottom  mx-1 my-1 align-content-center">
-                    <div class="col-12 text-secondary text-center  my-1">
-                        <h2 class="font-weight-bold" th:text="${eventAndStatus.key.title}">
+                    <div class="col-12 text-secondary text-center  my-2 pt-2">
+                        <h2 class="font-weight-bold" th:text="${eventAndStatus.key.title}" style="color:#4b4b4b;">
                             Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                         </h2>
                     </div>
                 </div>
-                <div th:switch="${eventAndStatus.value}">
+                <div th:switch=" ${eventAndStatus.value}">
                     <div th:case="${T(mops.rheinjug2.services.SubmissionStatus).OPEN_FOR_SUBMISSION}">
                         <div class="row text-light justify-content-around mx-1 ">
                             <div class="col-12 mt-2">

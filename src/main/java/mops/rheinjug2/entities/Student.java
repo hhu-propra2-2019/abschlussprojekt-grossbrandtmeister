@@ -116,4 +116,12 @@ public class Student {
         eventRef -> eventRef.getEvent().equals(eventId) && eventRef.isSubmittedSummary());
   }
 
+  /**Die mithode wird von orga gebraucht um eine verpätet Abgabe zumachen.
+   * @param event .
+   */
+  public void setSubmittedAndAccepted(final Event event) {
+    final EventRef ref = findEventRef(event);
+    ref.setSubmittedSummary(true);
+    ref.setAccepted(true);
+  }
 }
