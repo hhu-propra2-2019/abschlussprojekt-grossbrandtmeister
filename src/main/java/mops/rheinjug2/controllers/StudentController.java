@@ -2,6 +2,8 @@ package mops.rheinjug2.controllers;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import java.time.ZoneId;
+import java.util.Date;
 import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.entities.Event;
@@ -52,6 +54,8 @@ public class StudentController {
     model.addAttribute("account", account);
     modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 1);
     modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 2);
+    modelService.submitSummary(account.getName(), (long) 1);
+    modelService.acceptSummary((long) 1, account.getName());
     model.addAttribute("events", modelService.getAllEvents());
     model.addAttribute("studentRegisteredForEvent",
         modelService.getAllEventIdsPerStudent(account.getName()));
@@ -101,7 +105,8 @@ public class StudentController {
       content = "Vorlage momentan nicht vorhanden. Schreib hier deinen Code hinein.";
     }
     final String student = account.getGivenName() + " " + account.getFamilyName();
-    final Summary summary = new Summary(eventname, student, content, event.getDate(), eventId);
+    final Date date = Date.from(event.getDate().atZone(ZoneId.systemDefault()).toInstant());
+    final Summary summary = new Summary(eventname, student, content, date, eventId);
     model.addAttribute("summary", summary);
     model.addAttribute("account", account);
     model.addAttribute("event", event);

@@ -11,6 +11,7 @@
               crossorigin="anonymous"
               th:remove="all">
         <link rel="stylesheet" href="https://icono-49d6.kxcdn.com/icono.min.css" th:remove="all">
+        <link href='https://fonts.googleapis.com/css?family=Raleway:600' rel='stylesheet'>
         <script src="../../static/js/jquery.min.js"
                 th:src="@{/js/jquery.min.js}"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
@@ -40,7 +41,8 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         style="border-right: 1px solid #aaaaaa;">
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li class="active">
@@ -56,17 +58,20 @@
         </ul>
     </nav>
 </header>
-<main th:fragment="bodycontent">
+<main th:fragment="bodycontent"
+      th:style="'background: url(/images/back.jpg) center center fixed; font-family: Raleway, sans-serif; background-size:cover;'"
+      class="overflow-hidden">
     <!-- Restlichen Inhalt hier einfügen! -->
-    <h1 class="text-center text-secondary"> Rheinjug Veranstaltungen </h1>
+    <h1 class="text-center text-secondary pt-4 font-weight-bold"
+        style="text-shadow: 10px 2px 20px white; font-size: 38px; color: #303535;"> Rheinjug Veranstaltungen </h1>
     <div id="partial-collapse" th:remove="all-but-first">
 
-        <div class="container bg-light rounded shadow-lg " th:each="event : ${events}"
-             style="padding: 10px; margin-top: 40px; margin-bottom: 50px">
+        <div class="container bg-light rounded shadow-lg" th:each="event : ${events}"
+             style="padding: 10px; margin-top: 40px; margin-bottom: 50px;">
             <div class="row border-bottom mx-1 my-1">
                 <div class="col-6 col-sm-3 border-right text-secondary my-1">
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-12" style="font-size: 18px">
                             <i class="icono-calendar"></i>
                             <span th:text="'&nbsp;'+${#temporals.format(event.date.toLocalDate(), 'dd.MM.yyyy')}">&nbsp;13.03.2020</span>
                         </div>
@@ -74,19 +79,19 @@
                 </div>
                 <div class="col-6 col-sm-3 border-right text-secondary my-1">
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-12" style="font-size: 18px">
                             <span class="icono-clock"></span>
-                            <span th:text="'&nbsp;'+|${#temporals.format(event.date.toLocalTime(), 'HH:mm')} bis ${event.getEndTime()}|">&nbsp;19:30 bis 20:30</span>
+                            <span th:text="'&nbsp;'+|${#temporals.format(event.date.toLocalTime(), 'HH:mm')} ~ ${event.getEndTime()}|">&nbsp;19:30 bis 20:30</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row ">
                         <div class="col-12">
-                            <img src="../../static/icons/icon-credit-points.png"
+                            <img src="../../static/icons/icon-credit-points.png" alt=""
                                  th:src="@{/icons/icon-credit-points.png}"
                                  style="width: 32px;height: 28px;">
-                            <span class="text-secondary">
+                            <span class="text-secondary" style="font-size: 17px">
                                 <span th:if="${event.type == 'Abendveranstaltung'}">
                                     Abendveranstaltung
                                 </span>
@@ -102,7 +107,7 @@
                     <div class="row">
                         <div class="col-12">
                             <img src="../../static/icons/icon-payment.png"
-                                 th:src="@{/icons/icon-payment.png}"
+                                 th:src="@{/icons/icon-payment.png}" alt=""
                                  style="width: 32px;height: 28px;">
                             <span class="text-success" th:if="${event.price == 0}"> kostenfrei</span>
                             <span th:if="${event.price != 0}">
@@ -131,8 +136,8 @@
                 </div>
             </div>
             <div class="row border-bottom mx-1 my-1 align-content-center">
-                <div class="col-12 text-secondary text-center my-1">
-                    <h2 class="font-weight-bold" th:text="${event.title}">
+                <div class="col-12 text-secondary text-center my-1 pt-2">
+                    <h2 class="font-weight-bold" th:text="${event.title}" style="color:#4b4b4b;">
                         Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                     </h2>
                 </div>
@@ -174,10 +179,12 @@
             </div>
             <div class=" row border-bottom mx-1 my-1 align-content-center justify-content-center">
                 <div class="col-12 text-secondary text-small my-1">
-                    <img src="../../static/icons/icon-location.png"
+                    <img src="../../static/icons/icon-location.png" alt=""
                          th:src="@{/icons/icon-location.png}"
                          style="width: 32px;height: 28px;">
-                    <small th:text="${event.venue}">&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
+                    <small th:text="${event.venue}" style="font-size: 14px;">&nbsp;Universität Düsseldorf, Gebäude 25.22
+                        U1
+                    </small>
                 </div>
             </div>
             <div class="row text-light justify-content-around mx-1 ">
@@ -217,7 +224,9 @@
                         <div>
                             <button class="btn btn-outline-secondary btn-block" type="submit">
                                 mehr Informationen |
-                                <span style="color: #ed1c40">Meetup</span>
+                                <span style="color: #ed1c40">Meetup  <img src="../../static/icons/meet.png"
+                                                                          th:src="@{/icons/meet.png}" alt=""
+                                                                          style="width: 29px;height: 25px;"></span>
                             </button>
                         </div>
                     </a>
@@ -249,7 +258,7 @@
                 <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row ">
                         <div class="col-12">
-                            <img src="../../static/icons/icon-credit-points.png"
+                            <img src="../../static/icons/icon-credit-points.png" alt=""
                                  th:src="@{/icons/icon-credit-points.png}" style="width: 32px;height: 28px;">
                             <span class="text-secondary">&nbsp;<sup>1</sup>/<sub>6</sub>&nbsp;CP</span>
                         </div>
@@ -259,7 +268,7 @@
                     <div class="row">
                         <div class="col-12">
                             <img src="../../static/icons/icon-payment.png"
-                                 th:src="@{/icons/icon-payment.png}"
+                                 th:src="@{/icons/icon-payment.png}" alt=""
                                  style="width: 32px;height: 28px;">
                             <span class="text-success">&nbsp;kostenfrei</span>
                         </div>
@@ -299,7 +308,7 @@
             </div>
             <div class="row border-bottom mx-1 my-1 align-content-center justify-content-center">
                 <div class="col-12 text-secondary text-small my-1">
-                    <img src="../../static/icons/icon-location.png"
+                    <img src="../../static/icons/icon-location.png" alt=""
                          th:src="@{/icons/icon-location.png}"
                          style="width: 32px;height: 28px;">
                     <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>
@@ -348,7 +357,7 @@
                 <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row ">
                         <div class="col-12">
-                            <img src="../../static/icons/icon-credit.png"
+                            <img src="../../static/icons/icon-credit.png" alt=""
                                  th:src="@{/icons/icon-credit.png}"
                                  style="width: 32px;height: 28px;">
                             <span class="text-secondary"> <sup>1</sup>/<sub>6</sub> CP</span>
@@ -358,7 +367,7 @@
                 <div class="col-6 col-sm-3 border-right my-1">
                     <div class="row">
                         <div class="col-12">
-                            <img src="../../static/icons/icon-payment.png"
+                            <img src="../../static/icons/icon-payment.png" alt=""
                                  th:src="@{/icons/icon-payment.png}"
                                  style="width: 32px;height: 28px;">
                             <span class="text-success">&nbsp;kostenfrei</span>
@@ -402,7 +411,7 @@
             </div>
             <div class="row border-bottom mx-1 my-1 align-content-center justify-content-center">
                 <div class="col-12 text-secondary text-small my-1">
-                    <img src="../../static/icons/icon-location.png"
+                    <img src="../../static/icons/icon-location.png" alt=""
                          th:src="@{/icons/icon-location.png}"
                          style="width: 32px;height: 28px;">
                     <small>&nbsp;Universität Düsseldorf, Gebäude 25.22 U1</small>

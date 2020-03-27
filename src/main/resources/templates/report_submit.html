@@ -11,11 +11,13 @@
               crossorigin="anonymous"
               th:remove="all">
         <link rel="stylesheet" href="https://icono-49d6.kxcdn.com/icono.min.css" th:remove="all">
+        <link href='https://fonts.googleapis.com/css?family=Raleway:600' rel='stylesheet'>
     </th:block>
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         style="border-right: 1px solid #aaaaaa;">
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
@@ -31,17 +33,23 @@
         </ul>
     </nav>
 </header>
-<main th:fragment="bodycontent">
+<main th:fragment="bodycontent"
+      th:style="'background: url(/images/back.jpg) center center fixed; font-family: Raleway, sans-serif; background-size:cover;'"
+      class="overflow-hidden">
     <!-- Restlichen Inhalt hier einfügen! -->
-    <h1 class="text-center text-secondary"> Bericht Abgabe </h1>
-    <div class="container bg-light rounded shadow-lg text-secondary "
+    <h1 class="text-center text-secondary pt-4 font-weight-bold"
+        style="text-shadow: 10px 2px 20px white; font-size: 38px; color: #303535;">
+        Bericht Abgabe </h1>
+    <div class="container bg-light rounded shadow-lg text-secondary border border-secondary"
          style=" padding: 10px; margin-top: 40px; margin-bottom: 50px">
         <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
-        <form action="summarysubmit" th:object="${summary}" method="post" id="mysubmit">
+        <form action="summarysubmit" th:object="${summary}" method="post" id="mysubmit"
+              style="font-size: 23px; 4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15);"
+              class="mx-2 my-2">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <div class="form-group">
                 <div>
-                    <label for="subject">Betreff</label>
+                    <label for="subject" class="pl-1">Betreff</label>
                     <input type="text" class="form-control " id="subject" th:field="*{eventname}" name="Title"
                            value=" Zusammenfassung der Veranstaltung Double Feature: Webanwendungen mit MVC 1.0 / Typparameter."
                            readonly>
@@ -49,13 +57,13 @@
             </div>
             <div class="form-group">
                 <div class="row">
-                    <div class="col-12 col-sm-6">
-                        <label for="Studentname">Name</label>
+                    <div class="col-12 col-sm-6 mt-2">
+                        <label for="Studentname" class="pl-1">Name</label>
                         <input type="text" class="form-control" id="Studentname" th:field="*{studentname}"
                                value="Ein Student" readonly>
                     </div>
-                    <div class="col-12 col-sm-6">
-                        <label for="eventsdate">Datum der Veranstaltung</label>
+                    <div class="col-12 col-sm-6 mt-2">
+                        <label for="eventsdate" class="pl-1">Datum des Events</label>
                         <input type="text" class="form-control" id="eventsdate" th:field="*{date}"
                                value="15.03.2020"
                                readonly>
@@ -63,25 +71,20 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="Inhalt">Inhalt</label>
+                <label for="Inhalt" class="pl-1"> Inhalt</label>
                 <textarea class="form-control" id="Inhalt" name="Inhalt" rows="20"
                           placeholder="Zusammenfassung hier schreiben..." th:field="*{content}"
                           form="mysubmit"></textarea>
             </div>
             <div class="form-group secondary row">
-                <div class="col-md-3 text-left">
-                    <label class="" for="Todaysdate">Heutiges Datum</label>
-                    <input th:value="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}" type="text"
-                           class="form-control "
-                           id="Todaysdate" value="01.04.2020" readonly>
-                </div>
-                <div class="d-flex flex-column-reverse">
-                    <button type="submit" class="btn btn-outline-success">Abgabe</button>
+                <div class="d-flex flex-column-reverse col-md-4 mt-2">
+                    <button type="submit" class="btn btn-outline-primary">Zusammenfassung abgeben
+                    </button>
                 </div>
             </div>
             <input type="hidden" name="eventId" th:value="${summary.getEventId()}">
         </form>
-        <div class="d-flex flex-row-reverse">
+        <div class="d-flex flex-row-reverse px-2 pb-2">
             <a th:href="@{/rheinjug2/download/presentation}">
                 <p th:text="${noPresentation}" th:if="${noPresentation ne null}" class="alert alert-primary"></p>
                 <button class="btn btn-outline-dark">Downloade die Vorlage <img
@@ -91,26 +94,29 @@
             </a>
         </div>
     </div>
-    <h2 class="text-center text-secondary font-weight-bolder"> oder lade deine Zusammenfassung hoch </h2>
-    <i class="fa fa-arrow-down"></i>
-    <div class="container bg-light rounded shadow-lg text-secondary "
+    <h2 class="text-center text-secondary font-weight-bolder"
+        style="text-shadow: 10px 2px 20px white;38px; color: #303535; font-size: 29px"> oder lade deine Zusammenfassung
+        hoch </h2>
+    <i class=" fa fa-arrow-down"></i>
+    <div class="container bg-light rounded shadow-lg text-secondary border border-secondary"
          style=" padding: 10px; margin-top: 40px; margin-bottom: 50px">
         <div class="form-group">
             <div class=" row">
                 <div class="col-12 col-sm-6">
-                    <form action="reportsubmit" method="post" enctype="multipart/form-data">
+                    <form action="reportsubmit" method="post" enctype="multipart/form-data" class="mt-2 ml-2">
                         <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
                         <input type="file" name="file" multiple>
                         <input type="hidden" name="eventId" th:value="${summary.getEventId()}">
                         <p></p>
-                        <input type="submit" class="btn btn-outline-success" value="Zusammenfassung hochladen">
+                        <input type="submit" class="btn btn-outline-primary"
+                               value="Zusammenfassung hochladen">
                         <img src="../../static/icons/upload.png" class="ml-3"
                              th:src="@{/icons/upload.png}"
                              style="width: 32px;height: 28px;">
                         <!-- <button type="submit" class="btn btn-outline-success">Zusammenfassung hochladen</button> -->
                     </form>
                 </div>
-                <div class="col-12 col-sm-6 d-flex flex-column-reverse text-right">
+                <div class="col-12 col-sm-6 d-flex flex-column-reverse text-right mt-2">
                     <a th:href="@{/rheinjug2/download/file(eventId=${summary.getEventId()})}">
                         <button class="btn btn-outline-dark">Downloade deine momentane Zusammenfassung</button>
                     </a>
