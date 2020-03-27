@@ -5,12 +5,14 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import mops.rheinjug2.fileupload.FileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -27,6 +29,9 @@ public class SecurityConfigTests {
 
   @Autowired
   private transient WebApplicationContext context;
+
+  @MockBean
+  private transient FileService fileService;
 
   @BeforeEach
   void setUp() {
@@ -49,7 +54,7 @@ public class SecurityConfigTests {
   @CsvSource({
       ", /rheinjug2, 302",
       ", /rheinjug2/, 200",
-    
+
       "monitoring, /rheinjug2/actuator, 200",
       "studentin, /rheinjug2/student/events, 200",
       "studentin, /rheinjug2/student/visitedevents, 200",

@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Java in der Praxis', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -40,15 +40,15 @@
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungen Übersicht </a>
+                <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungsübersicht </a>
             </li>
             <li>
-                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen &emsp; &emsp;
+                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Offene Bewertung &emsp; &emsp;
                     <span class=" badge badge-primary badge-pill" th:text="${numberOfEvaluationRequests}">14</span>
                 </a>
             </li>
             <li class="active">
-                <a th:href="@{/rheinjug2/orga/delayedSubmission}"> Verspätete Abgabe hochladen </a>
+                <a th:href="@{/rheinjug2/orga/delayedSubmission}"> Verspätete Abgaben hochladen </a>
             </li>
         </ul>
     </nav>
@@ -82,7 +82,7 @@
                         <input type="text"
                                class="form-control" th:name="searchedName"
                                th:value="${searchForm.searchedName}"
-                               placeholder="Studentenname">
+                               placeholder="Uni-Kennung">
                     </div>
                     <button type="submit" class="btn btn-outline-secondary ">suchen</button>
                 </form>
@@ -93,7 +93,7 @@
                     <div class="form-group mx-sm-3 ">
                         <input type="text" class="form-control" th:name="searchedName"
                                th:value="${searchForm.getSearchedName()}"
-                               placeholder="Verantaltungsname">
+                               placeholder="Veranstaltungsname">
                     </div>
                     <button type="submit" class="btn btn-outline-secondary ">suchen</button>
                 </form>
@@ -114,11 +114,11 @@
                 </div>
                 <div class="row border-bottom  mx-1 my-1">
                     <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                        <span>Student Name:</span>
+                        <span>Uni-Kennung:</span>
                         <span th:text="${submission.getStudentName()}">&nbsp;Ein Student</span>
                     </div>
                     <div class="col-12 col-sm-6 border-right text-secondary my-1">
-                        <span>Abgabe Frist war am:</span>
+                        <span>Abgabefrist war am:</span>
                         <span th:text="${#temporals.format(submission.getDeadLine(), 'dd.MM.yyyy HH:mm')}">&nbsp15.03.2020</span>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                                 data-target="#inhalt1"
                                 th:data-target="'#inhalt_'+${submission.getStudentId()} + '_' + ${submission.getEventId()}"
                                 aria-expanded="true">
-                            Zusammenfassung jetzt Abgeben
+                            Zusammenfassung abgeben
                         </button>
                     </div>
                 </div>
@@ -139,7 +139,7 @@
                             <span>Inhalt schreiben</span>
                         </div>
                         <div class="col-12 my-1 mb-2">
-                            <textarea class="input-group" name="summaryContent"
+                            <textarea class="input-group" name="summaryContent" placeholder="Schreibe hier die Zusammenfassung"
                                       rows="12" th:value="${submission.summaryContent}"></textarea>
                         </div>
                     </div>
