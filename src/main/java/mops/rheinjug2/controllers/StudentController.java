@@ -48,6 +48,7 @@ public class StudentController {
   /**
    * Event Übersicht für Studenten.
    */
+
   @GetMapping("/events")
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
@@ -117,8 +118,12 @@ public class StudentController {
   public String addStudentToEvent(final KeycloakAuthenticationToken token,
                                   final Model model, final Long eventId) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
+
     model.addAttribute("account", account);
     modelService.addStudentToEvent(account.getName(), account.getEmail(), eventId);
-    return "redirect:/rheinjug2/student/visitedevents";
+
+    authenticatedAccess.increment();
+
+    return "redirect:/rheinjug2/student/events#";
   }
 }

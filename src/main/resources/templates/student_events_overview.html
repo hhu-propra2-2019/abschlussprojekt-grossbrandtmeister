@@ -185,7 +185,7 @@
                     <form action="#" method="POST">
                         <div th:switch="${event.status}">
 
-                            <form action="#" method="POST" th:action="'/personalView'">
+                            <form action="#" method="POST" th:action="'/events#'">
                                <span th:if="${#lists.contains(studentRegisteredForEvent, event.getId())}">
                                     <button class="btn btn-outline-danger btn-block" disabled type="submit">
                                         Bereits angemeldet
