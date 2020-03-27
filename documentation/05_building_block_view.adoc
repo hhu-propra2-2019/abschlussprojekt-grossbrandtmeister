@@ -76,6 +76,7 @@ Enthaltene Bausteine:: Unser System teilt sich wie im obigen Diagramm in verschi
 Wichtige Schnittstellen:: Die wichtigsten Schnittstellen unseres Systems sind die Website zur Bedienung des Systems durch die Nutzer,
 die Schnittstelle zu MinIO, dem Fileserver auf dem Dateien für unser System gespeichert werden
 und die Schnittstelle zur meetup.com API, über die aktuelle Events abgerufen und in unserem System verfügbar gemacht werden.
+Die Schnittstelle zu unserer Datenbank wird über unsere Repositories realisiert.
 
 [role="arc42help"]
 ****
@@ -98,9 +99,11 @@ Dessen Überschrift ist jeweils der Namen dieser Blackbox.
 |===
 | **Subsystem** | **Kurzbeschreibung**
 | Controller | Leitet http Anfragen an unser System an die entsprechenden Subsysteme weiter.
+| Repositories | Bieten ein programmierbares Interface, um zwischen Java Code und SQL zu übersetzen.
+| ModelService | Bietet verschiedene Operationen um mit den Entitäten in unserer Datenbank zu arbeiten.
 | API Pumpe | Ruft Events von meetup.com ab und füllt diese in unsere Datenbank.
-| _<Blackbox 2>_ | _<Text>_
-| ... | ...
+| File Upload | Kümmert sich um das Hoch- und Herunterladen von Zusammenfassungen auf den MinIO Server.
+| Credit Points | Prüft die Voraussetzungen für die Ausstellung von Credit Points und sendet das zugehörige PDF-Formular an einen Verantwortlichen.
 |===
 
 ==== Controller
@@ -118,13 +121,15 @@ Hierzu gehören eventuell auch Qualitäts- und Leistungsmerkmale dieser Schnitts
 * (Optional) Offene Punkte/Probleme/Risiken
 ****
 
-_<Zweck/Verantwortung>_
+Zweck/Verantwortung::
 
 Das Controller System ist dafür zuständig Anfragen, die per http an unser System gestellt werden zu verarbeiten.
 Genauer bedeutet dies, dass dieses System die Schnittstellen der anderen Systeme nach Daten abfragt und diese auf
 unseren Websites zur Verfügung stellt.
 
-_<Schnittstelle(n)>_
+Schnittstelle(n)::
+
+Die Controller sind direkt mit dem Frontend verknüpft.
 
 _<(Optional) Qualitäts-/Leistungsmerkmale>_
 
@@ -149,6 +154,10 @@ alle Events ab diesem Zeitpunkt abgerufen werden.
 Außerdem stellt die Klasse `updateStatusOfPastEvents()` zur Verfügung womit manuell der Status
 aller vergangenen Events auf Korrektheit geprüft werden kann, falls so gewünscht.
 
+Erfüllte Anforderungen::
+
+Unser System kann damit die Events von meetup.com widerspiegeln, damit Nutzer sich zu diesen anmelden können und mehr.
+
 Offene Punkte/Probleme/Risiken::
 
 Falls von meetup.com ein Event mit fehlenden wichtigen Daten (z.B. Name) geliefert wird, kann es in diesem System
@@ -159,11 +168,18 @@ zu Problemen kommen, dies sollte allerdings niemals der Fall sein.
 _<Blackbox-Template>_
 
 
-==== <Name Schnittstelle 1>
+==== Frontend
 
-...
+Das HTML Frontend dient als Schnittstelle zwischen Nutzer und Applikation. Es stellt dem Nutzer graphisch
+alle relevanten Funktionen zur Verfügung.
 
-==== <Name Schnittstelle m>
+==== Datenbank
+
+Auf unsere Datenbank wird über unseren Java Code zugegriffen, dabei bieten die Repositories einen Zugang
+zu dieser Schnittstelle. Die Repositories dienen dazu SQL Queries als Java Methoden zu definieren, der
+Rest geschieht über Spring.
+
+Zweck/Verantwortung::
 
 === Ebene 2
 
