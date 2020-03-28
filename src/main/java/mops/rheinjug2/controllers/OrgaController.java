@@ -100,7 +100,7 @@ public class OrgaController {
   }
 
   /**
-   * Mapping der Annahme von Zussamenfassungen.
+   * Mapping der Annahme von Zusammenfassungen.
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/summaryaccepting")
@@ -141,7 +141,7 @@ public class OrgaController {
     model.addAttribute("account", account);
     authenticatedAccess.increment();
     if (file.isEmpty() && summaryContent.isEmpty()) {
-      errorMessage = "Zusammenfaung Inhalt ist noch erfordelich für eine Abgabe.";
+      errorMessage = "Die Zusammenfassung ist noch erforderlich für eine Abgabe.";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
     if (!file.isEmpty()) {
@@ -149,23 +149,23 @@ public class OrgaController {
         try {
           if (!orgaService.summaryuploadFileContent(studentId, eventId, studentName, file)) {
             errorMessage =
-                "Zusammenfassung wurde nicht hochgeladen Student oder Event nicht gefunden.";
+                "Zusammenfassung wurde nicht hochgeladen, Student oder Event nicht gefunden.";
             return "redirect:/rheinjug2/orga/delayedSubmission";
           }
         } catch (final RuntimeException e) {
-          errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
+          errorMessage = "Zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
           return "redirect:/rheinjug2/orga/delayedSubmission";
         }
         successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
         return "redirect:/rheinjug2/orga/delayedSubmission";
       }
-      errorMessage = "Zusaamenfassung bitte in Markdown (.md) Format hochladen ";
+      errorMessage = "Zusammenfassung bitte in Markdown (.md) Format hochladen.";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     } else {
       try {
         orgaService.summaryuploadStringContent(studentId, eventId, studentName, summaryContent);
       } catch (final RuntimeException e) {
-        errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
+        errorMessage = "Zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
         return "redirect:/rheinjug2/orga/delayedSubmission";
       }
       successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
@@ -212,7 +212,7 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/searchstudent")
-  public String searchstudent(@RequestParam final String searchedName,
+  public String searchstudent(@RequestParam(name = "searchedName") final String searchedName,
                               final RedirectAttributes redirectAttributes,
                               final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
@@ -222,7 +222,7 @@ public class OrgaController {
         orgaService.getDelayedSubmissionsForStudent(searchedName);
     if (delayedsubmissions.isEmpty()) {
       errorMessage =
-          "keine verspätete Abgaben mit der Name '" + searchedName + "' worden gefunden.";
+          "Es konnten unter diesem Namen '" + searchedName + "' keine verspäteten Abgaben gefunden werden.";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
@@ -247,7 +247,7 @@ public class OrgaController {
         orgaService.getDelayedSubmissionsForEvent(searchedName);
     if (delayedsubmissions.isEmpty()) {
       errorMessage =
-          "keine verspätete Abgaben mit der Title '" + searchedName + "' worden gefunden.";
+          "Es konnten unter diesem Titel '" + searchedName + "' keine verspäteten Abgaben gefunden werden.";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
