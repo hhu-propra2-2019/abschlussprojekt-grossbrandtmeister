@@ -222,7 +222,8 @@ public class OrgaController {
         orgaService.getDelayedSubmissionsForStudent(searchedName);
     if (delayedsubmissions.isEmpty()) {
       errorMessage =
-          "Es konnten unter diesem Namen '" + searchedName + "' keine verspäteten Abgaben gefunden werden.";
+          "Es konnten unter diesem Namen '" + searchedName
+              + "' keine verspäteten Abgaben gefunden werden.";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
@@ -247,7 +248,8 @@ public class OrgaController {
         orgaService.getDelayedSubmissionsForEvent(searchedName);
     if (delayedsubmissions.isEmpty()) {
       errorMessage =
-          "Es konnten unter diesem Titel '" + searchedName + "' keine verspäteten Abgaben gefunden werden.";
+          "Es konnten unter diesem Titel '" + searchedName
+              + "' keine verspäteten Abgaben gefunden werden.";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
