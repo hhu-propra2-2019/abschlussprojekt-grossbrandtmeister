@@ -11,7 +11,6 @@ import mops.rheinjug2.Account;
 import mops.rheinjug2.AccountCreator;
 import mops.rheinjug2.fileupload.FileCheckService;
 import mops.rheinjug2.orgamodels.DelayedSubmission;
-import mops.rheinjug2.orgamodels.SearchForm;
 import mops.rheinjug2.services.EventService;
 import mops.rheinjug2.services.OrgaService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -95,7 +94,6 @@ public class OrgaController {
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
     model.addAttribute("successmessage", successMessage);
     model.addAttribute("errormessage", errorMessage);
-    model.addAttribute("searchForm", new SearchForm(""));
     successMessage = "";
     errorMessage = "";
     return "orga_delayed_submission";
@@ -142,17 +140,28 @@ public class OrgaController {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     authenticatedAccess.increment();
-    log.debug("studentId: " + studentId
-        + "; eventId: " + eventId
-        + "; studentName: " + studentName
-        + "; summaryContent: " + summaryContent
-        + "; file.isEmpty(): " + file.isEmpty()
-    );
     if (file.isEmpty() && summaryContent.isEmpty()) {
       errorMessage = "Zusammenfaung Inhalt ist noch erfordelich für eine Abgabe.";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
-    if (file.isEmpty()) {
+    if (!file.isEmpty()) {
+      if (FileCheckService.isMarkdown(file)) {
+        try {
+          if (!orgaService.summaryuploadFileContent(studentId, eventId, studentName, file)) {
+            errorMessage =
+                "Zusammenfassung wurde nicht hochgeladen Student oder Event nicht gefunden.";
+            return "redirect:/rheinjug2/orga/delayedSubmission";
+          }
+        } catch (final RuntimeException e) {
+          errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
+          return "redirect:/rheinjug2/orga/delayedSubmission";
+        }
+        successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
+        return "redirect:/rheinjug2/orga/delayedSubmission";
+      }
+      errorMessage = "Zusaamenfassung bitte in Markdown (.md) Format hochladen ";
+      return "redirect:/rheinjug2/orga/delayedSubmission";
+    } else {
       try {
         orgaService.summaryuploadStringContent(studentId, eventId, studentName, summaryContent);
       } catch (final RuntimeException e) {
@@ -162,23 +171,6 @@ public class OrgaController {
       successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
-    if (!file.isEmpty()) {
-      if (FileCheckService.isMarkdown(file)) {
-        try {
-          orgaService.summaryuploadFileContent(studentId, eventId, studentName, file);
-        } catch (final RuntimeException e) {
-          errorMessage = "zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
-          return "redirect:/rheinjug2/orga/delayedSubmission";
-
-        }
-        successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
-        return "redirect:/rheinjug2/orga/delayedSubmission";
-      }
-      errorMessage = "Zusaamenfassung bitte in Markdown (.md) Format hochladen ";
-      return "redirect:/rheinjug2/orga/delayedSubmission";
-    }
-    errorMessage = "Zusammenfassung wude nicht hochgeladen.";
-    return "redirect:/rheinjug2/orga/delayedSubmission";
   }
 
   /**
@@ -228,6 +220,11 @@ public class OrgaController {
     authenticatedAccess.increment();
     final List<DelayedSubmission> delayedsubmissions =
         orgaService.getDelayedSubmissionsForStudent(searchedName);
+    if (delayedsubmissions.isEmpty()) {
+      errorMessage =
+          "keine verspätete Abgaben mit der Name '" + searchedName + "' worden gefunden.";
+      return "redirect:/rheinjug2/orga/delayedSubmission";
+    }
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }
@@ -248,6 +245,11 @@ public class OrgaController {
     authenticatedAccess.increment();
     final List<DelayedSubmission> delayedsubmissions =
         orgaService.getDelayedSubmissionsForEvent(searchedName);
+    if (delayedsubmissions.isEmpty()) {
+      errorMessage =
+          "keine verspätete Abgaben mit der Title '" + searchedName + "' worden gefunden.";
+      return "redirect:/rheinjug2/orga/delayedSubmission";
+    }
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
     return "redirect:/rheinjug2/orga/delayedSubmission";
   }
