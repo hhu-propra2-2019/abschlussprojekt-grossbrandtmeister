@@ -318,8 +318,10 @@ public class OrgaServiceTests {
     final MultipartFile file = new MockMultipartFile("file",
         "file.md", "text/plain",
         "testdata".getBytes(StandardCharsets.UTF_8));
-    orgaService.summaryuploadFileContent((long) 1, (long) 1, "student1login", file);
+    final boolean bol =
+        orgaService.summaryuploadFileContent((long) 1, (long) 1, "student1login", file);
 
+    Assertions.assertThat(bol).isTrue();
     verify(fileService, times(1))
         .uploadFile(file, student1.getLogin() + "_" + event1.getId());
     verify(student1ref, times(1)).setSubmittedSummary(true);
