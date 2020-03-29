@@ -142,35 +142,30 @@ public class OrgaController {
     authenticatedAccess.increment();
     if (file.isEmpty() && summaryContent.isEmpty()) {
       errorMessage = "Die Zusammenfassung ist noch erforderlich für eine Abgabe.";
-      return "redirect:/rheinjug2/orga/delayedSubmission";
-    }
-    if (!file.isEmpty()) {
+    } else if (!file.isEmpty()) {
       if (FileCheckService.isMarkdown(file)) {
         try {
           if (!orgaService.summaryuploadFileContent(studentId, eventId, studentName, file)) {
             errorMessage =
                 "Zusammenfassung wurde nicht hochgeladen, Student oder Event nicht gefunden.";
-            return "redirect:/rheinjug2/orga/delayedSubmission";
+          } else {
+            successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
           }
         } catch (final RuntimeException e) {
           errorMessage = "Zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
-          return "redirect:/rheinjug2/orga/delayedSubmission";
         }
-        successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
-        return "redirect:/rheinjug2/orga/delayedSubmission";
+      } else {
+        errorMessage = "Zusammenfassung bitte in Markdown (.md) Format hochladen.";
       }
-      errorMessage = "Zusammenfassung bitte in Markdown (.md) Format hochladen.";
-      return "redirect:/rheinjug2/orga/delayedSubmission";
     } else {
       try {
         orgaService.summaryuploadStringContent(studentId, eventId, studentName, summaryContent);
+        successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
       } catch (final RuntimeException e) {
         errorMessage = "Zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
-        return "redirect:/rheinjug2/orga/delayedSubmission";
       }
-      successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
-      return "redirect:/rheinjug2/orga/delayedSubmission";
     }
+    return "redirect:/rheinjug2/orga/delayedSubmission";
   }
 
   /**
