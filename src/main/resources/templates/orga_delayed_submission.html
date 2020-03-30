@@ -58,12 +58,12 @@
     <div id="successmessage" class=" container alert alert-success alert-dismissible"
          style="padding: 10px;"
          role="alert" th:text="${successmessage}"
-         th:if="${successmessage != ''}">
+         th:if="${successmessage != null }">
     </div>
     <div id="errormessage" class=" container alert alert-danger alert-dismissible"
          style="padding: 10px;"
          role="alert" th:text="${errormessage}"
-         th:if="${errormessage != ''}">
+         th:if="${errormessage != null}">
     </div>
     <div class=" container alert alert-success alert-dismissible"
          style="padding: 10px;"

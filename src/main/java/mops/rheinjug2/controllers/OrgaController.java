@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -30,15 +29,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Log4j2
 @Controller
 @RequestMapping("/rheinjug2/orga")
-@SessionScope
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OrgaController {
 
   private final transient Counter authenticatedAccess;
   private final transient EventService eventService;
   private final transient OrgaService orgaService;
-  private transient String successMessage = "";
-  private transient String errorMessage = "";
   private transient int numberOfEvaluationRequests;
 
   /**
@@ -92,10 +88,6 @@ public class OrgaController {
     }
     model.addAttribute("account", account);
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
-    model.addAttribute("successmessage", successMessage);
-    model.addAttribute("errormessage", errorMessage);
-    successMessage = "";
-    errorMessage = "";
     return "orga_delayed_submission";
   }
 
@@ -107,16 +99,19 @@ public class OrgaController {
   public String summaryAccepting(@RequestParam final Long eventid,
                                  @RequestParam final Long studentid,
                                  final Model model,
-                                 final KeycloakAuthenticationToken token) {
+                                 final KeycloakAuthenticationToken token,
+                                 final RedirectAttributes redirectAttributes) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     authenticatedAccess.increment();
     model.addAttribute("account", account);
     if (orgaService.setSummaryAsAccepted(studentid, eventid)) {
       numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
-      successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert gespeichert.";
-      return "redirect:/rheinjug2/orga/reports";
+      redirectAttributes.addFlashAttribute("successmessage",
+          "Zusammenfassung wurde erfolgreich als akzeptiert gespeichert.");
+    } else {
+      redirectAttributes.addFlashAttribute("errormessage",
+          "Fehler.. Zusammenfassung wurde nicht gespeichert.");
     }
-    errorMessage = "Fehler.. Zusammenfassung wurde nicht gespeichert ";
     return "redirect:/rheinjug2/orga/reports";
   }
 
@@ -135,34 +130,41 @@ public class OrgaController {
                               @RequestParam final String summaryContent,
                               @RequestParam final MultipartFile file,
                               final Model model,
-                              final KeycloakAuthenticationToken token
+                              final KeycloakAuthenticationToken token,
+                              final RedirectAttributes redirectAttributes
   ) throws IOException {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     authenticatedAccess.increment();
     if (file.isEmpty() && summaryContent.isEmpty()) {
-      errorMessage = "Die Zusammenfassung ist noch erforderlich für eine Abgabe.";
+      redirectAttributes.addFlashAttribute("errormessage",
+          "Die Zusammenfassung ist noch erforderlich für eine Abgabe.");
     } else if (!file.isEmpty()) {
       if (FileCheckService.isMarkdown(file)) {
         try {
           if (!orgaService.summaryuploadFileContent(studentId, eventId, studentName, file)) {
-            errorMessage =
-                "Zusammenfassung wurde nicht hochgeladen, Student oder Event nicht gefunden.";
+            redirectAttributes.addFlashAttribute("errormessage",
+                "Zusammenfassung wurde nicht hochgeladen, Student oder Event nicht gefunden.");
           } else {
-            successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
+            redirectAttributes.addFlashAttribute("successmessage",
+                "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.");
           }
         } catch (final RuntimeException e) {
-          errorMessage = "Zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
+          redirectAttributes.addFlashAttribute("errormessage",
+              "Zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage());
         }
       } else {
-        errorMessage = "Zusammenfassung bitte in Markdown (.md) Format hochladen.";
+        redirectAttributes.addFlashAttribute("errormessage",
+            "Zusammenfassung bitte in Markdown (.md) Format hochladen.");
       }
     } else {
       try {
         orgaService.summaryuploadStringContent(studentId, eventId, studentName, summaryContent);
-        successMessage = "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.";
+        redirectAttributes.addFlashAttribute("successmessage",
+            "Zusammenfassung wurde erfolgreich als akzeptiert hochgeladen.");
       } catch (final RuntimeException e) {
-        errorMessage = "Zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage();
+        redirectAttributes.addFlashAttribute("errormessage",
+            "Zusammenfassung wurde nicht gespeichert: MinIO " + e.getMessage());
       }
     }
     return "redirect:/rheinjug2/orga/delayedSubmission";
@@ -178,11 +180,7 @@ public class OrgaController {
     model.addAttribute("account", account);
     authenticatedAccess.increment();
     model.addAttribute("summaries", orgaService.getSummaries());
-    model.addAttribute("successmessage", successMessage);
-    model.addAttribute("errormessage", errorMessage);
     model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
-    successMessage = "";
-    errorMessage = "";
     return "orga_reports_overview";
   }
 
@@ -216,9 +214,9 @@ public class OrgaController {
     final List<DelayedSubmission> delayedsubmissions =
         orgaService.getDelayedSubmissionsForStudent(searchedName);
     if (delayedsubmissions.isEmpty()) {
-      errorMessage =
+      redirectAttributes.addFlashAttribute("errormessage",
           "Es konnten unter diesem Namen '" + searchedName
-              + "' keine verspäteten Abgaben gefunden werden.";
+              + "' keine verspäteten Abgaben gefunden werden.");
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
@@ -235,16 +233,17 @@ public class OrgaController {
   @PostMapping("/searchevent")
   public String searchevent(@RequestParam final String searchedName,
                             final RedirectAttributes redirectAttributes,
-                            final KeycloakAuthenticationToken token, final Model model) {
+                            final KeycloakAuthenticationToken token,
+                            final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     authenticatedAccess.increment();
     final List<DelayedSubmission> delayedsubmissions =
         orgaService.getDelayedSubmissionsForEvent(searchedName);
     if (delayedsubmissions.isEmpty()) {
-      errorMessage =
+      redirectAttributes.addFlashAttribute("errormessage",
           "Es konnten unter diesem Titel '" + searchedName
-              + "' keine verspäteten Abgaben gefunden werden.";
+              + "' keine verspäteten Abgaben gefunden werden.");
       return "redirect:/rheinjug2/orga/delayedSubmission";
     }
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
