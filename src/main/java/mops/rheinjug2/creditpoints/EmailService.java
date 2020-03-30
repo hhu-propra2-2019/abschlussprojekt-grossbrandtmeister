@@ -14,12 +14,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("checkstyle:LineLength")
 @Service
 @Log4j2
 public class EmailService {
   
-  private final transient CertificateService certificateService;
   private final transient JavaMailSender emailSender;
   private final transient String recipient;
   private final transient int numberOfRequiredEntwickelbarEvents = 1;
@@ -27,9 +25,8 @@ public class EmailService {
   
   
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public EmailService(final CertificateService certificateService,
-                      final JavaMailSender emailSender, @Value("${application.email.recipient}") final String recipient) {
-    this.certificateService = certificateService;
+  public EmailService(final JavaMailSender emailSender,
+                      @Value("${application.email.recipient}") final String recipient) {
     this.emailSender = emailSender;
     this.recipient = recipient;
   }
@@ -37,11 +34,14 @@ public class EmailService {
   /**
    * erzeugen einer Email (+PDF) und versenden.
    */
-  public void sendMail(final String name, final String gender, final String matNr, final List<Event> usedEvents)
-      throws MessagingException {
+  public void sendMailWithPdf(final byte[] certificateBytes,
+                              final String name,
+                              final String gender,
+                              final String matNr,
+                              final List<Event> usedEvents) throws MessagingException {
     
-    final byte[] bytes = certificateService.createCertificatePdf(name, gender, matNr, usedEvents);
-    final ByteArrayDataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");
+    final ByteArrayDataSource dataSource =
+        new ByteArrayDataSource(certificateBytes, "application/pdf");
     final MimeBodyPart pdfBodyPart = new MimeBodyPart();
     pdfBodyPart.setDataHandler(new DataHandler(dataSource));
     pdfBodyPart.setFileName("Schein_" + matNr + ".pdf");

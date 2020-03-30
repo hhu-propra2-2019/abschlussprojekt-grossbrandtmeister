@@ -14,11 +14,16 @@ public class CreditpointService {
   
   private final transient ModelService modelService;
   private final transient EmailService emailService;
+  private final transient CertificateService certificateService;
   
   
-  public CreditpointService(final ModelService modelService, final EmailService emailService) {
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  public CreditpointService(final ModelService modelService,
+                            final EmailService emailService,
+                            final CertificateService certificateService) {
     this.modelService = modelService;
     this.emailService = emailService;
+    this.certificateService = certificateService;
   }
   
   /**
@@ -39,9 +44,15 @@ public class CreditpointService {
       final List<Event> usableEvents = modelService.getEventsForCertificate(login);
       
       modelService.useEventsForCertificate(login);
-      
-      emailService.sendMail(name, certificateForm.getGender(),
-          certificateForm.getMatNr(), usableEvents);
+      final byte[] certificateBytes = certificateService.createCertificatePdf(name,
+          certificateForm.getGender(),
+          certificateForm.getMatNr(),
+          usableEvents);
+      emailService.sendMailWithPdf(certificateBytes,
+          name,
+          certificateForm.getGender(),
+          certificateForm.getMatNr(),
+          usableEvents);
     }
   }
   
