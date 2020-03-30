@@ -59,7 +59,11 @@ class CreditpointServiceTest {
     creditpointService.sendMailIfPossible(certificateForm, login, name);
     
     verify(emailMock, times(1))
-        .sendMailWithPdf(certificateBytes, name, certificateForm.getGender(), certificateForm.getMatNr(), events);
+        .sendMailWithPdf(certificateBytes,
+            name,
+            certificateForm.getGender(),
+            certificateForm.getMatNr(),
+            events);
   }
   
   @Test
@@ -84,7 +88,11 @@ class CreditpointServiceTest {
     creditpointService.sendMailIfPossible(certificateForm, login, name);
     
     verify(emailMock, times(1))
-        .sendMailWithPdf(certificateBytes, name, certificateForm.getGender(), certificateForm.getMatNr(), events);
+        .sendMailWithPdf(certificateBytes,
+            name,
+            certificateForm.getGender(),
+            certificateForm.getMatNr(),
+            events);
   }
   
   @Test
@@ -108,7 +116,11 @@ class CreditpointServiceTest {
     creditpointService.sendMailIfPossible(certificateForm, login, name);
     
     verify(emailMock, never())
-        .sendMailWithPdf(certificateBytes, name, certificateForm.getGender(), certificateForm.getMatNr(), events);
+        .sendMailWithPdf(certificateBytes,
+            name,
+            certificateForm.getGender(),
+            certificateForm.getMatNr(),
+            events);
   }
   
   @Test
