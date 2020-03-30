@@ -39,7 +39,7 @@ public class Event {
    * werden können.
    */
   public boolean isOpenForSubmission() {
-    return LocalDateTime.now().isBefore(deadline);
+    return LocalDateTime.now().isBefore(deadline) && LocalDateTime.now().isAfter(date);
   }
 
   /**

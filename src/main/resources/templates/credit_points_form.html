@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Java in der Praxis', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -17,11 +17,12 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         style="border-right: 1px solid #aaaaaa;">
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungen Übersicht </a>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungsübersicht </a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal">
@@ -35,14 +36,16 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
-    <h1 class="text-center text-secondary"> Credit Points beantragen </h1>
-    <div class="container bg-light rounded shadow-lg text-secondary">
-        <form action="/rheinjug2/student/creditpoints/certificateform" method="POST" class="form-horizontal"
+    <h1 class="text-center text-secondary pt-4 font-weight-bold"
+        style="text-shadow: 10px 2px 20px white; font-size: 38px; color: #303535;"> Credit Points beantragen </h1>
+    <div class="container bg-light rounded shadow-lg text-secondary"
+         style="padding: 10px; margin-top: 40px; margin-bottom: 40px">
+        <form action="/rheinjug2/student/creditpoints/certificateform" method="POST" class="form-horizontal pt-3"
               th:object="${certificateForm}">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <div class="form-group row">
-                <div class="col-md-5 text-right">
-                    <label for="gender" class="control-label">Anrede</label>
+                <div class="col-md-5 text-right pt-1">
+                    <label for="gender" class="control-label" style="font-size: 18px;">Anrede</label>
                 </div>
                 <div class="col-md-3">
                     <select class="form-control border border-dark" id="gender" name="gender"
@@ -54,8 +57,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <div class="col-md-5 text-right">
-                    <label for="matNr" class="control-label">Matrikelnummer</label>
+                <div class="col-md-5 text-right pt-1">
+                    <label for="matNr" class="control-label" style="font-size: 18px;">Matrikelnummer</label>
                 </div>
                 <div class="col-md-3">
                     <input class="form-control border border-dark" id="matNr" name="Matrikelnummer"
@@ -65,7 +68,10 @@
             </div>
             <div class="form-group row text-center pt-3">
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-outline-success" id="submit">Senden
+                    <button type="submit" class="btn btn-outline-primary" id="submit">Senden <img
+                            src="../../static/icons/send.png"
+                            th:src="@{/icons/send.png}"
+                            style="width: 29px;height: 26px; margin-left: 5px;">
                     </button>
                 </div>
             </div>

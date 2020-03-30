@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Java in der Praxis', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -17,11 +17,12 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         style="border-right: 1px solid #aaaaaa;">
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungen Übersicht </a>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungsübersicht </a>
             </li>
             <li class="active">
                 <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal">
@@ -35,7 +36,8 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
-    <h1 class="text-center text-secondary">Belegte Veranstaltungen</h1>
+    <h1 class="text-center text-secondary pt-4 font-weight-bold"
+        style="text-shadow: 10px 2px 20px white; font-size: 38px; color: #303535;">Belegte Veranstaltungen</h1>
     <div th:if="${exists}">
         <div th:remove="all-but-first" th:each="eventAndStatus : ${studentEvents}">
             <div class="container bg-light rounded shadow "
@@ -43,27 +45,27 @@
                 <div class="row border-bottom  mx-1 my-1">
                     <div class="col-12 col-sm-4 border-right text-secondary my-1">
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-12" style="font-size: 18px">
                                 <i class="icono-calendar"></i>
-                                <span class="text-success"
+                                <span class="text-dark font-weight-bold"
                                       th:text="'&nbsp;'+${#temporals.format(eventAndStatus.key.date.toLocalDate(), 'dd.MM.yyyy')}">&nbsp;13.03.2020</span>
-                                <span class="text-success"
-                                      th:text="'&nbsp;'+|${#temporals.format(eventAndStatus.key.date.toLocalTime(), 'HH:mm')} bis ${eventAndStatus.key.getEndTime()}|">&nbsp;19:30 bis 20:30</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-sm-4 border-right text-secondary my-1">
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-12" style="font-size: 18px">
                                 <img src="../../static/icons/icon-time-clock.png"
                                      th:src="@{/icons/icon-time-clock.png}" style="width: 32px;height: 28px;">
-                                <span>&nbsp;Abgabefrist</span>
-                                <span th:text="'&nbsp;'+${eventAndStatus.key.getDeadlineDate()}">&nbsp;13.03.2020</span>
-                                <span th:text="'&nbsp;'+${eventAndStatus.key.getDeadlineTime()}">&nbsp;19:30</span>
+                                <span class="font-weight-bold">&nbsp;Abgabefrist</span>
+                                <span th:text="${eventAndStatus.key.getDeadlineDate()}"
+                                      class="text-danger">&nbsp;13.03.2020</span>
+                                <span th:text="${' ~ '+ eventAndStatus.key.getDeadlineTime()}"
+                                      class="text-dark">&nbsp;19:30</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4  my-1">
+                    <div class="col-12 col-sm-4  my-1" style="font-size: 18px">
                         <div class="row ">
                             <div class="col-12">
                                 <img src="../../static/icons/icon-credit-points.png"
@@ -80,8 +82,8 @@
                     </div>
                 </div>
                 <div class="row border-bottom  mx-1 my-1 align-content-center">
-                    <div class="col-12 text-secondary text-center  my-1">
-                        <h2 class="font-weight-bold" th:text="${eventAndStatus.key.title}">
+                    <div class="col-12 text-secondary text-center  my-2 pt-2">
+                        <h2 class="font-weight-bold" th:text="${eventAndStatus.key.title}" style="color:#4b4b4b;">
                             Double Feature: Webanwendungen mit MVC 1.0 / Typparameter
                         </h2>
                     </div>
@@ -102,7 +104,7 @@
                         <div class="row text-light justify-content-around mx-1 ">
                             <div class="col-12 mt-2">
                                 <div class="alert alert-warning text-center">
-                                    Veranstaltung steht an
+                                    Veranstaltung steht noch an
                                 </div>
                             </div>
                         </div>
@@ -227,7 +229,7 @@
                 <div class="row text-light justify-content-around mx-1 ">
                     <div class="col-12 mt-2">
                         <div class="alert alert-danger text-center">
-                            Zusammenfassung abgebe ist noch nicht möglich
+                            Abgabe einer Zusammenfassung ist noch nicht möglich
                         </div>
                     </div>
                 </div>
@@ -275,7 +277,7 @@
                 <div class="row text-light justify-content-around mx-1 ">
                     <div class="col-12 mt-2">
                         <div class="alert alert-danger text-center">
-                            Zusammenfassung abgebe ist nicht mehr möglich
+                            Abgabe einer Zusammenfassung ist noch nicht möglich
                         </div>
                     </div>
                 </div>

@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Java in der Praxis', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -15,11 +15,12 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation"
+         style="border-right: 1px solid #aaaaaa;">
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
-                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungen Übersicht </a>
+                <a th:href="@{/rheinjug2/student/events}" href="/home"> Veranstaltungsübersicht </a>
             </li>
             <li>
                 <a th:href="@{/rheinjug2/student/visitedevents}" href="/rheinjug2/student/personal">
@@ -33,21 +34,25 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
-    <h1 class="text-center text-secondary"> CP beantragen</h1>
+    <h1 class="text-center text-secondary font-weight-bold pt-4"
+        style="text-shadow: 10px 2px 20px white; font-size: 38px; color: #303535;"> CP beantragen <img
+            src="../../static/icons/cp.png"
+            th:src="@{/icons/cp.png}"
+            style="width: 42px;height: 42px; margin-bottom: 20px;"></h1>
 
     <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px"
          th:if="${eventsExist}">
-        <table class="table table-borderless">
+        <table class="table table-borderless rounded">
             <thead>
-            <tr>
-                <th>Veranstaltungen für CP</th>
-                <th>Eventtyp</th>
+            <tr style="font-size: 19px">
+                <th scope="col">Veranstaltungen für CP</th>
+                <th scope="col">Typ</th>
             </tr>
             </thead>
             <tbody th:remove="all-but-first">
             <tr th:each="event: ${events}">
-                <td th:text="${event.title}">Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
-                <td th:text="${event.type}">Abendveranstaltung</td>
+                <td th:text="${event.title}" scope="row">Double Feature: Webanwendungen mit MVC 1.0 / Typparameter</td>
+                <td th:text="${event.type}" scope="row">Abendveranstaltung</td>
             </tr>
             <tr>
                 <td>Double Feature: Webanwendungen mit MVC 1.0 / Typparameter (2)</td>
@@ -58,8 +63,8 @@
         <div th:if="${!disabled}">
             <form action="/rheinjug2/student/creditpoints/certificateform" method="GET" id="getForm">
                 <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
-                <button type="submit" class="btn col-12 btn-outline-success" name="second"
-                        th:disabled="${disabled}"> CP Beantragen
+                <button type="submit" class="btn col-12 btn-outline-primary" name="second"
+                        th:disabled="${disabled}"> CP beantragen
                 </button>
             </form>
         </div>
@@ -67,7 +72,7 @@
         <div th:if="${disabled}">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <button type="submit" class="btn col-12 btn-outline-secondary" name="second"
-                    th:disabled="${disabled}"> Nicht genügend Veranstaltungen zum einlösen.
+                    th:disabled="${disabled}"> Nicht genügend akzeptierte Zusammenfassungen.
             </button>
         </div>
 
@@ -76,7 +81,8 @@
     <div class=" container bg-light rounded shadow " style="padding: 10px; margin-top: 40px; margin-bottom: 40px"
          th:if="${!exists  || !eventsExist}">
         <div class="row border-bottom  mx-1 my-md-5 justify-content-center">
-            <p class="font-weight-bold text-dark"> Es gibt keine Veranstaltungen zur Beantragung von CPs </p>
+            <p class="font-weight-bold text-dark"> Es gibt keine akzeptierten Zusammenfassungen, um CPs zu
+                beantragen. </p>
         </div>
     </div>
 </main>

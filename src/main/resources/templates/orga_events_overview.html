@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Java in der Praxis', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Java in der Praxis</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -15,19 +15,19 @@
 </head>
 <body>
 <header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    <nav class="navigation navigation-secondary border-right" is="mops-navigation" th:fragment="navigation">
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li class="active">
-                <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungen Übersicht </a>
+                <a th:href="@{/rheinjug2/orga/events}"> Veranstaltungsübersicht </a>
             </li>
             <li>
-                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Bewertung Anfragen &emsp; &emsp;
+                <a class="col-12" th:href="@{/rheinjug2/orga/reports}"> Offene Bewertungen &emsp; &emsp;
                     <span class=" badge badge-primary badge-pill" th:text="${numberOfEvaluationRequests}">14</span>
                 </a>
             </li>
             <li>
-                <a th:href="@{/rheinjug2/orga/delayedSubmission}"> Verspätete Abgabe hochladen </a>
+                <a th:href="@{/rheinjug2/orga/delayedSubmission}">Verspätete Abgaben hochladen</a>
             </li>
         </ul>
     </nav>
@@ -63,8 +63,8 @@
                             <span th:text="${#temporals.format(event.getDate(), 'dd.MM.yyyy')}"
                                   th:classappend="${event.getStatus() == 'PAST'} ? text-danger "
                             >&nbsp;13.03.2020 </span>
-                            <small class="text-danger" th:if="${event.getStatus() == 'PAST'}">vergangene
-                                Veranstaltung</small>
+                            <small class="text-danger" th:if="${event.getStatus() == 'PAST'}">bereits
+                                stattgefunden</small>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
-                            <span>Anzahl angemeldte Studenten:&nbsp;</span>
+                            <span>Anzahl angemeldeter Studenten:&nbsp;</span>
                             <span class="text-success" th:text="${event.getNumberOfStudent()}"
                                   th:classappend="${event.getNumberOfStudent() > 0} ? text-success : text-danger">15</span>
                         </div>
@@ -93,7 +93,7 @@
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
-                            <span>Anzahl abgegebene Zusammenfassungen:&nbsp;</span>
+                            <span>Anzahl abgegebener Zusammenfassungen:&nbsp;</span>
                             <span class="text-success" th:text="${event.getNumberOfSubmition()}"
                                   th:classappend="${event.getNumberOfSubmition() > 0} ? text-success : text-danger">11</span>
                         </div>
@@ -133,7 +133,7 @@
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
-                            <span>Anzahl angemeldte Studenten:&nbsp;</span>
+                            <span>Anzahl angemeldeter Studenten:&nbsp;</span>
                             <span class="text-success">4</span>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
-                            <span>Anzahl abgegebene Zusammenfassungen:&nbsp;</span>
+                            <span>Anzahl abgegebener Zusammenfassungen:&nbsp;</span>
                             <span class="text-danger">0</span>
                         </div>
                     </div>
@@ -181,7 +181,7 @@
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
-                            <span>Anzahl angemeldte Studenten:&nbsp;</span>
+                            <span>Anzahl angemeldeter Studenten:&nbsp;</span>
                             <span class="text-danger">0</span>
                         </div>
                     </div>
@@ -189,7 +189,7 @@
                 <div class="col-12 col-sm-6 border-right text-secondary my-1">
                     <div class="row">
                         <div class="col-12">
-                            <span>Anzahl abgegebene Zusammenfassungen:&nbsp;</span>
+                            <span>Anzahl abgegebener Zusammenfassungen:&nbsp;</span>
                             <span class="text-danger">0</span>
                         </div>
                     </div>

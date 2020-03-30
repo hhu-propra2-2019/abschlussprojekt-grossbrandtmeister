@@ -262,22 +262,27 @@ public class OrgaService {
         .collect(Collectors.toList());
   }
 
-  /**Gibt.
-   * @param studentId .
-   * @param eventId .
+  /**
+   * Die Mithode lädt Die als file übergebene Abgabe hoch.
+   *
+   * @param studentId   .
+   * @param eventId     .
    * @param studentName .
-   * @param file .
+   * @param file        .
    * @throws IOException .
    */
-  public void summaryuploadFileContent(final Long studentId, final Long eventId,
-                                       final String studentName,
-                                       final MultipartFile file) throws IOException {
-    final String fileName = studentName + "_" + eventId;
-    fileService.uploadFile(file, fileName);
+  public boolean summaryuploadFileContent(final Long studentId, final Long eventId,
+                                          final String studentName,
+                                          final MultipartFile file) throws IOException {
     final Optional<Student> student = studentRepository.findById(studentId);
     final Optional<Event> event = eventRepository.findById(eventId);
+    if (!student.isPresent() || !event.isPresent()) {
+      return false;
+    }
     student.get().setSubmittedAndAccepted(event.get());
+    final String fileName = studentName + "_" + eventId;
+    fileService.uploadFile(file, fileName);
     studentRepository.save(student.get());
-
+    return true;
   }
 }
