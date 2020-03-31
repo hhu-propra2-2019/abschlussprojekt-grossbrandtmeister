@@ -35,7 +35,6 @@ public class OrgaController {
   private final transient Counter authenticatedAccess;
   private final transient EventService eventService;
   private final transient OrgaService orgaService;
-  private transient int numberOfEvaluationRequests;
 
   /**
    * Injected unsere Services und den Counter.
@@ -46,7 +45,6 @@ public class OrgaController {
     authenticatedAccess = registry.counter("access.authenticated");
     this.eventService = eventService;
     this.orgaService = orgaService;
-    numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
   }
 
   @Secured({"ROLE_orga"})
@@ -66,7 +64,8 @@ public class OrgaController {
     model.addAttribute("account", account);
     model.addAttribute("events", orgaService.getEvents());
     model.addAttribute("datenow", LocalDateTime.now());
-    model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
+    model.addAttribute("numberOfEvaluationRequests",
+        orgaService.getnumberOfEvaluationRequests());
     return "orga_events_overview";
   }
 
@@ -87,7 +86,8 @@ public class OrgaController {
       model.addAttribute("delayedsubmissions", orgaService.getDelayedSubmission());
     }
     model.addAttribute("account", account);
-    model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
+    model.addAttribute("numberOfEvaluationRequests",
+        orgaService.getnumberOfEvaluationRequests());
     return "orga_delayed_submission";
   }
 
@@ -105,7 +105,6 @@ public class OrgaController {
     authenticatedAccess.increment();
     model.addAttribute("account", account);
     if (orgaService.setSummaryAsAccepted(studentid, eventid)) {
-      numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
       redirectAttributes.addFlashAttribute("successmessage",
           "Zusammenfassung wurde erfolgreich als akzeptiert gespeichert.");
     } else {
@@ -180,7 +179,8 @@ public class OrgaController {
     model.addAttribute("account", account);
     authenticatedAccess.increment();
     model.addAttribute("summaries", orgaService.getSummaries());
-    model.addAttribute("numberOfEvaluationRequests", numberOfEvaluationRequests);
+    model.addAttribute("numberOfEvaluationRequests",
+        orgaService.getnumberOfEvaluationRequests());
     return "orga_reports_overview";
   }
 
@@ -205,7 +205,7 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/searchstudent")
-  public String searchstudent(@RequestParam(name = "searchedName") final String searchedName,
+  public String searchstudent(@RequestParam final String searchedName,
                               final RedirectAttributes redirectAttributes,
                               final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
@@ -248,10 +248,5 @@ public class OrgaController {
     }
     redirectAttributes.addFlashAttribute("delayedsubmissions", delayedsubmissions);
     return "redirect:/rheinjug2/orga/delayedSubmission";
-  }
-
-  @Scheduled(fixedDelayString = "${application.api-pump.delay}")
-  public void refreshNumberOfEvaluationRequests() {
-    numberOfEvaluationRequests = orgaService.getnumberOfEvaluationRequests();
   }
 }
