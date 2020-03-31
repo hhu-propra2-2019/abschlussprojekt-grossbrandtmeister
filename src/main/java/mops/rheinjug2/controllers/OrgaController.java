@@ -138,6 +138,7 @@ public class OrgaController {
     if (file.isEmpty() && summaryContent.isEmpty()) {
       redirectAttributes.addFlashAttribute("errormessage",
           "Die Zusammenfassung ist noch erforderlich für eine Abgabe.");
+      
     } else if (!file.isEmpty()) {
       if (FileCheckService.isMarkdown(file)) {
         try {
@@ -205,7 +206,7 @@ public class OrgaController {
    */
   @Secured({"ROLE_orga"})
   @PostMapping("/searchstudent")
-  public String searchstudent(@RequestParam final String searchedName,
+  public String searchstudent(@RequestParam(name = "searchedName") final String searchedName,
                               final RedirectAttributes redirectAttributes,
                               final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
