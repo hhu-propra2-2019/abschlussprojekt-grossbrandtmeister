@@ -40,33 +40,9 @@ public class CertificateService {
       final PDDocumentCatalog docCatalog = pdfForm.getDocumentCatalog();
       final PDAcroForm acroForm = docCatalog.getAcroForm();
       
-      acroForm.getField("Vorname, Name").setValue(name);
-      
-      acroForm.getField("Text").setValue(setGenderFormOfAddress(gender) + " "
-          + name + " - Matrikelnummer " + matnr + " wird hiermit bescheinigt, dass "
-          + setGenderPronoun(gender)
-          + " an folgenden rheinjug-Veranstaltungen (Java in der Praxis) "
-          + "teilgenommen und dazu jeweils eine Zusammenfassung geschrieben hat.");
-      
-      
-      if (usedEvents.size() == numberOfRequiredEveningEvents) {
-        acroForm.getField("Veranstaltung 1")
-            .setValue("- " + usedEvents.get(0).getTitle());
-        acroForm.getField("Veranstaltung 2")
-            .setValue("- " + usedEvents.get(1).getTitle());
-        acroForm.getField("Veranstaltung 3")
-            .setValue("- " + usedEvents.get(2).getTitle());
-      } else if (usedEvents.size() == numberOfRequiredEntwickelbarEvents) {
-        acroForm.getField("Veranstaltung 1")
-            .setValue("- " + usedEvents.get(0).getTitle());
-        acroForm.getField("Veranstaltung 2").setValue("");
-        acroForm.getField("Veranstaltung 3").setValue("");
-      } else {
-        return null;
-      }
-      
-      acroForm.getField("Datum 1").setValue(setCertificateDate());
-      acroForm.getField("Datum 2").setValue(setCertificateDate());
+      setTextFields(acroForm, gender, matnr, name);
+      setListOfUsedEvents(acroForm, usedEvents);
+      setCertificateDate(acroForm);
       
       outputStream = new ByteArrayOutputStream();
       pdfForm.save(outputStream);
@@ -82,12 +58,40 @@ public class CertificateService {
     return outputStream.toByteArray();
   }
   
-  /**
-   * Setzt beim Schein das aktuelle Datum.
-   */
-  private static String setCertificateDate() {
+  private static void setTextFields(final PDAcroForm acroForm,
+                                    final String gender,
+                                    final String matnr,
+                                    final String name) throws IOException {
+    acroForm.getField("Vorname, Name").setValue(name);
+    acroForm.getField("Text").setValue(setGenderFormOfAddress(gender) + " "
+        + name + " - Matrikelnummer " + matnr + " wird hiermit bescheinigt, dass "
+        + setGenderPronoun(gender)
+        + " an folgenden rheinjug-Veranstaltungen (Java in der Praxis) "
+        + "teilgenommen und dazu jeweils eine Zusammenfassung geschrieben hat.");
+  }
+  
+  private void setListOfUsedEvents(final PDAcroForm acroForm,
+                                   final List<Event> usedEvents) throws IOException {
+    if (usedEvents.size() == numberOfRequiredEveningEvents) {
+      acroForm.getField("Veranstaltung 1")
+          .setValue("- " + usedEvents.get(0).getTitle());
+      acroForm.getField("Veranstaltung 2")
+          .setValue("- " + usedEvents.get(1).getTitle());
+      acroForm.getField("Veranstaltung 3")
+          .setValue("- " + usedEvents.get(2).getTitle());
+    } else if (usedEvents.size() == numberOfRequiredEntwickelbarEvents) {
+      acroForm.getField("Veranstaltung 1")
+          .setValue("- " + usedEvents.get(0).getTitle());
+      acroForm.getField("Veranstaltung 2").setValue("");
+      acroForm.getField("Veranstaltung 3").setValue("");
+    }
+  }
+  
+  private static void setCertificateDate(final PDAcroForm acroForm) throws IOException {
     final LocalDate currentDate = LocalDate.now();
-    return currentDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    final String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    acroForm.getField("Datum 1").setValue(formattedDate);
+    acroForm.getField("Datum 2").setValue(formattedDate);
   }
   
   private static String setGenderFormOfAddress(final String gender) {
