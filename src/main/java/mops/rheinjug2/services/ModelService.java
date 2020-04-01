@@ -100,6 +100,17 @@ public class ModelService {
   }
 
   /**
+   * Die Zusammenfasssung des Studenten darf veröffentlicht werden.
+   */
+  public void addPublishingIsPossible(final String login, final Long eventId) {
+    final Event event = loadEventById(eventId);
+    final Student student = loadStudentByLogin(login);
+    student.setAcceptPublishingOfSummary(event);
+    studentRepository.save(student);
+  }
+
+
+  /**
    * Alle Veranstaltungen zurückgeben, die ein Student noch nicht
    * für CPs verbraucht hat.
    */

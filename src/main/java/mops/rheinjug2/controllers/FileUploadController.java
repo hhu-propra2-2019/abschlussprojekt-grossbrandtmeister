@@ -55,7 +55,8 @@ public class FileUploadController {
   public String uploadFile(final KeycloakAuthenticationToken token,
                            final RedirectAttributes attributes,
                            @RequestParam(value = "file") final MultipartFile file,
-                           final Long eventId) {
+                           final Long eventId,
+                           @RequestParam(value = "publish2", required = false) final String publish) {
     if (eventId == null) {
       attributes.addFlashAttribute("message", "Du hast kein Event "
           + "ausgewählt, für das du eine Zusammenfassung abgeben kannst. "
@@ -73,6 +74,9 @@ public class FileUploadController {
           attributes.addFlashAttribute("message",
               "Deine Datei wurde unter" + filename + "erfolgreich hochgeladen!");
         }
+        if (publish != null) {
+          modelService.addPublishingIsPossible(username, eventId);
+        }
       } catch (final Exception e) {
         log.catching(e);
         attributes.addFlashAttribute("message",
@@ -82,8 +86,8 @@ public class FileUploadController {
     } else {
       attributes.addFlashAttribute("message",
           "Deine Datei konnte nicht hochgeladen werden, "
-              + "da es sich nicht um ein Markdownfile (.md) handelt!"
-              + "Schreibe deine Zusammenfassung bitt in Markdown");
+              + "da es sich nicht um ein Markdownfile (.md) handelt! "
+              + "Schreibe deine Zusammenfassung bitte in Markdown");
     }
     authenticatedAccess.increment();
     return "redirect:/rheinjug2/student/reportsubmit?eventId=" + eventId;
@@ -97,7 +101,8 @@ public class FileUploadController {
 
   public String useForm(final KeycloakAuthenticationToken token,
                         final RedirectAttributes attributes, final Summary summary,
-                        final Long eventId) {
+                        final Long eventId,
+                        @RequestParam(value = "publish1", required = false) final String publish) {
     if (eventId == null) {
       attributes.addFlashAttribute("message", "Du hast kein Event "
           + "ausgewählt, für das du eine Zusammenfassung abgeben kannst."
@@ -114,7 +119,9 @@ public class FileUploadController {
         attributes.addFlashAttribute("message",
             "Du hast die Datei erfolgreich hochgeladen!");
       }
-
+      if (publish != null) {
+        modelService.addPublishingIsPossible(username, eventId);
+      }
     } catch (final Exception e) {
       log.catching(e);
       attributes.addFlashAttribute("message",
