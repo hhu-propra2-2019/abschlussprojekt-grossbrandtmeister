@@ -56,6 +56,9 @@ public class StudentController {
   public String getEvents(final KeycloakAuthenticationToken token, final Model model) {
     final Account account = AccountCreator.createAccountFromPrincipal(token);
     model.addAttribute("account", account);
+    modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 1);
+    modelService.addStudentToEvent(account.getName(), account.getEmail(), (long) 3);
+    model.addAttribute("account", account);
     model.addAttribute("events", modelService.getAllEvents());
     model.addAttribute("studentRegisteredForEvent",
         modelService.getAllEventIdsPerStudent(account.getName()));

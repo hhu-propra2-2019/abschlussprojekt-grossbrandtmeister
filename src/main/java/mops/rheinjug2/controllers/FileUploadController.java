@@ -56,14 +56,15 @@ public class FileUploadController {
                            final RedirectAttributes attributes,
                            @RequestParam(value = "file") final MultipartFile file,
                            final Long eventId,
-                           @RequestParam(value = "publish2", required = false) final String publish) {
+                           @RequestParam(value = "publish2",
+                               required = false) final String publish) {
     if (eventId == null) {
       attributes.addFlashAttribute("message", "Du hast kein Event "
           + "ausgewählt, für das du eine Zusammenfassung abgeben kannst. "
           + "Gehe zu meinen Veranstaltungen und wähle eine aus.");
       return "redirect:/rheinjug2/student/reportsubmit";
     }
-    if (FileCheckService.isMarkdown(file)) {
+    if (fileCheckService.isMarkdown(file)) {
       try {
         final KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
         final String username = principal.getName();

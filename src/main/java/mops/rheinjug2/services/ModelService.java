@@ -103,9 +103,9 @@ public class ModelService {
    * Die Zusammenfasssung des Studenten darf veröffentlicht werden.
    */
   public void addPublishingIsPossible(final String login, final Long eventId) {
-    final Event event = loadEventById(eventId);
     final Student student = loadStudentByLogin(login);
-    student.setAcceptPublishingOfSummary(event);
+    final Event event = loadEventById(eventId);
+    student.addAcceptPublishingOfSummary(event);
     studentRepository.save(student);
   }
 
