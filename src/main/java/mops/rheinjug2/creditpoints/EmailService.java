@@ -40,15 +40,44 @@ public class EmailService {
                               final String matNr,
                               final List<Event> usedEvents) throws MessagingException {
     
-    final ByteArrayDataSource dataSource =
-        new ByteArrayDataSource(certificateBytes, "application/pdf");
+    final MimeBodyPart pdfBodyPart = createPdfBodyPart(certificateBytes, matNr);
+    final MimeBodyPart textBodyPart = createTextBodyPart(name, gender, matNr, usedEvents);
+    final MimeMultipart mimeMultipart = createMimeMultiPart(pdfBodyPart, textBodyPart);
+    final MimeMessage mimeMessage = createMimeMessage(name, mimeMultipart);
+    
+    emailSender.send(mimeMessage);
+  }
+  
+  private static MimeBodyPart createPdfBodyPart(final byte[] certificateBytes,
+                                                final String matNr) throws MessagingException {
+    final ByteArrayDataSource dataSource = new ByteArrayDataSource(certificateBytes,
+        "application/pdf");
+    
     final MimeBodyPart pdfBodyPart = new MimeBodyPart();
     pdfBodyPart.setDataHandler(new DataHandler(dataSource));
     pdfBodyPart.setFileName("Schein_" + matNr + ".pdf");
     
+    return pdfBodyPart;
+  }
+  
+  private MimeBodyPart createTextBodyPart(final String name,
+                                          final String gender,
+                                          final String matNr,
+                                          final List<Event> usedEvents) throws MessagingException {
+    final String text = createMailText(name, gender, matNr, usedEvents);
+    
+    final MimeBodyPart textBodyPart = new MimeBodyPart();
+    textBodyPart.setText(text);
+    
+    return textBodyPart;
+  }
+  
+  private String createMailText(final String name,
+                                final String gender,
+                                final String matNr,
+                                final List<Event> usedEvents) {
     String text = setGender(gender) + name + " (Matr: " + matNr + ") beantragt folgende "
         + "Veranstaltung(en) gegen 0.5 CP einzutauschen:\n";
-    
     if (usedEvents.size() == numberOfRequiredEveningEvents) {
       text = text
           + "- " + usedEvents.get(0).getTitle() + "\n"
@@ -58,13 +87,23 @@ public class EmailService {
       text = text
           + "- " + usedEvents.get(0).getTitle() + "\n";
     }
-    
-    final MimeBodyPart textBodyPart = new MimeBodyPart();
-    textBodyPart.setText(text);
+    return text;
+  }
+  
+  private static MimeMultipart createMimeMultiPart(final MimeBodyPart pdfBodyPart,
+                                                   final MimeBodyPart textBodyPart)
+      throws MessagingException {
     
     final MimeMultipart mimeMultipart = new MimeMultipart();
     mimeMultipart.addBodyPart(textBodyPart);
     mimeMultipart.addBodyPart(pdfBodyPart);
+    
+    return mimeMultipart;
+  }
+  
+  private MimeMessage createMimeMessage(final String name,
+                                        final MimeMultipart mimeMultipart)
+      throws MessagingException {
     
     final String subject = "Java in der Praxis: Scheinbeantragung von " + name;
     
@@ -74,7 +113,7 @@ public class EmailService {
     mimeMessageHelper.setTo(recipient);
     mimeMessage.setContent(mimeMultipart);
     
-    emailSender.send(mimeMessage);
+    return mimeMessage;
   }
   
   private static String setGender(final String gender) {
