@@ -201,9 +201,9 @@ public class OrgaControllerTest {
   @Test
   public void getDelayedSubmissionTest() throws Exception {
     setupMockUserWithRole("orga");
-    List<DelayedSubmission> delayedSubmissions =  List.of(new DelayedSubmission(
-        1,1,"name","title",
-        LocalDateTime.now(),"content"
+    final List<DelayedSubmission> delayedSubmissions = List.of(new DelayedSubmission(
+        1, 1, "name", "title",
+        LocalDateTime.now(), "content"
     ));
     when(orgaService.getnumberOfEvaluationRequests()).thenReturn(1);
     when(orgaService.getDelayedSubmission()).thenReturn(delayedSubmissions);
@@ -212,7 +212,7 @@ public class OrgaControllerTest {
         .andExpect(MockMvcResultMatchers.model()
             .attribute("numberOfEvaluationRequests", 1))
         .andExpect(MockMvcResultMatchers.model()
-            .attribute("delayedsubmissions",delayedSubmissions))
+            .attribute("delayedsubmissions", delayedSubmissions))
         .andExpect(view().name("orga_delayed_submission"));
   }
 
@@ -223,8 +223,8 @@ public class OrgaControllerTest {
     final Event event = new Event();
     event.setDeadline(LocalDateTime.now().plusDays(1));
     final Student student = new Student("", "");
-    final OrgaSummary orgaSummary = new OrgaSummary(LocalDateTime.now(), student,
-        event, "summary");
+    final OrgaSummary orgaSummary = new OrgaSummary(LocalDateTime.now(), student, event,
+        "summary", false);
     when(orgaService.getSummaries()).thenReturn(List.of(orgaSummary));
 
 
@@ -382,21 +382,21 @@ public class OrgaControllerTest {
   @Test
   public void searchStudentWithResultsTest() throws Exception {
     setupMockUserWithRole("orga");
-    List<DelayedSubmission> delayedSubmissions =  List.of(new DelayedSubmission(
-        1,1,"name","title",
-        LocalDateTime.now(),"content"
+    final List<DelayedSubmission> delayedSubmissions = List.of(new DelayedSubmission(
+        1, 1, "name", "title",
+        LocalDateTime.now(), "content"
     ));
     when(orgaService.getDelayedSubmissionsForStudent("name"))
         .thenReturn(delayedSubmissions);
 
     mvc.perform(post(BASE_URL + "/searchstudent")
-        .param("searchedName","name")
+        .param("searchedName", "name")
         .with(csrf()))
         .andExpect(status().isFound())
         .andExpect(MockMvcResultMatchers.flash()
-            .attribute("errormessage",nullValue()))
+            .attribute("errormessage", nullValue()))
         .andExpect(MockMvcResultMatchers.flash()
-            .attribute("delayedsubmissions",delayedSubmissions))
+            .attribute("delayedsubmissions", delayedSubmissions))
         .andExpect(view().name("redirect:/rheinjug2/orga/delayedSubmission"));
     verify(orgaService, times(1))
         .getDelayedSubmissionsForStudent("name");
@@ -410,11 +410,11 @@ public class OrgaControllerTest {
         .thenReturn(List.of());
 
     mvc.perform(post(BASE_URL + "/searchstudent")
-        .param("searchedName","name")
+        .param("searchedName", "name")
         .with(csrf()))
         .andExpect(status().isFound())
         .andExpect(MockMvcResultMatchers.flash()
-            .attribute("errormessage","Es konnten unter diesem Namen"
+            .attribute("errormessage", "Es konnten unter diesem Namen"
                 + " 'name' keine verspäteten Abgaben gefunden werden."))
         .andExpect(MockMvcResultMatchers.flash()
             .attribute("delayedsubmissions", nullValue()))
@@ -428,21 +428,21 @@ public class OrgaControllerTest {
   @Test
   public void searchEventWithResultsTest() throws Exception {
     setupMockUserWithRole("orga");
-    List<DelayedSubmission> delayedSubmissions =  List.of(new DelayedSubmission(
-        1,1,"name","title",
-        LocalDateTime.now(),"content"
+    final List<DelayedSubmission> delayedSubmissions = List.of(new DelayedSubmission(
+        1, 1, "name", "title",
+        LocalDateTime.now(), "content"
     ));
     when(orgaService.getDelayedSubmissionsForEvent("title"))
         .thenReturn(delayedSubmissions);
 
     mvc.perform(post(BASE_URL + "/searchevent")
-        .param("searchedName","title")
+        .param("searchedName", "title")
         .with(csrf()))
         .andExpect(status().isFound())
         .andExpect(MockMvcResultMatchers.flash()
-            .attribute("errormessage",nullValue()))
+            .attribute("errormessage", nullValue()))
         .andExpect(MockMvcResultMatchers.flash()
-            .attribute("delayedsubmissions",delayedSubmissions))
+            .attribute("delayedsubmissions", delayedSubmissions))
         .andExpect(view().name("redirect:/rheinjug2/orga/delayedSubmission"));
     verify(orgaService, times(1))
         .getDelayedSubmissionsForEvent("title");
@@ -454,11 +454,11 @@ public class OrgaControllerTest {
     when(orgaService.getDelayedSubmissionsForEvent("title"))
         .thenReturn(List.of());
     mvc.perform(post(BASE_URL + "/searchevent")
-        .param("searchedName","title")
+        .param("searchedName", "title")
         .with(csrf()))
         .andExpect(status().isFound())
         .andExpect(MockMvcResultMatchers.flash()
-            .attribute("errormessage","Es konnten unter diesem Titel "
+            .attribute("errormessage", "Es konnten unter diesem Titel "
                 + "'title' keine verspäteten Abgaben gefunden werden."))
         .andExpect(MockMvcResultMatchers.flash()
             .attribute("delayedsubmissions", nullValue()))

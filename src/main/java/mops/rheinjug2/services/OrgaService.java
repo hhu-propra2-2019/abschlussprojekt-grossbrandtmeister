@@ -103,7 +103,8 @@ public class OrgaService {
                   student,
                   getSummaryEvent(notYetAcceptedSummary.getEvent()),
                   getSummaryContentFromFileservice(student.getLogin(),
-                      notYetAcceptedSummary.getEvent())
+                      notYetAcceptedSummary.getEvent()),
+                  notYetAcceptedSummary.isPublishSummary()
               ));
             } catch (final Exception e) {
               log.catching(e);
