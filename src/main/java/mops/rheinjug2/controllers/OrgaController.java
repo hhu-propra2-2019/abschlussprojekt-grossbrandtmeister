@@ -138,7 +138,7 @@ public class OrgaController {
     if (file.isEmpty() && summaryContent.isEmpty()) {
       redirectAttributes.addFlashAttribute("errormessage",
           "Die Zusammenfassung ist noch erforderlich für eine Abgabe.");
-      
+
     } else if (!file.isEmpty()) {
       if (FileCheckService.isMarkdown(file)) {
         try {

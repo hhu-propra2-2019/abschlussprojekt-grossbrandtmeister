@@ -2,6 +2,7 @@ package mops.rheinjug2.entities;
 
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,12 +55,11 @@ public class Student {
   /**
    * Eine Zusammenfassung hinzufügen.
    */
-
   public boolean addSummary(final Event event) {
     if (event.isOpenForSubmission()) {
       final EventRef ref = findEventRef(event);
       ref.setSubmittedSummary(true);
-      ref.setTimeOfSubmission(LocalDateTime.now());
+      ref.setTimeOfSubmission(LocalDateTime.now(ZoneId.of("Europe/Berlin")));
       log.info("Summary submitted.");
       return true;
     }
@@ -116,7 +116,7 @@ public class Student {
   }
 
   /**
-   * Die mithode wird von orga gebraucht um eine verpätet Abgabe zumachen.
+   * Die mithode wird von orga gebraucht um eine verspätet Abgabe zu machen.
    *
    * @param event .
    */
@@ -124,5 +124,14 @@ public class Student {
     final EventRef ref = findEventRef(event);
     ref.setSubmittedSummary(true);
     ref.setAccepted(true);
+  }
+
+  /**
+   * Ermöglicht einen Veröffentlichung der Zusammenfassung, wenn der Student zustimmt hat.
+   * Default ist auf nein gesetzt.
+   */
+  public void addAcceptPublishingOfSummary(final Event event) {
+    final EventRef ref = findEventRef(event);
+    ref.setPublishSummary(true);
   }
 }

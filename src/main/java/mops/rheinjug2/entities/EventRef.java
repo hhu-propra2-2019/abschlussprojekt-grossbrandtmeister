@@ -15,6 +15,7 @@ public class EventRef {
   private LocalDateTime deadline;
   private boolean accepted;
   private boolean usedForCertificate;
+  private boolean publishSummary;
 
   EventRef(final Long event, final LocalDateTime deadline) {
     this.event = event;

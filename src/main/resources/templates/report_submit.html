@@ -101,7 +101,11 @@
             </div>
             <input type="hidden" name="eventId" th:value="${summary.getEventId()}">
         </form>
-        <div class="d-flex flex-row-reverse px-2 pb-2">
+        <div class="col-12 col-sm-6">
+            <input type="checkbox" form="mysubmit" name="publish1" value="publish1"/> Zusammenfassung darf
+            veröffentlicht werden.
+        </div>
+        <div class="d-flex flex-column-reverse text-right mt-2">
             <a th:href="@{/rheinjug2/download/presentation}">
                 <p th:text="${noPresentation}" th:if="${noPresentation ne null}" class="alert alert-primary"></p>
                 <button class="btn btn-outline-dark">Vorlage herunterladen<img
@@ -120,7 +124,8 @@
         <div class="form-group">
             <div class=" row">
                 <div class="col-12 col-sm-6">
-                    <form action="reportsubmit" method="post" enctype="multipart/form-data" class="mt-2 ml-2">
+                    <form action="reportsubmit" method="post" enctype="multipart/form-data" class="mt-2 ml-2"
+                          id="report">
                         <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
                         <input type="file" name="file" multiple>
                         <input type="hidden" name="eventId" th:value="${summary.getEventId()}">
@@ -130,6 +135,9 @@
                         <img src="../../static/icons/upload.png" class="ml-3"
                              th:src="@{/icons/upload.png}"
                              style="width: 32px;height: 28px;">
+                        <p></p>
+                        <input type="checkbox" form="report" name="publish2" value="publish2"/> Zusammenfassung darf
+                        veröffentlicht werden.
                     </form>
                 </div>
                 <div class="col-12 col-sm-6 d-flex flex-column-reverse text-right mt-2">
