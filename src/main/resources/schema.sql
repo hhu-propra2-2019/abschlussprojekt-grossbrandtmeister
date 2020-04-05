@@ -34,5 +34,6 @@ CREATE TABLE IF NOT EXISTS student_event
     deadline             datetime,
     accepted             boolean,
     used_for_certificate boolean,
+    publish_summary      boolean,
     primary key (student, event)
 );

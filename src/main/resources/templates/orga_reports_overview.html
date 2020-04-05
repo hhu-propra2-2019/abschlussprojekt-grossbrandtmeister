@@ -143,6 +143,12 @@
                     </div>
                 </div>
             </div>
+            <div class=" row border-bottom border-top text-secondary mx-1 my-1 ">
+                <div class="col-12 my-1">
+                    <span th:if="${summary.isPublishAccepted() == true}"> Der Student ist mit der Veröffentlichung der Zusammenfassung einverstanden.</span>
+                    <span th:unless="${summary.isPublishAccepted() == true}">Der Student ist nicht mit der Veröffentlichung der Zusammenfassung einverstanden.</span>
+                </div>
+            </div>
 
         </div>
 

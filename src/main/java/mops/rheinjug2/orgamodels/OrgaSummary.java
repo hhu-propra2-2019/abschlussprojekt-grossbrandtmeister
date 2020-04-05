@@ -15,6 +15,7 @@ public class OrgaSummary {
   private LocalDateTime timeOfSubmission;
   private String summary;
   private LocalDateTime submissionDeadline;
+  private boolean publishAccepted;
 
   /**
    * OrgaSummary ist ein Objekt, das die Zussammenfassungen, die noch zubewerten sind
@@ -26,7 +27,7 @@ public class OrgaSummary {
    * @param timeOfSubmission abgabezeit.
    */
   public OrgaSummary(final LocalDateTime timeOfSubmission, final Student student,
-                     final Event event, final String summary) {
+                     final Event event, final String summary, final boolean publishAccepted) {
     eventId = event.getId();
     this.summary = summary;
     this.timeOfSubmission = timeOfSubmission;
@@ -35,6 +36,7 @@ public class OrgaSummary {
     studentEmail = student.getEmail();
     eventTitle = event.getTitle();
     submissionDeadline = event.getDeadline();
+    this.publishAccepted = publishAccepted;
   }
 }
 

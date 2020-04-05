@@ -27,8 +27,8 @@ public class DatabaseInitializer implements ServletContextInitializer {
   transient EventRepository eventRepository;
   transient StudentRepository studentRepository;
   transient ModelService modelService;
-  
-  
+
+
   /**
    * DB mit daten zum Tseten füllen.
    *
@@ -43,7 +43,7 @@ public class DatabaseInitializer implements ServletContextInitializer {
     this.studentRepository = studentRepository;
     this.modelService = modelService;
   }
-  
+
   @Override
   public void onStartup(final ServletContext servletContext) {
     final Faker faker = new Faker(Locale.GERMAN);
@@ -51,7 +51,7 @@ public class DatabaseInitializer implements ServletContextInitializer {
     fakeStudent(faker);
     fakeEventRef(faker);
   }
-  
+
   private void fakeEventRef(final Faker faker) {
     studentRepository.findAll().forEach(student -> {
       final Long eventid = (long) faker.number().numberBetween(1, 30);
@@ -61,8 +61,8 @@ public class DatabaseInitializer implements ServletContextInitializer {
       }
     });
   }
-  
-  
+
+
   private void fakeStudent(final Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
       final Student student = new Student(faker.name().firstName() + faker.number().digits(3),
@@ -71,7 +71,7 @@ public class DatabaseInitializer implements ServletContextInitializer {
       studentRepository.save(student);
     });
   }
-  
+
   @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
   private void fakeEvent(final Faker faker) {
     IntStream.range(0, 30).forEach(value -> {
@@ -94,13 +94,13 @@ public class DatabaseInitializer implements ServletContextInitializer {
       } else {
         event.setStatus("PAST");
       }
-      
+
       if (random.nextBoolean()) {
         event.setType("EntwickelBar");
       } else {
         event.setType("Abendveranstaltung");
       }
-      
+
       eventRepository.save(event);
       if (event.getId() == 1) {
         event.setDuration(Duration.ofHours(1));
@@ -111,14 +111,14 @@ public class DatabaseInitializer implements ServletContextInitializer {
       }
       if (event.getId() == 2) {
         event.setDuration(Duration.ofHours(1));
-        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 31), LocalTime.of(17, 30)));
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 30), LocalTime.of(17, 30)));
         event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
         event.setStatus("PAST");
         event.setType("Evening Event");
       }
       if (event.getId() == 3) {
-        event.setDuration(Duration.ofHours(1));
-        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 30), LocalTime.of(17, 30)));
+        event.setDuration(Duration.ofHours(2));
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 31), LocalTime.of(17, 30)));
         event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
         event.setStatus("PAST");
         event.setType("Evening Event");
