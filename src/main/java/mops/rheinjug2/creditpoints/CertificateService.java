@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class CertificateService {
   
-  private final transient int numberOfRequiredEntwickelbarEvents = 1;
-  private final transient int numberOfRequiredEveningEvents = 3;
+  private final transient String[] qualifiedNames
+      = {"Veranstaltung 1", "Veranstaltung 2", "Veranstaltung 3"};
   
   private transient PDDocument pdfForm;
   private transient ByteArrayOutputStream outputStream;
@@ -72,18 +72,12 @@ public class CertificateService {
   
   private void setListOfUsedEvents(final PDAcroForm acroForm,
                                    final List<Event> usedEvents) throws IOException {
-    if (usedEvents.size() == numberOfRequiredEveningEvents) {
-      acroForm.getField("Veranstaltung 1")
-          .setValue("- " + usedEvents.get(0).getTitle());
-      acroForm.getField("Veranstaltung 2")
-          .setValue("- " + usedEvents.get(1).getTitle());
-      acroForm.getField("Veranstaltung 3")
-          .setValue("- " + usedEvents.get(2).getTitle());
-    } else if (usedEvents.size() == numberOfRequiredEntwickelbarEvents) {
-      acroForm.getField("Veranstaltung 1")
-          .setValue("- " + usedEvents.get(0).getTitle());
-      acroForm.getField("Veranstaltung 2").setValue("");
-      acroForm.getField("Veranstaltung 3").setValue("");
+    for (int i = 0; i < usedEvents.size(); i++) {
+      acroForm.getField(qualifiedNames[i]).setValue("- " + usedEvents.get(i).getTitle());
+    }
+    final int numberOfPossibleEvents = 3;
+    for (int i = usedEvents.size(); i < numberOfPossibleEvents; i++) {
+      acroForm.getField(qualifiedNames[i]).setValue("");
     }
   }
   

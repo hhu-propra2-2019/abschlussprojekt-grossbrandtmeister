@@ -20,8 +20,6 @@ public class EmailService {
   
   private final transient JavaMailSender emailSender;
   private final transient String recipient;
-  private final transient int numberOfRequiredEntwickelbarEvents = 1;
-  private final transient int numberOfRequiredEveningEvents = 3;
   
   
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
@@ -60,10 +58,11 @@ public class EmailService {
     return pdfBodyPart;
   }
   
-  private MimeBodyPart createTextBodyPart(final String name,
-                                          final String gender,
-                                          final String matNr,
-                                          final List<Event> usedEvents) throws MessagingException {
+  private static MimeBodyPart createTextBodyPart(final String name,
+                                                 final String gender,
+                                                 final String matNr,
+                                                 final List<Event> usedEvents)
+      throws MessagingException {
     final String text = createMailText(name, gender, matNr, usedEvents);
     
     final MimeBodyPart textBodyPart = new MimeBodyPart();
@@ -72,22 +71,19 @@ public class EmailService {
     return textBodyPart;
   }
   
-  private String createMailText(final String name,
-                                final String gender,
-                                final String matNr,
-                                final List<Event> usedEvents) {
-    String text = setGender(gender) + name + " (Matr: " + matNr + ") beantragt folgende "
-        + "Veranstaltung(en) gegen 0.5 CP einzutauschen:\n";
-    if (usedEvents.size() == numberOfRequiredEveningEvents) {
-      text = text
-          + "- " + usedEvents.get(0).getTitle() + "\n"
-          + "- " + usedEvents.get(1).getTitle() + "\n"
-          + "- " + usedEvents.get(2).getTitle() + "\n";
-    } else if (usedEvents.size() == numberOfRequiredEntwickelbarEvents) {
-      text = text
-          + "- " + usedEvents.get(0).getTitle() + "\n";
+  private static String createMailText(final String name,
+                                       final String gender,
+                                       final String matNr,
+                                       final List<Event> usedEvents) {
+    final StringBuilder text = new StringBuilder(setGender(gender) + name
+        + " (Matr: " + matNr + ") beantragt folgende "
+        + "Veranstaltung(en) gegen 0.5 CP einzutauschen:\n");
+    
+    for (final Event event : usedEvents) {
+      text.append("- ").append(event.getTitle()).append("\n");
     }
-    return text;
+    
+    return text.toString();
   }
   
   private static MimeMultipart createMimeMultiPart(final MimeBodyPart pdfBodyPart,
