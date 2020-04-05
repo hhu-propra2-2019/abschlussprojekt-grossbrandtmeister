@@ -21,6 +21,7 @@ class CreditpointServiceTest {
   
   private transient ModelService modelMock;
   private transient EmailService emailMock;
+  private transient CertificateService certificateMock;
   
   private transient CreditpointService creditpointService;
   
@@ -28,7 +29,8 @@ class CreditpointServiceTest {
   public void setUp() {
     modelMock = mock(ModelService.class);
     emailMock = mock(EmailService.class);
-    creditpointService = new CreditpointService(modelMock, emailMock);
+    certificateMock = mock(CertificateService.class);
+    creditpointService = new CreditpointService(modelMock, emailMock, certificateMock);
   }
   
   @Test
@@ -44,15 +46,24 @@ class CreditpointServiceTest {
     events.add(event1);
     events.add(event2);
     events.add(event3);
+    final byte[] certificateBytes = new byte[10];
     final CertificateForm certificateForm = createCertificateForm("7654321", "male");
     when(modelMock.loadStudentByLogin(login)).thenReturn(student);
     when(modelMock.checkEventsForCertificate(login)).thenReturn(true);
     when(modelMock.getEventsForCertificate(login)).thenReturn(events);
+    when(certificateMock.createCertificatePdf(name,
+        certificateForm.getGender(),
+        certificateForm.getMatNr(),
+        events)).thenReturn(certificateBytes);
     
     creditpointService.sendMailIfPossible(certificateForm, login, name);
     
     verify(emailMock, times(1))
-        .sendMail(name, certificateForm.getGender(), certificateForm.getMatNr(), events);
+        .sendMailWithPdf(certificateBytes,
+            name,
+            certificateForm.getGender(),
+            certificateForm.getMatNr(),
+            events);
   }
   
   @Test
@@ -64,15 +75,24 @@ class CreditpointServiceTest {
     final Event event1 = createEvent("Event 1", "EntwickelBar");
     final List<Event> events = new ArrayList<>();
     events.add(event1);
+    final byte[] certificateBytes = new byte[10];
     final CertificateForm certificateForm = createCertificateForm("1234567", "male");
     when(modelMock.loadStudentByLogin(login)).thenReturn(student);
     when(modelMock.checkEventsForCertificate(login)).thenReturn(true);
     when(modelMock.getEventsForCertificate(login)).thenReturn(events);
+    when(certificateMock.createCertificatePdf(name,
+        certificateForm.getGender(),
+        certificateForm.getMatNr(),
+        events)).thenReturn(certificateBytes);
     
     creditpointService.sendMailIfPossible(certificateForm, login, name);
     
     verify(emailMock, times(1))
-        .sendMail(name, certificateForm.getGender(), certificateForm.getMatNr(), events);
+        .sendMailWithPdf(certificateBytes,
+            name,
+            certificateForm.getGender(),
+            certificateForm.getMatNr(),
+            events);
   }
   
   @Test
@@ -84,14 +104,23 @@ class CreditpointServiceTest {
     final Event event1 = createEvent("Event 1", "Abendveranstaltung");
     final List<Event> events = new ArrayList<>();
     events.add(event1);
+    final byte[] certificateBytes = new byte[10];
     final CertificateForm certificateForm = createCertificateForm("1234567", "female");
     when(modelMock.loadStudentByLogin(login)).thenReturn(student);
     when(modelMock.checkEventsForCertificate(login)).thenReturn(false);
+    when(certificateMock.createCertificatePdf(name,
+        certificateForm.getGender(),
+        certificateForm.getMatNr(),
+        events)).thenReturn(certificateBytes);
     
     creditpointService.sendMailIfPossible(certificateForm, login, name);
     
     verify(emailMock, never())
-        .sendMail(name, certificateForm.getGender(), certificateForm.getMatNr(), events);
+        .sendMailWithPdf(certificateBytes,
+            name,
+            certificateForm.getGender(),
+            certificateForm.getMatNr(),
+            events);
   }
   
   @Test

@@ -14,22 +14,17 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("checkstyle:LineLength")
 @Service
 @Log4j2
 public class EmailService {
   
-  private final transient CertificateService certificateService;
   private final transient JavaMailSender emailSender;
   private final transient String recipient;
-  private final transient int numberOfRequiredEntwickelbarEvents = 1;
-  private final transient int numberOfRequiredEveningEvents = 3;
   
   
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public EmailService(final CertificateService certificateService,
-                      final JavaMailSender emailSender, @Value("${application.email.recipient}") final String recipient) {
-    this.certificateService = certificateService;
+  public EmailService(final JavaMailSender emailSender,
+                      @Value("${application.email.recipient}") final String recipient) {
     this.emailSender = emailSender;
     this.recipient = recipient;
   }
@@ -37,34 +32,74 @@ public class EmailService {
   /**
    * erzeugen einer Email (+PDF) und versenden.
    */
-  public void sendMail(final String name, final String gender, final String matNr, final List<Event> usedEvents)
-      throws MessagingException {
+  public void sendMailWithPdf(final byte[] certificateBytes,
+                              final String name,
+                              final String gender,
+                              final String matNr,
+                              final List<Event> usedEvents) throws MessagingException {
     
-    final byte[] bytes = certificateService.createCertificatePdf(name, gender, matNr, usedEvents);
-    final ByteArrayDataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");
+    final MimeBodyPart pdfBodyPart = createPdfBodyPart(certificateBytes, matNr);
+    final MimeBodyPart textBodyPart = createTextBodyPart(name, gender, matNr, usedEvents);
+    final MimeMultipart mimeMultipart = createMimeMultiPart(pdfBodyPart, textBodyPart);
+    final MimeMessage mimeMessage = createMimeMessage(name, mimeMultipart);
+    
+    emailSender.send(mimeMessage);
+  }
+  
+  private static MimeBodyPart createPdfBodyPart(final byte[] certificateBytes,
+                                                final String matNr) throws MessagingException {
+    final ByteArrayDataSource dataSource = new ByteArrayDataSource(certificateBytes,
+        "application/pdf");
+    
     final MimeBodyPart pdfBodyPart = new MimeBodyPart();
     pdfBodyPart.setDataHandler(new DataHandler(dataSource));
     pdfBodyPart.setFileName("Schein_" + matNr + ".pdf");
     
-    String text = setGender(gender) + name + " (Matr: " + matNr + ") beantragt folgende "
-        + "Veranstaltung(en) gegen 0.5 CP einzutauschen:\n";
-    
-    if (usedEvents.size() == numberOfRequiredEveningEvents) {
-      text = text
-          + "- " + usedEvents.get(0).getTitle() + "\n"
-          + "- " + usedEvents.get(1).getTitle() + "\n"
-          + "- " + usedEvents.get(2).getTitle() + "\n";
-    } else if (usedEvents.size() == numberOfRequiredEntwickelbarEvents) {
-      text = text
-          + "- " + usedEvents.get(0).getTitle() + "\n";
-    }
+    return pdfBodyPart;
+  }
+  
+  private static MimeBodyPart createTextBodyPart(final String name,
+                                                 final String gender,
+                                                 final String matNr,
+                                                 final List<Event> usedEvents)
+      throws MessagingException {
+    final String text = createMailText(name, gender, matNr, usedEvents);
     
     final MimeBodyPart textBodyPart = new MimeBodyPart();
     textBodyPart.setText(text);
     
+    return textBodyPart;
+  }
+  
+  private static String createMailText(final String name,
+                                       final String gender,
+                                       final String matNr,
+                                       final List<Event> usedEvents) {
+    final StringBuilder text = new StringBuilder(setGender(gender) + name
+        + " (Matr: " + matNr + ") beantragt folgende "
+        + "Veranstaltung(en) gegen 0.5 CP einzutauschen:\n");
+    
+    for (final Event event : usedEvents) {
+      text.append("- ").append(event.getTitle()).append("\n");
+    }
+    
+    return text.toString();
+  }
+  
+  private static MimeMultipart createMimeMultiPart(final MimeBodyPart pdfBodyPart,
+                                                   final MimeBodyPart textBodyPart)
+      throws MessagingException {
+    
     final MimeMultipart mimeMultipart = new MimeMultipart();
     mimeMultipart.addBodyPart(textBodyPart);
     mimeMultipart.addBodyPart(pdfBodyPart);
+    
+    return mimeMultipart;
+  }
+  
+  private MimeMessage createMimeMessage(final String name,
+                                        final MimeMultipart mimeMultipart)
+      throws MessagingException {
     
     final String subject = "Java in der Praxis: Scheinbeantragung von " + name;
     
@@ -74,7 +109,7 @@ public class EmailService {
     mimeMessageHelper.setTo(recipient);
     mimeMessage.setContent(mimeMultipart);
     
-    emailSender.send(mimeMessage);
+    return mimeMessage;
   }
   
   private static String setGender(final String gender) {

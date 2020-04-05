@@ -104,24 +104,38 @@ public class DatabaseInitializer implements ServletContextInitializer {
       eventRepository.save(event);
       if (event.getId() == 1) {
         event.setDuration(Duration.ofHours(1));
-        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 22), LocalTime.of(17, 30)));
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 29), LocalTime.of(17, 30)));
         event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
         event.setStatus("PAST");
         event.setType("Entwickelbar");
       }
       if (event.getId() == 2) {
         event.setDuration(Duration.ofHours(1));
-        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 21), LocalTime.of(17, 30)));
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 30), LocalTime.of(17, 30)));
         event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
         event.setStatus("PAST");
-        event.setType("Entwickelbar");
+        event.setType("Evening Event");
       }
       if (event.getId() == 3) {
         event.setDuration(Duration.ofHours(2));
         event.setDate(LocalDateTime.of(LocalDate.of(2020, 3, 31), LocalTime.of(17, 30)));
         event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
         event.setStatus("PAST");
-        event.setType("Entwickelbar");
+        event.setType("Evening Event");
+      }
+      if (event.getId() == 4) {
+        event.setDuration(Duration.ofHours(1));
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 4, 1), LocalTime.of(17, 30)));
+        event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
+        event.setStatus("PAST");
+        event.setType("Evening Event");
+      }
+      if (event.getId() == 5) {
+        event.setDuration(Duration.ofHours(1));
+        event.setDate(LocalDateTime.of(LocalDate.of(2020, 4, 1), LocalTime.of(17, 30)));
+        event.setDeadline(event.getDate().plus(event.getDuration()).plusDays(7));
+        event.setStatus("PAST");
+        event.setType("Evening Event");
       }
       eventRepository.save(event);
     });
